@@ -68,9 +68,7 @@ public class SignUp extends AppCompatActivity {
                             textViewResult.setText("failure: " + t.getMessage());
                         }
                     });
-                    i++;
-                    String x = i + "th";
-                    textViewResult.append(x);
+                    textViewResult.append("wait... ");
                 }
             }
         });
