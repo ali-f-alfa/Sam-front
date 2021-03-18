@@ -6,11 +6,17 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.text.BoringLayout;
 import android.text.TextUtils;
+import android.util.JsonReader;
 import android.util.Patterns;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+
+import java.io.InputStreamReader;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -36,14 +42,18 @@ public class Login extends AppCompatActivity {
         Error  = (TextView)findViewById(R.id.ErrorMessage);
         SignUp = (TextView)findViewById(R.id.Signup);
 
+        Gson gson = new GsonBuilder()
+                .setLenient()
+                .create();
+        
+
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl("http://10.0.2.2:13524/api/")
-                .addConverterFactory((GsonConverterFactory.create()))
+                .addConverterFactory((GsonConverterFactory.create(gson)))
                 .build();
         ChatHouseAPI LoginAPI = retrofit.create(ChatHouseAPI.class);
 
 
-//        Error.setVisibility(View.INVISIBLE);
 
         // Send request for login
         LoginButton.setOnClickListener(new View.OnClickListener(){
@@ -53,24 +63,26 @@ public class Login extends AppCompatActivity {
             public void onClick(View v){
                 if(CheckFields()){
                     // Class for login body
-                    OutputLoginViewModel Body = new OutputLoginViewModel(Username.getText().toString(), Password.getText().toString());
+                    OutputLoginViewModel Body = new OutputLoginViewModel(Username.getText().toString(),
+                            Password.getText().toString(), CheckUserNamePattern(Username.getText().toString()));
                     Call<Object> Login = LoginAPI.PostLogin(Body);
+
 
                     Login.enqueue(new Callback<Object>() {
                         @Override
                         public void onResponse(Call<Object> call, Response<Object> response){
                             if(!response.isSuccessful()){
-                                Error.setText(response.toString());
+                                Error.setText( response.toString());
                                 return;
                             }
                             // Get Profile
 
-                            Error.setText(response.toString());
+                            Error.setText("success" + response.body().toString());
 
                         }
                         @Override
                         public void onFailure(Call<Object> call, Throwable failure){
-                            Error.append(failure.getMessage());
+                            Error.setText("fail " + failure.getMessage());
                         }
                     });
                 }
@@ -96,7 +108,7 @@ public class Login extends AppCompatActivity {
         // Check Username
         if(!TextUtils.isEmpty(Username.getText().toString())){
             // Check the pattern
-            CheckUsername = CheckUserNamePattern(Username.getText().toString());
+            CheckUsername = true;
         }
         else {
             CheckUsername = false;
@@ -117,17 +129,14 @@ public class Login extends AppCompatActivity {
     }
 
     private Boolean CheckUserNamePattern(String username){
-        Boolean user = true;
-        char[] usernameChars = username.toCharArray();
-        for (char ch : usernameChars) {
-            if (!Constants.UsernameAllowedCharacters.contains(Character.toString(ch)))
-                user = false;
-        }
 
+        // If Email
         Boolean email = Patterns.EMAIL_ADDRESS.matcher(username).matches();
 
-        return (user | email);
-
+        if(email){
+            return true;
+        }
+        return false;
     }
 
     private Boolean CheckPasswordPattern(String password){
