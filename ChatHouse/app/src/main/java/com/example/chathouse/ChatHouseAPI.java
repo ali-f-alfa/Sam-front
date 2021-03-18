@@ -10,5 +10,5 @@ import retrofit2.http.POST;
 public interface ChatHouseAPI {
 
     @POST("Account/Signup")
-    Call<Object> postSignup(@Body OutputSignupViewModel signupModel);
+    Call<InputSignupViewModel> postSignup(@Body OutputSignupViewModel signupModel);
 }

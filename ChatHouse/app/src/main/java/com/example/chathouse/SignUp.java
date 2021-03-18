@@ -9,6 +9,10 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -42,6 +46,7 @@ public class SignUp extends AppCompatActivity {
         passwordTextView = findViewById(R.id.passwordInput);
         confirmPasswordTextView = findViewById(R.id.confirmPasswordInput);
         Button mButton = findViewById(R.id.submitBtn);
+
         mButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -51,20 +56,24 @@ public class SignUp extends AppCompatActivity {
                             emailTextView.getText().toString(),
                             passwordTextView.getText().toString(),
                             confirmPasswordTextView.getText().toString());
-                    Call<Object> signup = chatHouseAPI.postSignup(model1);
+                    Call<InputSignupViewModel> signup = chatHouseAPI.postSignup(model1);
 
-                    signup.enqueue(new Callback<Object>() {
+                    //todo: loading
+                    signup.enqueue(new Callback<InputSignupViewModel>() {
                         @Override
-                        public void onResponse(Call<Object> call, Response<Object> response) {
+                        public void onResponse(Call<InputSignupViewModel> call, Response<InputSignupViewModel> response) {
                             if (!response.isSuccessful()) {
-                                textViewResult.setText("code: " + response.code() + " " + response.toString());
+                                textViewResult.setText("error : " + response.toString());
                                 return;
                             }
-                            textViewResult.setText("token is : " + response.body().toString());
+                            Toast.makeText(SignUp.this, "Successfully Signed Up", Toast.LENGTH_LONG).show();
+                            textViewResult.setText("We have sent an email with a confirmation link to " + emailTextView.getText().toString());
+                            //todo : redirect to login page
+
                         }
 
                         @Override
-                        public void onFailure(Call<Object> call, Throwable t) {
+                        public void onFailure(Call<InputSignupViewModel> call, Throwable t) {
                             textViewResult.setText("failure: " + t.getMessage());
                         }
                     });
@@ -121,7 +130,6 @@ public class SignUp extends AppCompatActivity {
             }
         }
         if (!pass.equals(confirmPass)) {
-            passwordTextView.setError("password and confirm password not match");
             confirmPasswordTextView.setError("password and confirm password not match");
             return false;
         }
