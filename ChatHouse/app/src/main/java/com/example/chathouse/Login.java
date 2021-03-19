@@ -23,6 +23,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
+import retrofit2.converter.scalars.ScalarsConverterFactory;
 
 public class Login extends AppCompatActivity {
 
@@ -45,10 +46,11 @@ public class Login extends AppCompatActivity {
         Gson gson = new GsonBuilder()
                 .setLenient()
                 .create();
-        
+
 
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl("http://10.0.2.2:13524/api/")
+                .addConverterFactory(ScalarsConverterFactory.create())
                 .addConverterFactory((GsonConverterFactory.create(gson)))
                 .build();
         ChatHouseAPI LoginAPI = retrofit.create(ChatHouseAPI.class);
@@ -65,29 +67,26 @@ public class Login extends AppCompatActivity {
                     // Class for login body
                     OutputLoginViewModel Body = new OutputLoginViewModel(Username.getText().toString(),
                             Password.getText().toString(), CheckUserNamePattern(Username.getText().toString()));
-                    Call<Object> Login = LoginAPI.PostLogin(Body);
+                    Call<String> Login = LoginAPI.PostLogin(Body);
 
 
-                    Login.enqueue(new Callback<Object>() {
+                    Login.enqueue(new Callback<String>() {
                         @Override
-                        public void onResponse(Call<Object> call, Response<Object> response){
+                        public void onResponse(Call<String> call, Response<String> response){
                             if(!response.isSuccessful()){
-                                Error.setText( response.toString());
+                                Error.setText("code: " + response.code() + " " + response.toString());
                                 return;
                             }
                             // Get Profile
 
-                            Error.setText("success" + response.body().toString());
+                            Error.setText("Your are now logged in");
 
                         }
                         @Override
-                        public void onFailure(Call<Object> call, Throwable failure){
-                            Error.setText("fail " + failure.getMessage());
+                        public void onFailure(Call<String> call, Throwable failure){
+                            Error.setText("failure: " + failure.getMessage());
                         }
                     });
-                }
-                else{
-                    LoginButton.setEnabled(false);
                 }
             }
         });

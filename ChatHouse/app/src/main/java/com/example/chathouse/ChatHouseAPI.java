@@ -15,5 +15,5 @@ public interface ChatHouseAPI {
     Call<Object> postSignup(@Body OutputSignupViewModel signupModel);
 
     @POST("Account/Login")
-    Call<Object> PostLogin(@Body OutputLoginViewModel Body);
+    Call<String> PostLogin(@Body OutputLoginViewModel Body);
 }
