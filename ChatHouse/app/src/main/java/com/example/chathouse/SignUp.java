@@ -2,17 +2,18 @@ package com.example.chathouse;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Handler;
 import android.text.TextUtils;
+import android.util.Log;
 import android.util.Patterns;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.io.IOException;
 
@@ -28,6 +29,8 @@ public class SignUp extends AppCompatActivity {
     private EditText userNameTextView;
     private EditText passwordTextView;
     private EditText confirmPasswordTextView;
+    private Button SubmitButton;
+    private TextView Login;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,9 +50,10 @@ public class SignUp extends AppCompatActivity {
         userNameTextView = findViewById(R.id.usernameInput);
         passwordTextView = findViewById(R.id.passwordInput);
         confirmPasswordTextView = findViewById(R.id.confirmPasswordInput);
-        Button mButton = findViewById(R.id.submitBtn);
+        SubmitButton = findViewById(R.id.submitBtn);
+        Login = findViewById(R.id.LoginBtn);
 
-        mButton.setOnClickListener(new View.OnClickListener() {
+        SubmitButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
@@ -66,6 +70,7 @@ public class SignUp extends AppCompatActivity {
                         public void onResponse(Call<InputSignupViewModel> call, Response<InputSignupViewModel> response) {
                             if (!response.isSuccessful()) {
                                 try {
+                                    textViewResult.setTextColor(Color.parseColor("#B00020"));
                                     textViewResult.setText(response.errorBody().string());
                                 } catch (IOException e) {
                                     e.printStackTrace();
@@ -74,18 +79,39 @@ public class SignUp extends AppCompatActivity {
                             }
                             Toast.makeText(SignUp.this, "Successfully Signed Up", Toast.LENGTH_LONG).show();
 
+                            textViewResult.setTextColor(Color.BLACK);
                             textViewResult.setText("We have sent an email with a confirmation link to " + response.body().getEmail());
-                            //todo : redirect to login page
-
+                            new Handler().postDelayed(new Runnable() {
+                                @Override
+                                public void run() {
+                                    Intent intent = new Intent(SignUp.this, Login.class);
+                                    startActivity(intent);
+                                    finish();
+                                }
+                            }, 3000);
                         }
 
                         @Override
                         public void onFailure(Call<InputSignupViewModel> call, Throwable t) {
+                            textViewResult.setTextColor(Color.parseColor("#B00020"));
                             textViewResult.setText("please check your connection");
                         }
                     });
 //                    textViewResult.append("wait... ");
                 }
+            }
+        });
+        Login.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                new Handler().post(new Runnable() {
+                    @Override
+                    public void run() {
+                        Intent intent = new Intent(SignUp.this, Login.class);
+                        startActivity(intent);
+                        finish();
+                    }
+                });
             }
         });
     }

@@ -3,7 +3,9 @@ package com.example.chathouse;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Handler;
 import android.text.BoringLayout;
 import android.text.TextUtils;
 import android.util.JsonReader;
@@ -12,10 +14,12 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
+import java.io.IOException;
 import java.io.InputStreamReader;
 
 import retrofit2.Call;
@@ -74,18 +78,21 @@ public class Login extends AppCompatActivity {
                         @Override
                         public void onResponse(Call<String> call, Response<String> response){
                             if(!response.isSuccessful()){
-                                Error.setText("code: " + response.code() + " " + response.toString());
+                                try {
+                                    Error.setText(response.errorBody().string());
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                }
                                 return;
                             }
                             // Get Profile
-
+                            Toast.makeText(Login.this, "Successfully Logged In ", Toast.LENGTH_LONG).show();
                             Error.setText("Your are now logged in");
 
                         }
                         @Override
                         public void onFailure(Call<String> call, Throwable failure){
-                            Error.setText("failure: " + failure.getMessage());
-                        }
+                            Error.setText("please check your connection");                        }
                     });
                 }
             }
@@ -95,8 +102,14 @@ public class Login extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 // Redirect to Sign-Up screen
-                Intent intent = new Intent(Login.this, SignUp.class);
-                startActivity(intent);
+                new Handler().post(new Runnable() {
+                    @Override
+                    public void run() {
+                        Intent intent = new Intent(Login.this, SignUp.class);
+                        startActivity(intent);
+                        finish();
+                    }
+                });
             }
         });
     }

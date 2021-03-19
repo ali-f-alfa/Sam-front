@@ -10,7 +10,6 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.ChatHouse"
         android:usesCleartextTraffic="true">
-        <activity android:name=".LandingPage"></activity>
         <activity android:name=".SignUp" />
         <activity android:name=".Login" />
         <activity android:name=".MainActivity">
