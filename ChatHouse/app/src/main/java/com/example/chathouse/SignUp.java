@@ -131,12 +131,13 @@ public class SignUp extends AppCompatActivity {
 
     private boolean CheckPassword(String pass, String confirmPass) {
         for (char ch : pass.toCharArray()) {
-            if (!Constants.PasswordAllowedUserNameCharacters.contains(Character.toString(ch))) {
+            if (!Constants.PasswordAllowedCharacters.contains(Character.toString(ch))) {
                 passwordTextView.setError("Password contains unallowed characters");
                 return false;
             }
         }
         if (!pass.equals(confirmPass)) {
+            passwordTextView.setError("password and confirm password not match");
             confirmPasswordTextView.setError("password and confirm password not match");
             return false;
         }
