@@ -14,6 +14,8 @@ import android.widget.Toast;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.IOException;
+
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -63,21 +65,26 @@ public class SignUp extends AppCompatActivity {
                         @Override
                         public void onResponse(Call<InputSignupViewModel> call, Response<InputSignupViewModel> response) {
                             if (!response.isSuccessful()) {
-                                textViewResult.setText("error : " + response.toString());
+                                try {
+                                    textViewResult.setText(response.errorBody().string());
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                }
                                 return;
                             }
                             Toast.makeText(SignUp.this, "Successfully Signed Up", Toast.LENGTH_LONG).show();
-                            textViewResult.setText("We have sent an email with a confirmation link to " + emailTextView.getText().toString());
+
+                            textViewResult.setText("We have sent an email with a confirmation link to " + response.body().getEmail());
                             //todo : redirect to login page
 
                         }
 
                         @Override
                         public void onFailure(Call<InputSignupViewModel> call, Throwable t) {
-                            textViewResult.setText("failure: " + t.getMessage());
+                            textViewResult.setText("please check your connection");
                         }
                     });
-                    textViewResult.append("wait... ");
+//                    textViewResult.append("wait... ");
                 }
             }
         });

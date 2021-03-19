@@ -38,11 +38,10 @@
         android:id="@+id/confirmPasswordInput"
         android:layout_width="0dp"
         android:layout_height="60dp"
-        android:layout_marginBottom="64dp"
         android:ems="10"
         android:hint="Confirm Password"
         android:inputType="textPassword"
-        app:layout_constraintBottom_toTopOf="@+id/submitBtn"
+        app:layout_constraintBottom_toTopOf="@+id/LoginBtn"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.508"
         app:layout_constraintStart_toStartOf="parent"
@@ -69,19 +68,35 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.491"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/confirmPasswordInput" />
+        app:layout_constraintTop_toBottomOf="@+id/LoginBtn" />
 
     <TextView
         android:id="@+id/resultText"
         android:layout_width="0dp"
-        android:layout_height="50dp"
+        android:layout_height="60dp"
         android:layout_marginTop="32dp"
         android:text=""
+        android:textColor="#F50000"
         android:textSize="15dp"
         app:layout_constraintBottom_toTopOf="@+id/EmailInput"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/LoginBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
+        android:layout_marginBottom="10dp"
+        android:clickable="true"
+        android:fontFamily="sans-serif-condensed-light"
+        android:text="Do you have an account? Login"
+        android:textColorLink="@color/black"
+        app:layout_constraintBottom_toTopOf="@+id/submitBtn"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/confirmPasswordInput" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

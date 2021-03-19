@@ -1,6 +1,14 @@
 package com.example.chathouse;
 
 public class InputSignupViewModel {
-    public String Username;
-    public String Email;
+    private String email;
+    private String username;
+
+    public String getUsername() {
+        return username;
+    }
+
+    public String getEmail() {
+        return email;
+    }
 }
