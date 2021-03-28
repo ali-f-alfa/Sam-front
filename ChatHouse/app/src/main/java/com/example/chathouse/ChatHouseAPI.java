@@ -8,6 +8,7 @@ import retrofit2.Response;
 import retrofit2.http.Body;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
+import retrofit2.http.Query;
 
 public interface ChatHouseAPI {
 
@@ -16,4 +17,8 @@ public interface ChatHouseAPI {
 
     @POST("Account/Login")
     Call<String> PostLogin(@Body OutputLoginViewModel Body);
+
+    @GET("Account/GetProfile")
+    Call<ProfileInformation> GetProfile(@Query("username") String Username);
+
 }

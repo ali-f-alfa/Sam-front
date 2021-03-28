@@ -88,6 +88,8 @@ public class Login extends AppCompatActivity {
                             // Get Profile
                             Toast.makeText(Login.this, "Successfully Logged In ", Toast.LENGTH_LONG).show();
                             Error.setText("Your are now logged in");
+                            Intent intent = new Intent(Login.this, ProfilePage.class);
+                            startActivity(intent);
 
                         }
                         @Override
