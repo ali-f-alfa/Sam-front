@@ -2,8 +2,10 @@ package com.example.chathouse;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.media.Image;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -13,6 +15,7 @@ import android.widget.Toast;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
+import okhttp3.HttpUrl;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -31,6 +34,7 @@ public class ProfilePage extends AppCompatActivity {
     private Button Message;
     private Button Follow;
     private ImageView ProfilePicture;
+    private TextView Memberof;
 
 
     @Override
@@ -49,6 +53,11 @@ public class ProfilePage extends AppCompatActivity {
         Following = (TextView)findViewById(R.id.FollowingText);
         Message = (Button)findViewById(R.id.MessageButton);
         Follow = (Button)findViewById(R.id.FollowButton);
+        Memberof = (TextView)findViewById(R.id.MemberOf);
+
+        Memberof.setVisibility(View.INVISIBLE);
+
+
 
 
         Gson gson = new GsonBuilder()
@@ -57,24 +66,26 @@ public class ProfilePage extends AppCompatActivity {
 
 
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("http://10.0.2.2:13524/api/")
+                .baseUrl(HttpUrl.get("http://10.0.2.2:13524/api/"))
                 .addConverterFactory(ScalarsConverterFactory.create())
                 .addConverterFactory((GsonConverterFactory.create(gson)))
                 .build();
         ChatHouseAPI GetProfileAPI = retrofit.create(ChatHouseAPI.class);
 
-        Call<ProfileInformation> GetProfile = GetProfileAPI.GetProfile(UserName.getText().toString());
+        Call<ProfileInformation> GetProfile = GetProfileAPI.GetProfile("test1");
 
         GetProfile.enqueue(new Callback<ProfileInformation>() {
             @Override
             public void onResponse(Call<ProfileInformation> call, Response<ProfileInformation> response) {
                 if(!response.isSuccessful()){
-                    Toast.makeText(ProfilePage.this, "Unable to load", Toast.LENGTH_LONG).show();
+                    Name.setText(response.errorBody().toString());
+                    return;
                 }
 
                 // Set the values from back
                 ProfileInformation Response = response.body();
-                Name.setText(Response.Email);
+                Description.setText(Response.getUsername());
+
             }
 
             @Override
@@ -82,7 +93,6 @@ public class ProfilePage extends AppCompatActivity {
                 Toast.makeText(ProfilePage.this, "Request failed", Toast.LENGTH_LONG).show();
             }
         });
-
 
     }
 }

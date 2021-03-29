@@ -1,12 +1,26 @@
 package com.example.chathouse;
 
+import com.google.gson.annotations.SerializedName;
+
 import java.util.List;
 
 public class ProfileInformation {
-    public String Firstname;
-    public String Lastname;
-    public String Username;
-    public String Email;
-    public List<String> Interests;
-    public String Picture;
+
+    private String username;
+    private String email;
+    private Boolean isMe;
+
+
+    public String getUsername() {
+        return username;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public Boolean getMe() {
+        return isMe;
+    }
+
 }
