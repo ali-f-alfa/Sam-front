@@ -36,6 +36,7 @@ public class Login extends AppCompatActivity {
     private Button LoginButton;
     private TextView Error;
     private TextView SignUp;
+    public String Token;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -88,7 +89,15 @@ public class Login extends AppCompatActivity {
                             // Get Profile
                             Toast.makeText(Login.this, "Successfully Logged In ", Toast.LENGTH_LONG).show();
                             Error.setText("Your are now logged in");
+                            Token = response.body();
                             Intent intent = new Intent(Login.this, ProfilePage.class);
+                            Bundle bundle = new Bundle();
+
+                            bundle.putString("Token", Token);
+                            bundle.putString("Username", Username.getText().toString());
+
+                            intent.putExtras(bundle);
+
                             startActivity(intent);
 
                         }

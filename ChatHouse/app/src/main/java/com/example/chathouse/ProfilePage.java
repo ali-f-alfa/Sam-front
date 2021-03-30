@@ -2,8 +2,6 @@ package com.example.chathouse;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.content.Intent;
-import android.media.Image;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -15,7 +13,12 @@ import android.widget.Toast;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
+import java.io.IOException;
+
 import okhttp3.HttpUrl;
+import okhttp3.Interceptor;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -58,7 +61,16 @@ public class ProfilePage extends AppCompatActivity {
         Memberof.setVisibility(View.INVISIBLE);
 
 
-
+        Bundle bundle = getIntent().getExtras();
+        OkHttpClient client = new OkHttpClient.Builder().addInterceptor(new Interceptor() {
+            @Override
+            public okhttp3.Response intercept(Chain chain) throws IOException {
+                Request newRequest  = chain.request().newBuilder()
+                        .addHeader("Authorization", "Bearer " + bundle.getString("Token"))
+                        .build();
+                return chain.proceed(newRequest);
+            }
+        }).build();
 
         Gson gson = new GsonBuilder()
                 .setLenient()
@@ -67,18 +79,25 @@ public class ProfilePage extends AppCompatActivity {
 
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(HttpUrl.get("http://10.0.2.2:13524/api/"))
+                .client(client)
                 .addConverterFactory(ScalarsConverterFactory.create())
                 .addConverterFactory((GsonConverterFactory.create(gson)))
                 .build();
         ChatHouseAPI GetProfileAPI = retrofit.create(ChatHouseAPI.class);
 
-        Call<ProfileInformation> GetProfile = GetProfileAPI.GetProfile("test1");
+        Call<ProfileInformation> GetProfile = GetProfileAPI.GetProfile(bundle.getString("Username"), "Bearer " + bundle.getString("Token"));
 
         GetProfile.enqueue(new Callback<ProfileInformation>() {
             @Override
             public void onResponse(Call<ProfileInformation> call, Response<ProfileInformation> response) {
                 if(!response.isSuccessful()){
-                    Name.setText(response.errorBody().toString());
+                    try {
+                        Name.setText(response.message());
+                        Description.setText(response.errorBody().string());
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                        Name.setText(e.getMessage());
+                    }
                     return;
                 }
 
