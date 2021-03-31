@@ -21,6 +21,6 @@ public interface ChatHouseAPI {
     Call<String> PostLogin(@Body OutputLoginViewModel Body);
 
     @GET("Account/GetProfile")
-    Call<ProfileInformation> GetProfile(@Query("username") String username, @Header("Authorization") String authHeader);
+    Call<ProfileInformation> GetProfile(@Query("username") String username);
 
 }

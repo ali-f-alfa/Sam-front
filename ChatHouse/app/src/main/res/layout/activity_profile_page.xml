@@ -24,7 +24,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/Name"
-        android:layout_marginTop="30dp"
+        android:layout_marginTop="15dp"
         android:text="Melika Ahmadi Ranjbar"
         android:textSize="20dp"
         android:textColor="@color/almostpink"
@@ -76,7 +76,7 @@
             android:gravity="center"
             android:id="@+id/Followers"
             android:text="3453"
-
+            android:clickable="true"
             app:layout_constraintTop_toBottomOf="@+id/Bio"
             app:layout_constraintEnd_toStartOf="@+id/FollowingText"
             app:layout_constraintStart_toStartOf="parent"
@@ -93,6 +93,7 @@
             android:fontFamily="sans-serif-medium"
             android:id="@+id/Following"
             android:text="1238"
+            android:clickable="true"
             app:layout_constraintTop_toBottomOf="@+id/Bio"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -138,7 +139,7 @@
     <GridLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="10dp"
         app:layout_constraintTop_toBottomOf="@+id/Statics"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -159,14 +160,28 @@
 
         <Button
             android:id="@+id/FollowButton"
-            android:layout_width="170dp"
+            android:layout_width="171dp"
+            android:backgroundTint="@color/light"
             android:text="Follow"
-            android:textColor="@color/almostpink"
-            android:backgroundTint="@color/light">
+            android:textColor="@color/almostpink">
 
         </Button>
 
     </GridLayout>
+    <Button
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:id="@+id/EditProfileButton"
+        app:layout_constraintTop_toBottomOf="@+id/Statics"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginTop="15dp"
+        android:textColor="@color/almostpink"
+        android:backgroundTint="@color/light"
+        android:text="Edit Profile">
+
+    </Button>
+
     <View
         android:layout_width="wrap_content"
         android:layout_height="2dp"
@@ -175,28 +190,74 @@
         android:layout_marginTop="10dp"
         app:layout_constraintTop_toBottomOf="@+id/Buttons"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"/>
+        app:layout_constraintStart_toStartOf="parent"
+        android:tooltipText="Interests"
+        />
 
     <HorizontalScrollView
         android:id="@+id/Interests"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="28dp"
+        android:layout_marginTop="20dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.457"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/Buttons">
+        app:layout_constraintTop_toBottomOf="@+id/LineBelow">
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:id="@+id/ContainerButton">
+
+
+        </LinearLayout>
+
+
+
+    </HorizontalScrollView>
+    <GridLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        app:layout_constraintTop_toBottomOf="@+id/MemberOf"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        android:rowCount="1"
+        android:columnCount="2"
+        android:id="@+id/UsernameEmail"
+        android:paddingHorizontal="40dp"
+        android:useDefaultMargins="true"
+        >
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="40dp"
+            android:gravity="center"
+            android:layout_marginTop="5dp"
+            android:textSize="15dp"
+            android:textColor="@color/gray"
+            android:fontFamily="sans-serif-medium"
+            android:id="@+id/UsernameText"
+            android:text="Username"
+            android:drawableStart="@color/gray"
+>
+
+        </TextView>
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/EachInterest"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/Buttons">
+            android:layout_marginLeft="40dp"
+            android:gravity="center"
+            android:layout_marginTop="5dp"
+            android:textSize="15dp"
+            android:textColor="@color/gray"
+            android:fontFamily="sans-serif-medium"
+            android:id="@+id/EmailText"
+            android:text="Email">
+
         </TextView>
 
-    </HorizontalScrollView>
+    </GridLayout>
 
     <TextView
         android:layout_width="wrap_content"
