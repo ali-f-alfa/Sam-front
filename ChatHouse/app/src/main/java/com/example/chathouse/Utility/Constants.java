@@ -1,4 +1,4 @@
-package com.example.chathouse;
+package com.example.chathouse.Utility;
 
 public class Constants {
     public static final String PasswordAllowedCharacters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-._@+";;

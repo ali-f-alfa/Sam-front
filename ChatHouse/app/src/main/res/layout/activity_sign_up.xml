@@ -7,7 +7,7 @@
     android:paddingVertical="8dp"
     android:paddingHorizontal="35dp"
     android:background="@color/light"
-    tools:context=".MainActivity">
+    tools:context=".Pages.MainActivity">
 
     <TextView
         android:id="@+id/Logo"

@@ -12,11 +12,11 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.ChatHouse"
         android:usesCleartextTraffic="true">
-        <activity android:name=".EditProfile"></activity>
-        <activity android:name=".ProfilePage" />
-        <activity android:name=".SignUp" />
-        <activity android:name=".Login" />
-        <activity android:name=".MainActivity">
+        <activity android:name=".Pages.EditProfile"></activity>
+        <activity android:name=".Pages.ProfilePage" />
+        <activity android:name=".Pages.SignUp" />
+        <activity android:name=".Pages.Login" />
+        <activity android:name=".Pages.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

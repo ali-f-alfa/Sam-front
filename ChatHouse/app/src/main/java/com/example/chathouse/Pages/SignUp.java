@@ -1,4 +1,4 @@
-package com.example.chathouse;
+package com.example.chathouse.Pages;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -7,13 +7,18 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.TextUtils;
-import android.util.Log;
 import android.util.Patterns;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.example.chathouse.API.ChatHouseAPI;
+import com.example.chathouse.R;
+import com.example.chathouse.Utility.Constants;
+import com.example.chathouse.ViewModels.Acount.InputSignupViewModel;
+import com.example.chathouse.ViewModels.Acount.OutputSignupViewModel;
 
 import java.io.IOException;
 
@@ -84,7 +89,7 @@ public class SignUp extends AppCompatActivity {
                             new Handler().postDelayed(new Runnable() {
                                 @Override
                                 public void run() {
-                                    Intent intent = new Intent(SignUp.this, Login.class);
+                                    Intent intent = new Intent(SignUp.this, com.example.chathouse.Pages.Login.class);
                                     startActivity(intent);
                                     finish();
                                 }

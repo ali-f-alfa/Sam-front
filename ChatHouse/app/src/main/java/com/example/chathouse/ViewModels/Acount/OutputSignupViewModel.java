@@ -1,4 +1,4 @@
-package com.example.chathouse;
+package com.example.chathouse.ViewModels.Acount;
 
 public class OutputSignupViewModel {
     private String Username;

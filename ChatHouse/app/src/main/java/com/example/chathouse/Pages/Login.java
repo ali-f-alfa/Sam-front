@@ -1,14 +1,11 @@
-package com.example.chathouse;
+package com.example.chathouse.Pages;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
-import android.text.BoringLayout;
 import android.text.TextUtils;
-import android.util.JsonReader;
 import android.util.Patterns;
 import android.view.View;
 import android.widget.Button;
@@ -16,11 +13,14 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.chathouse.API.ChatHouseAPI;
+import com.example.chathouse.ViewModels.Acount.OutputLoginViewModel;
+import com.example.chathouse.R;
+import com.example.chathouse.Utility.Constants;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 import java.io.IOException;
-import java.io.InputStreamReader;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -116,7 +116,7 @@ public class Login extends AppCompatActivity {
                 new Handler().post(new Runnable() {
                     @Override
                     public void run() {
-                        Intent intent = new Intent(Login.this, SignUp.class);
+                        Intent intent = new Intent(Login.this, com.example.chathouse.Pages.SignUp.class);
                         startActivity(intent);
                         finish();
                     }
