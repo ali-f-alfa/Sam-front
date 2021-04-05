@@ -3,7 +3,9 @@ package com.example.chathouse.Pages;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
@@ -56,6 +58,82 @@ public class ProfilePage extends AppCompatActivity {
     private ArrayList<FollowingFollowers> FollowersList = new ArrayList<>();
     private ArrayList<FollowingFollowers> FollowingList = new ArrayList<>();
     private String Token;
+//
+//    @Override
+//    protected void onStart() {
+//        super.onStart();
+//        setContentView(R.layout.activity_profile_page);
+//
+//        SharedPreferences settings = getSharedPreferences("Storage", MODE_PRIVATE);
+//
+//
+//        String Token = settings.getString("Token", "n/a");
+//        String Username = settings.getString("Username", "n/a");
+//
+//        OkHttpClient client = new OkHttpClient.Builder().addInterceptor(new Interceptor() {
+//            @Override
+//            public okhttp3.Response intercept(Chain chain) throws IOException {
+//                Request newRequest  = chain.request().newBuilder()
+//                        .addHeader("Authorization", Token)
+//                        .build();
+//                return chain.proceed(newRequest);
+//            }
+//        }).build();
+//
+//        Gson gson = new GsonBuilder()
+//                .setLenient()
+//                .create();
+//
+//        Retrofit retrofit = new Retrofit.Builder()
+//                .baseUrl(HttpUrl.get("http://10.0.2.2:13524/api/"))
+//                .client(client)
+//                .addConverterFactory(ScalarsConverterFactory.create())
+//                .addConverterFactory((GsonConverterFactory.create(gson)))
+//                .build();
+//        ChatHouseAPI GetProfileAPI = retrofit.create(ChatHouseAPI.class);
+//
+//        Call<ProfileInformation> GetProfile = GetProfileAPI.GetProfile(Username);
+//
+//        GetProfile.enqueue(new Callback<ProfileInformation>() {
+//            @Override
+//            public void onResponse(Call<ProfileInformation> call, Response<ProfileInformation> response) {
+//                if(!response.isSuccessful()){
+//                    try {
+//                        Name.setText(response.errorBody().string());
+//                    } catch (IOException e) {
+//                        Name.setText(response.errorBody().toString());
+//
+//                        e.printStackTrace();
+//                    }
+//                    return;
+//                }
+//
+//                // Set the values from back
+//                ProfileInformation Response = response.body();
+//                System.out.println(Response.getFirstName());
+//                if(Response.getMe()){
+//                    Message.setVisibility(View.INVISIBLE);
+//                    Follow.setVisibility(View.INVISIBLE);
+//                    EditProfile.setVisibility(View.VISIBLE);
+//                }
+//
+//                SetInformation(Response);
+//
+//                if(!Response.getMe()){
+//                    if(FollowingList.contains(Response)){
+//                        Follow.setText("Unfollow");
+//                    }
+//                }
+//            }
+//
+//            @Override
+//            public void onFailure(Call<ProfileInformation> call, Throwable t) {
+//                Name.setText(t.getMessage().toString());
+//                Toast.makeText(ProfilePage.this, "Request failed", Toast.LENGTH_LONG).show();
+//            }
+//        });
+//
+//    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,8 +159,12 @@ public class ProfilePage extends AppCompatActivity {
 
         Memberof.setVisibility(View.INVISIBLE);
 
-        Bundle bundle = getIntent().getExtras();
-        Token = bundle.getString("Token");
+        SharedPreferences settings = getSharedPreferences("Storage", MODE_PRIVATE);
+
+
+        String Token = settings.getString("Token", "n/a");
+        String Username = settings.getString("Username", "n/a");
+
         OkHttpClient client = new OkHttpClient.Builder().addInterceptor(new Interceptor() {
             @Override
             public okhttp3.Response intercept(Chain chain) throws IOException {
@@ -105,7 +187,7 @@ public class ProfilePage extends AppCompatActivity {
                 .build();
         ChatHouseAPI GetProfileAPI = retrofit.create(ChatHouseAPI.class);
 
-        Call<ProfileInformation> GetProfile = GetProfileAPI.GetProfile(bundle.getString("Username"));
+        Call<ProfileInformation> GetProfile = GetProfileAPI.GetProfile(Username);
 
         GetProfile.enqueue(new Callback<ProfileInformation>() {
             @Override
@@ -115,6 +197,7 @@ public class ProfilePage extends AppCompatActivity {
                         Name.setText(response.errorBody().string());
                     } catch (IOException e) {
                         Name.setText(response.errorBody().toString());
+
                         e.printStackTrace();
                     }
                     return;
@@ -127,14 +210,16 @@ public class ProfilePage extends AppCompatActivity {
                     Follow.setVisibility(View.INVISIBLE);
                     EditProfile.setVisibility(View.VISIBLE);
                 }
-
-                SetInformation(Response);
-
-                if(!Response.getMe()){
+                else {
                     if(FollowingList.contains(Response)){
                         Follow.setText("Unfollow");
                     }
                 }
+
+                SetInformation(Response);
+                System.out.println(Response.getFirstName());
+
+
             }
 
             @Override
@@ -162,9 +247,8 @@ public class ProfilePage extends AppCompatActivity {
         });
 
 
-        CreateLayout( com.example.chathouse.ViewModels.Acount.Interests.Life.getArrayString());
-
     }
+
 
     private void SetInformation(ProfileInformation response){
         Name.setText(response.getFirstName() + response.getLastName());
@@ -177,8 +261,7 @@ public class ProfilePage extends AppCompatActivity {
         // Followers and Followings
         FollowersList = response.getFollowers();
         FollowingList = response.getFollowings();
-//        Followers.setText(Fr.size());
-//        Following.setText(Fi.size());
+
     }
     private Button CreateButtonInterest(String name, int id){
 

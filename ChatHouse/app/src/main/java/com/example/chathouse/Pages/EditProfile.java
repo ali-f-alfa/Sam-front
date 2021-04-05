@@ -6,6 +6,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.view.View;
@@ -118,9 +119,14 @@ public class EditProfile extends AppCompatActivity {
         });
 
         Bundle bundle = getIntent().getExtras();
+        SharedPreferences settings = getSharedPreferences("Storage", MODE_PRIVATE);
+
+
+        String Token = settings.getString("Token", "n/a");
+        String UsernameText = settings.getString("Username", "n/a");
 
         Bio.setText(bundle.getString("Bio"));
-        Username.setText(bundle.getString("Username"));
+        Username.setText(UsernameText);
         String first = "";
         String last = "";
         if(bundle.getString("FirstName") != null){
@@ -136,12 +142,11 @@ public class EditProfile extends AppCompatActivity {
         LastName.setText(last);
 
 
-        System.out.println(bundle.getString("Token"));
         OkHttpClient client = new OkHttpClient.Builder().addInterceptor(new Interceptor() {
             @Override
             public okhttp3.Response intercept(Chain chain) throws IOException {
                 Request newRequest  = chain.request().newBuilder()
-                        .addHeader("Authorization", bundle.getString("Token"))
+                        .addHeader("Authorization", Token)
                         .build();
                 return chain.proceed(newRequest);
             }
@@ -182,8 +187,6 @@ public class EditProfile extends AppCompatActivity {
                             }
                             return;
                         }
-
-                        System.out.println(SelectedInterests);
                         Intent intent = new Intent(EditProfile.this, com.example.chathouse.Pages.ProfilePage.class);
 
                         startActivity(intent);

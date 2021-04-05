@@ -2,7 +2,9 @@ package com.example.chathouse.Pages;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.TextUtils;
@@ -90,11 +92,18 @@ public class Login extends AppCompatActivity {
                             Toast.makeText(Login.this, "Successfully Logged In ", Toast.LENGTH_LONG).show();
                             Error.setText("Your are now logged in");
                             Token = response.body();
+
+
+                            SharedPreferences.Editor edit = getSharedPreferences("Storage", MODE_PRIVATE).edit();
+                            edit.putString("Token", Token);
+                            edit.putString("Username", Username.getText().toString());
+                            edit.apply();
+
                             Intent intent = new Intent(Login.this, ProfilePage.class);
                             Bundle bundle = new Bundle();
 
-                            bundle.putString("Token", Token);
-                            bundle.putString("Username", Username.getText().toString());
+//                            bundle.putString("Token", Token);
+//                            bundle.putString("Username", Username.getText().toString());
 
                             intent.putExtras(bundle);
 
