@@ -4,10 +4,12 @@ import com.example.chathouse.ViewModels.Acount.InputSignupViewModel;
 import com.example.chathouse.ViewModels.Acount.OutputLoginViewModel;
 import com.example.chathouse.ViewModels.Acount.OutputSignupViewModel;
 import com.example.chathouse.ViewModels.Acount.ProfileInformation;
+import com.example.chathouse.ViewModels.Acount.UpdateProfileViewModel;
 
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.GET;
+import retrofit2.http.Header;
 import retrofit2.http.POST;
 import retrofit2.http.Query;
 
@@ -19,7 +21,12 @@ public interface ChatHouseAPI {
     @POST("Account/Login")
     Call<String> PostLogin(@Body OutputLoginViewModel Body);
 
+    @POST("Account/Logout")
+    Call<Void> PostLogout();
+
     @GET("Account/GetProfile")
     Call<ProfileInformation> GetProfile(@Query("username") String username);
 
+    @POST("Account/UpdateProfile")
+    Call<ProfileInformation> UpdateProfile(@Body UpdateProfileViewModel updateProfileViewModel);
 }

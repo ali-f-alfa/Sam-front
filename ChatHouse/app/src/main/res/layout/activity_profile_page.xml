@@ -215,6 +215,7 @@
 
     </HorizontalScrollView>
     <GridLayout
+        android:paddingHorizontal="20dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
@@ -224,38 +225,37 @@
         android:rowCount="1"
         android:columnCount="2"
         android:id="@+id/UsernameEmail"
-        android:paddingHorizontal="40dp"
         android:useDefaultMargins="true"
         >
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginRight="40dp"
-            android:gravity="center"
-            android:layout_marginTop="5dp"
-            android:textSize="15dp"
-            android:textColor="@color/gray"
-            android:fontFamily="sans-serif-medium"
+
+        <Button
             android:id="@+id/UsernameText"
-            android:text="Username"
-            android:drawableStart="@color/gray"
->
-
-        </TextView>
-
-        <TextView
-            android:layout_width="wrap_content"
+            android:layout_width="170dp"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="40dp"
+            android:layout_marginTop="5dp"
+            android:drawableStart="@color/gray"
+            android:fontFamily="sans-serif-medium"
+            android:gravity="center"
+            android:text="Username"
+            android:textColor="@color/almostpink"
+            android:backgroundTint="@color/light"
+            android:textSize="15dp">
+
+        </Button>
+
+        <Button
+            android:layout_width="170dp"
+            android:layout_height="wrap_content"
             android:gravity="center"
             android:layout_marginTop="5dp"
-            android:textSize="15dp"
-            android:textColor="@color/gray"
+            android:textSize="10dp"
             android:fontFamily="sans-serif-medium"
             android:id="@+id/EmailText"
+            android:textColor="@color/almostpink"
+            android:backgroundTint="@color/light"
             android:text="Email">
 
-        </TextView>
+        </Button>
 
     </GridLayout>
 

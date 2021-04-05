@@ -43,11 +43,11 @@ public class ProfileInformation {
         return bio;
     }
 
-    public List<FollowingFollowers> getFollowers() {
+    public ArrayList<FollowingFollowers> getFollowers() {
         return followers;
     }
 
-    public List<FollowingFollowers> getFollowings() {
+    public ArrayList<FollowingFollowers> getFollowings() {
         return followings;
     }
 

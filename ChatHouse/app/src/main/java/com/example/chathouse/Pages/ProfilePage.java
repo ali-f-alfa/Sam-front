@@ -8,6 +8,7 @@ import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.HorizontalScrollView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -21,6 +22,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import okhttp3.HttpUrl;
@@ -50,6 +52,10 @@ public class ProfilePage extends AppCompatActivity {
     private LinearLayout InterestContainer;
     private TextView UsernameText;
     private TextView EmailText;
+    private HorizontalScrollView Interests;
+    private ArrayList<FollowingFollowers> FollowersList = new ArrayList<>();
+    private ArrayList<FollowingFollowers> FollowingList = new ArrayList<>();
+    private String Token;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,16 +77,17 @@ public class ProfilePage extends AppCompatActivity {
         EmailText = (TextView)findViewById(R.id.EmailText);
         EditProfile = (Button)findViewById(R.id.EditProfileButton);
         InterestContainer = (LinearLayout)findViewById(R.id.ContainerButton);
+        Interests = (HorizontalScrollView)findViewById(R.id.Interests);
 
         Memberof.setVisibility(View.INVISIBLE);
 
-
         Bundle bundle = getIntent().getExtras();
+        Token = bundle.getString("Token");
         OkHttpClient client = new OkHttpClient.Builder().addInterceptor(new Interceptor() {
             @Override
             public okhttp3.Response intercept(Chain chain) throws IOException {
                 Request newRequest  = chain.request().newBuilder()
-                        .addHeader("Authorization", bundle.getString("Token"))
+                        .addHeader("Authorization", Token)
                         .build();
                 return chain.proceed(newRequest);
             }
@@ -123,6 +130,11 @@ public class ProfilePage extends AppCompatActivity {
 
                 SetInformation(Response);
 
+                if(!Response.getMe()){
+                    if(FollowingList.contains(Response)){
+                        Follow.setText("Unfollow");
+                    }
+                }
             }
 
             @Override
@@ -137,12 +149,20 @@ public class ProfilePage extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(ProfilePage.this, com.example.chathouse.Pages.EditProfile.class);
+                Bundle bundle = new Bundle();
 
+                bundle.putString("FistName", Name.getText().toString());
+                bundle.putString("Username", UsernameText.getText().toString());
+                bundle.putString("Bio", Description.getText().toString());
+                bundle.putString("Token", Token);
+
+                intent.putExtras(bundle);
                 startActivity(intent);
             }
         });
 
 
+        CreateLayout( com.example.chathouse.ViewModels.Acount.Interests.Life.getArrayString());
 
     }
 
@@ -155,22 +175,37 @@ public class ProfilePage extends AppCompatActivity {
         // Interests
 
         // Followers and Followings
-        List<FollowingFollowers> Fr = response.getFollowers();
-        List<FollowingFollowers> Fi = response.getFollowings();
+        FollowersList = response.getFollowers();
+        FollowingList = response.getFollowings();
 //        Followers.setText(Fr.size());
 //        Following.setText(Fi.size());
     }
-    private void CreateButtonInterest(LinearLayout linearLayout, String name){
-        LinearLayout.LayoutParams params =
-                new LinearLayout.LayoutParams(
-                        LinearLayout.LayoutParams.WRAP_CONTENT,
-                        LinearLayout.LayoutParams.WRAP_CONTENT);
+    private Button CreateButtonInterest(String name, int id){
+
         Button button = new Button(this);
         button.setText(name);
         button.setTextSize(10);
+        button.setId(id);
         button.setGravity(Gravity.CENTER);
-        button.setLayoutParams(params);
 
-        linearLayout.addView(button);
+        return button;
+    }
+
+    private void CreateLayout(ArrayList<String> fields){
+        int size = fields.size();
+        for (int i = 0; i < size / 4; i++) {
+            LinearLayout row = new LinearLayout(this);
+            row.setLayoutParams(new LinearLayout.LayoutParams
+                    (LinearLayout.LayoutParams.WRAP_CONTENT,
+                            LinearLayout.LayoutParams.WRAP_CONTENT));
+            for (int j = 0; j < 4; j++) {
+                Button btnTag = CreateButtonInterest(fields.get(i * 4 + j), (i * 4) + j);
+                btnTag.setLayoutParams(new LinearLayout.LayoutParams
+                        (LinearLayout.LayoutParams.WRAP_CONTENT,
+                                LinearLayout.LayoutParams.MATCH_PARENT));
+                row.addView(btnTag);
+            }
+            InterestContainer.addView(row);
+        }
     }
 }
