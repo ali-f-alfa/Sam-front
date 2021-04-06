@@ -56,7 +56,7 @@ public class Login extends AppCompatActivity {
 
 
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("http://10.0.2.2:13524/api/")
+                .baseUrl(Constants.baseURL)
                 .addConverterFactory(ScalarsConverterFactory.create())
                 .addConverterFactory((GsonConverterFactory.create(gson)))
                 .build();

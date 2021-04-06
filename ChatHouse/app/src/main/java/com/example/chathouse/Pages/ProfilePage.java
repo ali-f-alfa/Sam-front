@@ -18,7 +18,9 @@ import android.widget.Toast;
 
 import com.example.chathouse.API.ChatHouseAPI;
 import com.example.chathouse.R;
+import com.example.chathouse.Utility.Constants;
 import com.example.chathouse.ViewModels.Acount.FollowingFollowers;
+import com.example.chathouse.ViewModels.Acount.Interests;
 import com.example.chathouse.ViewModels.Acount.ProfileInformation;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -58,82 +60,6 @@ public class ProfilePage extends AppCompatActivity {
     private ArrayList<FollowingFollowers> FollowersList = new ArrayList<>();
     private ArrayList<FollowingFollowers> FollowingList = new ArrayList<>();
     private String Token;
-//
-//    @Override
-//    protected void onStart() {
-//        super.onStart();
-//        setContentView(R.layout.activity_profile_page);
-//
-//        SharedPreferences settings = getSharedPreferences("Storage", MODE_PRIVATE);
-//
-//
-//        String Token = settings.getString("Token", "n/a");
-//        String Username = settings.getString("Username", "n/a");
-//
-//        OkHttpClient client = new OkHttpClient.Builder().addInterceptor(new Interceptor() {
-//            @Override
-//            public okhttp3.Response intercept(Chain chain) throws IOException {
-//                Request newRequest  = chain.request().newBuilder()
-//                        .addHeader("Authorization", Token)
-//                        .build();
-//                return chain.proceed(newRequest);
-//            }
-//        }).build();
-//
-//        Gson gson = new GsonBuilder()
-//                .setLenient()
-//                .create();
-//
-//        Retrofit retrofit = new Retrofit.Builder()
-//                .baseUrl(HttpUrl.get("http://10.0.2.2:13524/api/"))
-//                .client(client)
-//                .addConverterFactory(ScalarsConverterFactory.create())
-//                .addConverterFactory((GsonConverterFactory.create(gson)))
-//                .build();
-//        ChatHouseAPI GetProfileAPI = retrofit.create(ChatHouseAPI.class);
-//
-//        Call<ProfileInformation> GetProfile = GetProfileAPI.GetProfile(Username);
-//
-//        GetProfile.enqueue(new Callback<ProfileInformation>() {
-//            @Override
-//            public void onResponse(Call<ProfileInformation> call, Response<ProfileInformation> response) {
-//                if(!response.isSuccessful()){
-//                    try {
-//                        Name.setText(response.errorBody().string());
-//                    } catch (IOException e) {
-//                        Name.setText(response.errorBody().toString());
-//
-//                        e.printStackTrace();
-//                    }
-//                    return;
-//                }
-//
-//                // Set the values from back
-//                ProfileInformation Response = response.body();
-//                System.out.println(Response.getFirstName());
-//                if(Response.getMe()){
-//                    Message.setVisibility(View.INVISIBLE);
-//                    Follow.setVisibility(View.INVISIBLE);
-//                    EditProfile.setVisibility(View.VISIBLE);
-//                }
-//
-//                SetInformation(Response);
-//
-//                if(!Response.getMe()){
-//                    if(FollowingList.contains(Response)){
-//                        Follow.setText("Unfollow");
-//                    }
-//                }
-//            }
-//
-//            @Override
-//            public void onFailure(Call<ProfileInformation> call, Throwable t) {
-//                Name.setText(t.getMessage().toString());
-//                Toast.makeText(ProfilePage.this, "Request failed", Toast.LENGTH_LONG).show();
-//            }
-//        });
-//
-//    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -180,7 +106,7 @@ public class ProfilePage extends AppCompatActivity {
                 .create();
 
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(HttpUrl.get("http://10.0.2.2:13524/api/"))
+                .baseUrl(HttpUrl.get(Constants.baseURL))
                 .client(client)
                 .addConverterFactory(ScalarsConverterFactory.create())
                 .addConverterFactory((GsonConverterFactory.create(gson)))
@@ -239,7 +165,6 @@ public class ProfilePage extends AppCompatActivity {
                 bundle.putString("FistName", Name.getText().toString());
                 bundle.putString("Username", UsernameText.getText().toString());
                 bundle.putString("Bio", Description.getText().toString());
-                bundle.putString("Token", Token);
 
                 intent.putExtras(bundle);
                 startActivity(intent);
@@ -261,6 +186,27 @@ public class ProfilePage extends AppCompatActivity {
         // Followers and Followings
         FollowersList = response.getFollowers();
         FollowingList = response.getFollowings();
+
+        // Create a list view for following and followers
+
+
+
+        // Interests
+        ArrayList<ArrayList<Integer>> interests= new ArrayList<>(13);
+        interests = response.getInterests();
+
+
+        ArrayList<String> passToCreateLayout = new ArrayList<>();
+        for(int i = 0; i < 14; i++){
+            List<Integer> indexes = interests.get(i);
+            for(int j = 0; j < indexes.size(); j++){
+                ArrayList<String> temp = new ArrayList<>();
+                temp = com.example.chathouse.ViewModels.Acount.Interests.Wellness.getArrayString();
+
+                passToCreateLayout.add(temp.get(j));
+            }
+        }
+        CreateLayout(passToCreateLayout);
 
     }
     private Button CreateButtonInterest(String name, int id){

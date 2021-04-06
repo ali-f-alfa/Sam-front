@@ -25,6 +25,7 @@ import android.widget.Toast;
 
 import com.example.chathouse.API.ChatHouseAPI;
 import com.example.chathouse.R;
+import com.example.chathouse.Utility.Constants;
 import com.example.chathouse.ViewModels.Acount.Interests;
 import com.example.chathouse.ViewModels.Acount.ProfileInformation;
 import com.example.chathouse.ViewModels.Acount.UpdateProfileViewModel;
@@ -158,7 +159,7 @@ public class EditProfile extends AppCompatActivity {
                 .create();
 
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(HttpUrl.get("http://10.0.2.2:13524/api/"))
+                .baseUrl(HttpUrl.get(Constants.baseURL))
                 .client(client)
                 .addConverterFactory(ScalarsConverterFactory.create())
                 .addConverterFactory((GsonConverterFactory.create(gson)))
@@ -262,15 +263,15 @@ public class EditProfile extends AppCompatActivity {
         Wellness.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                if(SelectedInterests.get(0).contains(position)){
+                if(view.isSelected() || SelectedInterests.get(0).contains(position)){
                     SelectedInterests.get(0).remove(position);
-                    view.setPressed(false);
+                    view.setSelected(false);
                     view.setBackgroundColor(Color.WHITE);
                 }
                 else{
                     SelectedInterests.get(0).add(position);
                     view.setBackgroundColor(Color.GRAY);
-                    view.setPressed(true);
+                    view.setSelected(true);
                 }
 
             }

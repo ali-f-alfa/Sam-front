@@ -16,7 +16,7 @@ public class ProfileInformation {
     private String bio;
     private ArrayList<FollowingFollowers> followers;
     private ArrayList<FollowingFollowers> followings;
-    private Interests interests;
+    private ArrayList<ArrayList<Integer>> interests;
 
 
     public String getUsername() {
@@ -51,7 +51,7 @@ public class ProfileInformation {
         return followings;
     }
 
-    public Interests getInterests() {
+    public ArrayList<ArrayList<Integer>> getInterests() {
         return interests;
     }
 }
