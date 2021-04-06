@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.view.View;
@@ -261,20 +262,48 @@ public class EditProfile extends AppCompatActivity {
         Wellness.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                SelectedInterests.get(0).add(position);
+                if(SelectedInterests.get(0).contains(position)){
+                    SelectedInterests.get(0).remove(position);
+                    view.setPressed(false);
+                    view.setBackgroundColor(Color.WHITE);
+                }
+                else{
+                    SelectedInterests.get(0).add(position);
+                    view.setBackgroundColor(Color.GRAY);
+                    view.setPressed(true);
+                }
 
             }
         });
         Identity.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                SelectedInterests.get(1).add(position);
+                if(SelectedInterests.get(1).contains(position)){
+                    SelectedInterests.get(1).remove(position);
+                    view.setPressed(false);
+                    view.setBackgroundColor(Color.WHITE);
+                }
+                else{
+                    SelectedInterests.get(1).add(position);
+                    view.setBackgroundColor(Color.GRAY);
+                    view.setPressed(true);
+                }
+
             }
         });
         Places.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                SelectedInterests.get(2).add(position);
+                if(SelectedInterests.get(2).contains(position)){
+                    SelectedInterests.get(2).remove(position);
+                    view.setPressed(false);
+                    view.setBackgroundColor(Color.WHITE);
+                }
+                else{
+                    SelectedInterests.get(2).add(position);
+                    view.setBackgroundColor(Color.GRAY);
+                    view.setPressed(true);
+                }
             }
         });
         WorldAffairs.setOnItemClickListener(new AdapterView.OnItemClickListener() {
