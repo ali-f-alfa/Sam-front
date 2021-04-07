@@ -20,33 +20,54 @@
         >
 
     </ImageView>
-    <TextView
+    <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/Name"
         android:layout_marginTop="15dp"
-        android:text="Melika Ahmadi Ranjbar"
-        android:textSize="20dp"
-        android:textColor="@color/almostpink"
-        android:fontFamily="sans-serif-medium"
-        android:gravity="center"
         app:layout_constraintTop_toBottomOf="@+id/ProfileImage"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintBottom_toTopOf="@+id/Bio"
+        app:layout_constraintBottom_toTopOf="@+id/UsernameText"
         android:ems="10"
-        >
+        android:orientation="horizontal"
 
-    </TextView>
+        >
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/FirstName"
+            android:text="Melika"
+            android:textSize="20dp"
+            android:layout_marginRight="5dp"
+            android:textColor="@color/almostpink"
+            android:fontFamily="sans-serif-medium"
+            android:gravity="center">
+
+        </TextView>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/LastName"
+            android:text="Ahmadi"
+            android:textSize="20dp"
+            android:textColor="@color/almostpink"
+            android:fontFamily="sans-serif-medium"
+            android:gravity="center">
+
+        </TextView>
+
+    </LinearLayout>
     <TextView
         android:layout_width="wrap_content"
-        android:text="Description"
+        android:text="Username"
         android:gravity="center"
         android:textColor="@color/almostpink"
         android:fontFamily="sans-serif-medium"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
-        android:id="@+id/Bio"
+        android:id="@+id/UsernameText"
         app:layout_constraintTop_toBottomOf="@+id/Name"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -60,7 +81,7 @@
         android:layout_height="wrap_content"
         android:id="@+id/Statics"
         android:layout_marginTop="10dp"
-        app:layout_constraintTop_toBottomOf="@+id/Bio"
+        app:layout_constraintTop_toBottomOf="@+id/UsernameText"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         android:columnCount="2"
@@ -77,7 +98,7 @@
             android:id="@+id/Followers"
             android:text="3453"
             android:clickable="true"
-            app:layout_constraintTop_toBottomOf="@+id/Bio"
+            app:layout_constraintTop_toBottomOf="@+id/UsernameText"
             app:layout_constraintEnd_toStartOf="@+id/FollowingText"
             app:layout_constraintStart_toStartOf="parent"
             >
@@ -94,7 +115,7 @@
             android:id="@+id/Following"
             android:text="1238"
             android:clickable="true"
-            app:layout_constraintTop_toBottomOf="@+id/Bio"
+            app:layout_constraintTop_toBottomOf="@+id/UsernameText"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             >
@@ -193,6 +214,23 @@
         app:layout_constraintStart_toStartOf="parent"
         android:tooltipText="Interests"
         />
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:drawableStart="@color/gray"
+        android:fontFamily="sans-serif-medium"
+        android:gravity="center"
+        android:text="Bio"
+        android:textColor="@color/almostpink"
+        app:layout_constraintTop_toBottomOf="@+id/LineBelow"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        android:id="@+id/Bio"
+        android:textSize="15dp">
+
+    </TextView>
+
 
     <HorizontalScrollView
         android:id="@+id/Interests"
@@ -201,7 +239,7 @@
         android:layout_marginTop="20dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/LineBelow">
+        app:layout_constraintTop_toBottomOf="@+id/Bio">
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -214,63 +252,35 @@
 
 
     </HorizontalScrollView>
-    <GridLayout
-        android:paddingHorizontal="20dp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        app:layout_constraintTop_toBottomOf="@+id/MemberOf"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        android:rowCount="1"
-        android:columnCount="2"
-        android:id="@+id/UsernameEmail"
-        android:useDefaultMargins="true"
-        >
 
-        <Button
-            android:id="@+id/UsernameText"
-            android:layout_width="170dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="5dp"
-            android:drawableStart="@color/gray"
-            android:fontFamily="sans-serif-medium"
-            android:gravity="center"
-            android:text="Username"
-            android:textColor="@color/almostpink"
-            android:backgroundTint="@color/light"
-            android:textSize="15dp">
-
-        </Button>
-
-        <Button
-            android:layout_width="170dp"
+        <TextView
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center"
             android:layout_marginTop="5dp"
-            android:textSize="10dp"
+            android:textSize="15dp"
             android:fontFamily="sans-serif-medium"
             android:id="@+id/EmailText"
             android:textColor="@color/almostpink"
-            android:backgroundTint="@color/light"
-            android:text="Email">
+            android:text="Email"
+            app:layout_constraintTop_toBottomOf="@+id/Interests"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent">
 
-        </Button>
+        </TextView>
 
-    </GridLayout>
+<!--    <TextView-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:id="@+id/MemberOf"-->
+<!--        android:layout_marginTop="30dp"-->
+<!--        app:layout_constraintTop_toBottomOf="@+id/Interests"-->
+<!--        app:layout_constraintEnd_toEndOf="parent"-->
+<!--        app:layout_constraintStart_toStartOf="parent"-->
+<!--        android:text="Member of"-->
+<!--        >-->
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/MemberOf"
-        android:layout_marginTop="30dp"
-        app:layout_constraintTop_toBottomOf="@+id/Interests"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        android:text="Member of"
-        >
-
-    </TextView>
+<!--    </TextView>-->
 
 
 

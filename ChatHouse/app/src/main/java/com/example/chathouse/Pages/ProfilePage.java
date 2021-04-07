@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.view.Gravity;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.HorizontalScrollView;
@@ -41,7 +42,8 @@ import retrofit2.converter.gson.GsonConverterFactory;
 import retrofit2.converter.scalars.ScalarsConverterFactory;
 
 public class ProfilePage extends AppCompatActivity {
-    private TextView Name;
+    private TextView LastName;
+    private TextView FirstName;
     private TextView UserName;
     private TextView Description;
     private TextView FollowersNumber;
@@ -51,7 +53,7 @@ public class ProfilePage extends AppCompatActivity {
     private Button Message;
     private Button Follow;
     private ImageView ProfilePicture;
-    private TextView Memberof;
+//    private TextView Memberof;
     private Button EditProfile;
     private LinearLayout InterestContainer;
     private TextView UsernameText;
@@ -59,7 +61,7 @@ public class ProfilePage extends AppCompatActivity {
     private HorizontalScrollView Interests;
     private ArrayList<FollowingFollowers> FollowersList = new ArrayList<>();
     private ArrayList<FollowingFollowers> FollowingList = new ArrayList<>();
-    private String Token;
+    private ArrayList<ArrayList<Integer>> ResponseInterests = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,7 +70,8 @@ public class ProfilePage extends AppCompatActivity {
 
         UserName = (EditText)findViewById(R.id.Username);
         ProfilePicture = (ImageView) findViewById(R.id.ProfileImage);
-        Name = (TextView)findViewById(R.id.Name);
+        LastName = (TextView)findViewById(R.id.LastName);
+        FirstName = (TextView)findViewById(R.id.FirstName);
         Description = (TextView)findViewById(R.id.Bio);
         FollowersNumber = (TextView)findViewById(R.id.Followers);
         FollowingNumber = (TextView)findViewById(R.id.Following);
@@ -76,14 +79,14 @@ public class ProfilePage extends AppCompatActivity {
         Following = (TextView)findViewById(R.id.FollowingText);
         Message = (Button)findViewById(R.id.MessageButton);
         Follow = (Button)findViewById(R.id.FollowButton);
-        Memberof = (TextView)findViewById(R.id.MemberOf);
+//        Memberof = (TextView)findViewById(R.id.MemberOf);
         UsernameText = (TextView)findViewById(R.id.UsernameText);
         EmailText = (TextView)findViewById(R.id.EmailText);
         EditProfile = (Button)findViewById(R.id.EditProfileButton);
         InterestContainer = (LinearLayout)findViewById(R.id.ContainerButton);
         Interests = (HorizontalScrollView)findViewById(R.id.Interests);
 
-        Memberof.setVisibility(View.INVISIBLE);
+//        Memberof.setVisibility(View.INVISIBLE);
 
         SharedPreferences settings = getSharedPreferences("Storage", MODE_PRIVATE);
 
@@ -120,9 +123,9 @@ public class ProfilePage extends AppCompatActivity {
             public void onResponse(Call<ProfileInformation> call, Response<ProfileInformation> response) {
                 if(!response.isSuccessful()){
                     try {
-                        Name.setText(response.errorBody().string());
+                        FirstName.setText(response.errorBody().string());
                     } catch (IOException e) {
-                        Name.setText(response.errorBody().toString());
+                        FirstName.setText(response.errorBody().toString());
 
                         e.printStackTrace();
                     }
@@ -143,14 +146,14 @@ public class ProfilePage extends AppCompatActivity {
                 }
 
                 SetInformation(Response);
-                System.out.println(Response.getFirstName());
+                System.out.println(Response.getInterests());
 
 
             }
 
             @Override
             public void onFailure(Call<ProfileInformation> call, Throwable t) {
-                Name.setText(t.getMessage().toString());
+                FirstName.setText(t.getMessage().toString());
                 Toast.makeText(ProfilePage.this, "Request failed", Toast.LENGTH_LONG).show();
             }
         });
@@ -162,9 +165,11 @@ public class ProfilePage extends AppCompatActivity {
                 Intent intent = new Intent(ProfilePage.this, com.example.chathouse.Pages.EditProfile.class);
                 Bundle bundle = new Bundle();
 
-                bundle.putString("FistName", Name.getText().toString());
+                bundle.putString("FirstName", FirstName.getText().toString());
+                bundle.putString("LastName", LastName.getText().toString());
                 bundle.putString("Username", UsernameText.getText().toString());
                 bundle.putString("Bio", Description.getText().toString());
+                bundle.putSerializable("Interests", ResponseInterests);
 
                 intent.putExtras(bundle);
                 startActivity(intent);
@@ -176,18 +181,22 @@ public class ProfilePage extends AppCompatActivity {
 
 
     private void SetInformation(ProfileInformation response){
-        Name.setText(response.getFirstName() + response.getLastName());
+        FirstName.setText(response.getFirstName());
+        LastName.setText(response.getLastName());
         Description.setText(response.getBio());
         UsernameText.setText(response.getUsername());
         EmailText.setText(response.getEmail());
 
         // Interests
+        ResponseInterests = response.getInterests();
 
         // Followers and Followings
         FollowersList = response.getFollowers();
         FollowingList = response.getFollowings();
 
         // Create a list view for following and followers
+        FollowersNumber.setText(String.valueOf(FollowersList.size()));
+        FollowingNumber.setText(String.valueOf(FollowingList.size()));
 
 
 
@@ -199,11 +208,54 @@ public class ProfilePage extends AppCompatActivity {
         ArrayList<String> passToCreateLayout = new ArrayList<>();
         for(int i = 0; i < 14; i++){
             List<Integer> indexes = interests.get(i);
+            ArrayList<String> temp = new ArrayList<>();
+            switch (i){
+                case 0:
+                    temp = com.example.chathouse.ViewModels.Acount.Interests.Wellness.getArrayString();
+                    break;
+                case 1:
+                    temp = com.example.chathouse.ViewModels.Acount.Interests.Identity.getArrayString();
+                    break;
+                case 2:
+                    temp = com.example.chathouse.ViewModels.Acount.Interests.Places.getArrayString();
+                    break;
+                case 3:
+                    temp = com.example.chathouse.ViewModels.Acount.Interests.WorldAffairs.getArrayString();
+                    break;
+                case 4:
+                    temp = com.example.chathouse.ViewModels.Acount.Interests.Tech.getArrayString();
+                    break;
+                case 5:
+                    temp = com.example.chathouse.ViewModels.Acount.Interests.HangingOut.getArrayString();
+                    break;
+                case 6:
+                    temp = com.example.chathouse.ViewModels.Acount.Interests.KnowLedge.getArrayString();
+                    break;
+                case 7:
+                    temp = com.example.chathouse.ViewModels.Acount.Interests.Hustle.getArrayString();
+                    break;
+                case 8:
+                    temp = com.example.chathouse.ViewModels.Acount.Interests.Sports.getArrayString();
+                    break;
+                case 9:
+                    temp = com.example.chathouse.ViewModels.Acount.Interests.Arts.getArrayString();
+                    break;
+                case 10:
+                    temp = com.example.chathouse.ViewModels.Acount.Interests.Life.getArrayString();
+                    break;
+                case 11:
+                    temp = com.example.chathouse.ViewModels.Acount.Interests.Languages.getArrayString();
+                    break;
+                case 12:
+                    temp = com.example.chathouse.ViewModels.Acount.Interests.Entertainment.getArrayString();
+                    break;
+                case 13:
+                    temp = com.example.chathouse.ViewModels.Acount.Interests.Faith.getArrayString();
+                    break;
+            }
             for(int j = 0; j < indexes.size(); j++){
-                ArrayList<String> temp = new ArrayList<>();
-                temp = com.example.chathouse.ViewModels.Acount.Interests.Wellness.getArrayString();
 
-                passToCreateLayout.add(temp.get(j));
+                passToCreateLayout.add(temp.get((int)(Math.log(indexes.get(j)) / Math.log(2))));
             }
         }
         CreateLayout(passToCreateLayout);
@@ -221,6 +273,7 @@ public class ProfilePage extends AppCompatActivity {
     }
 
     private void CreateLayout(ArrayList<String> fields){
+        System.out.println(fields);
         int size = fields.size();
         for (int i = 0; i < size / 4; i++) {
             LinearLayout row = new LinearLayout(this);

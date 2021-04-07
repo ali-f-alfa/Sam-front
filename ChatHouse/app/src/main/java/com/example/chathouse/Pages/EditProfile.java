@@ -1,5 +1,6 @@
 package com.example.chathouse.Pages;
 
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -8,9 +9,12 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.view.View;
+import android.widget.AbsListView;
+import android.widget.Adapter;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -18,6 +22,7 @@ import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.HorizontalScrollView;
 import android.widget.LinearLayout;
+import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.Switch;
 import android.widget.TextView;
@@ -34,6 +39,7 @@ import com.google.gson.GsonBuilder;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import okhttp3.HttpUrl;
@@ -70,7 +76,7 @@ public class EditProfile extends AppCompatActivity {
     private EditText LastName;
     private Switch OnOff;
     private HorizontalScrollView Interests;
-    public ArrayList<ArrayList<Integer>> SelectedInterests = new ArrayList<>(13);
+    public ArrayList<ArrayList<Integer>> SelectedInterests = new ArrayList<>();
     private TextView SetNewPicture;
     private HorizontalScrollView InterestEdit;
     private TextView textView;
@@ -129,21 +135,15 @@ public class EditProfile extends AppCompatActivity {
 
         Bio.setText(bundle.getString("Bio"));
         Username.setText(UsernameText);
-        String first = "";
-        String last = "";
-        if(bundle.getString("FirstName") != null){
-            String[] Name = bundle.getString("FirstName").split(" ");
-            for(int i = 1; i < Name.length; i++){
-                last += Name[i];
-            }
-            first = Name[0];
-        }
+        FirstName.setText(bundle.getString("FirstName"));
+        LastName.setText(bundle.getString("LastName"));
 
+        ArrayList<ArrayList<Integer>> interests = new ArrayList<>();
+        interests = (ArrayList<ArrayList<Integer>>)bundle.getSerializable("Interests");
 
-        FirstName.setText(first);
-        LastName.setText(last);
-
-
+//        InitializeSelectedInterests(interests);
+        SelectedInterests = interests;
+        System.out.println(SelectedInterests);
         OkHttpClient client = new OkHttpClient.Builder().addInterceptor(new Interceptor() {
             @Override
             public okhttp3.Response intercept(Chain chain) throws IOException {
@@ -166,16 +166,17 @@ public class EditProfile extends AppCompatActivity {
                 .build();
         ChatHouseAPI API = retrofit.create(ChatHouseAPI.class);
 
-        Call<ProfileInformation> UpdateProfile = API.UpdateProfile(Edit());
+
         Call<Void> Logout = API.PostLogout();
 
         Save.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                Call<ProfileInformation> UpdateProfile = API.UpdateProfile(Edit());
 
                 // Send update request
                 UpdateProfile.enqueue(new Callback<ProfileInformation>() {
+
                     @Override
                     public void onResponse(Call<ProfileInformation> call, Response<ProfileInformation> response) {
                         if(!response.isSuccessful()){
@@ -189,6 +190,9 @@ public class EditProfile extends AppCompatActivity {
                             }
                             return;
                         }
+                        System.out.println(response.body().getInterests());
+                        System.out.println(SelectedInterests);
+
                         Intent intent = new Intent(EditProfile.this, com.example.chathouse.Pages.ProfilePage.class);
 
                         startActivity(intent);
@@ -260,34 +264,49 @@ public class EditProfile extends AppCompatActivity {
             SelectedInterests.add(new ArrayList());
         }
 
+
         Wellness.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @RequiresApi(api = Build.VERSION_CODES.N)
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                if(view.isSelected() || SelectedInterests.get(0).contains(position)){
-                    SelectedInterests.get(0).remove(position);
+                if(SelectedInterests.get(0).contains((int)Math.pow(2, id))){
+                    Iterator itr = SelectedInterests.get(0).iterator();
+                    while (itr.hasNext())
+                    {
+                        int data = (Integer)itr.next();
+                        if (data == Math.pow(2, id))
+                            itr.remove();
+                    }
                     view.setSelected(false);
                     view.setBackgroundColor(Color.WHITE);
                 }
                 else{
-                    SelectedInterests.get(0).add(position);
+                    SelectedInterests.get(0).add((int) (Math.pow(2, id)));
                     view.setBackgroundColor(Color.GRAY);
                     view.setSelected(true);
                 }
+                System.out.println(SelectedInterests);
 
             }
         });
         Identity.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                if(SelectedInterests.get(1).contains(position)){
-                    SelectedInterests.get(1).remove(position);
-                    view.setPressed(false);
+                if(SelectedInterests.get(1).contains((int)Math.pow(2, id))){
+                    Iterator itr = SelectedInterests.get(1).iterator();
+                    while (itr.hasNext())
+                    {
+                        int data = (Integer)itr.next();
+                        if (data == Math.pow(2, id))
+                            itr.remove();
+                    }
+                    view.setSelected(false);
                     view.setBackgroundColor(Color.WHITE);
                 }
                 else{
-                    SelectedInterests.get(1).add(position);
+                    SelectedInterests.get(1).add((int) (Math.pow(2, id)));
                     view.setBackgroundColor(Color.GRAY);
-                    view.setPressed(true);
+                    view.setSelected(true);
                 }
 
             }
@@ -295,82 +314,253 @@ public class EditProfile extends AppCompatActivity {
         Places.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                if(SelectedInterests.get(2).contains(position)){
-                    SelectedInterests.get(2).remove(position);
-                    view.setPressed(false);
+                if(SelectedInterests.get(2).contains((int)Math.pow(2, id))){
+                    Iterator itr = SelectedInterests.get(2).iterator();
+                    while (itr.hasNext())
+                    {
+                        int data = (Integer)itr.next();
+                        if (data == Math.pow(2, id))
+                            itr.remove();
+                    }
+                    view.setSelected(false);
                     view.setBackgroundColor(Color.WHITE);
                 }
                 else{
-                    SelectedInterests.get(2).add(position);
+                    SelectedInterests.get(2).add((int) (Math.pow(2, id)));
                     view.setBackgroundColor(Color.GRAY);
-                    view.setPressed(true);
+                    view.setSelected(true);
                 }
             }
         });
         WorldAffairs.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                SelectedInterests.get(3).add(position);
+                if(SelectedInterests.get(3).contains((int)Math.pow(2, id))){
+                    Iterator itr = SelectedInterests.get(3).iterator();
+                    while (itr.hasNext())
+                    {
+                        int data = (Integer)itr.next();
+                        if (data == Math.pow(2, id))
+                            itr.remove();
+                    }
+                    view.setSelected(false);
+                    view.setBackgroundColor(Color.WHITE);
+                }
+                else{
+                    SelectedInterests.get(3).add((int) (Math.pow(2, id)));
+                    view.setBackgroundColor(Color.GRAY);
+                    view.setSelected(true);
+                }
             }
         });
         Tech.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                SelectedInterests.get(4).add(position);
+                if(SelectedInterests.get(4).contains((int)Math.pow(2, id))){
+                    Iterator itr = SelectedInterests.get(4).iterator();
+                    while (itr.hasNext())
+                    {
+                        int data = (Integer)itr.next();
+                        if (data == Math.pow(2, id))
+                            itr.remove();
+                    }
+                    view.setSelected(false);
+                    view.setBackgroundColor(Color.WHITE);
+                }
+                else{
+                    SelectedInterests.get(4).add((int) (Math.pow(2, id)));
+                    view.setBackgroundColor(Color.GRAY);
+                    view.setSelected(true);
+                }
             }
         });
         HangingOut.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                SelectedInterests.get(5).add(position);
+                if(SelectedInterests.get(5).contains((int)Math.pow(2, id))){
+                    Iterator itr = SelectedInterests.get(5).iterator();
+                    while (itr.hasNext())
+                    {
+                        int data = (Integer)itr.next();
+                        if (data == Math.pow(2, id))
+                            itr.remove();
+                    }
+                    view.setSelected(false);
+                    view.setBackgroundColor(Color.WHITE);
+                }
+                else{
+                    SelectedInterests.get(5).add((int) (Math.pow(2, id)));
+                    view.setBackgroundColor(Color.GRAY);
+                    view.setSelected(true);
+                }
             }
         });
         KnowLedge.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                SelectedInterests.get(6).add(position);
+                if(SelectedInterests.get(6).contains((int)Math.pow(2, id))){
+                    Iterator itr = SelectedInterests.get(6).iterator();
+                    while (itr.hasNext())
+                    {
+                        int data = (Integer)itr.next();
+                        if (data == Math.pow(2, id))
+                            itr.remove();
+                    }
+                    view.setSelected(false);
+                    view.setBackgroundColor(Color.WHITE);
+                }
+                else{
+                    SelectedInterests.get(6).add((int) (Math.pow(2, id)));
+                    view.setBackgroundColor(Color.GRAY);
+                    view.setSelected(true);
+                }
             }
         });
         Hustle.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                SelectedInterests.get(7).add(position);
+                if(SelectedInterests.get(7).contains((int)Math.pow(2, id))){
+                    Iterator itr = SelectedInterests.get(7).iterator();
+                    while (itr.hasNext())
+                    {
+                        int data = (Integer)itr.next();
+                        if (data == Math.pow(2, id))
+                            itr.remove();
+                    }
+                    view.setSelected(false);
+                    view.setBackgroundColor(Color.WHITE);
+                }
+                else{
+                    SelectedInterests.get(7).add((int) (Math.pow(2, id)));
+                    view.setBackgroundColor(Color.GRAY);
+                    view.setSelected(true);
+                }
             }
         });
         Sports.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                SelectedInterests.get(8).add(position);
+                if(SelectedInterests.get(8).contains((int)Math.pow(2, id))){
+                    Iterator itr = SelectedInterests.get(8).iterator();
+                    while (itr.hasNext())
+                    {
+                        int data = (Integer)itr.next();
+                        if (data == Math.pow(2, id))
+                            itr.remove();
+                    }
+                    view.setSelected(false);
+                    view.setBackgroundColor(Color.WHITE);
+                }
+                else{
+                    SelectedInterests.get(8).add((int) (Math.pow(2, id)));
+                    view.setBackgroundColor(Color.GRAY);
+                    view.setSelected(true);
+                }
             }
         });
         Arts.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                SelectedInterests.get(9).add(position);
+                if(SelectedInterests.get(9).contains((int)Math.pow(2, id))){
+                    Iterator itr = SelectedInterests.get(9).iterator();
+                    while (itr.hasNext())
+                    {
+                        int data = (Integer)itr.next();
+                        if (data == Math.pow(2, id))
+                            itr.remove();
+                    }
+                    view.setSelected(false);
+                    view.setBackgroundColor(Color.WHITE);
+                }
+                else{
+                    SelectedInterests.get(9).add((int) (Math.pow(2, id)));
+                    view.setBackgroundColor(Color.GRAY);
+                    view.setSelected(true);
+                }
             }
         });
         Life.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                SelectedInterests.get(10).add(position);
+                if(SelectedInterests.get(10).contains((int)Math.pow(2, id))){
+                    Iterator itr = SelectedInterests.get(10).iterator();
+                    while (itr.hasNext())
+                    {
+                        int data = (Integer)itr.next();
+                        if (data == Math.pow(2, id))
+                            itr.remove();
+                    }
+                    view.setSelected(false);
+                    view.setBackgroundColor(Color.WHITE);
+                }
+                else{
+                    SelectedInterests.get(10).add((int) (Math.pow(2, id)));
+                    view.setBackgroundColor(Color.GRAY);
+                    view.setSelected(true);
+                }
             }
         });
         Languages.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                SelectedInterests.get(11).add(position);
+                if(SelectedInterests.get(11).contains((int)Math.pow(2, id))){
+                    Iterator itr = SelectedInterests.get(11).iterator();
+                    while (itr.hasNext())
+                    {
+                        int data = (Integer)itr.next();
+                        if (data == Math.pow(2, id))
+                            itr.remove();
+                    }
+                    view.setSelected(false);
+                    view.setBackgroundColor(Color.WHITE);
+                }
+                else{
+                    SelectedInterests.get(11).add((int) (Math.pow(2, id)));
+                    view.setBackgroundColor(Color.GRAY);
+                    view.setSelected(true);
+                }
             }
         });
         Entertainment.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                SelectedInterests.get(12).add(position);
+                if(SelectedInterests.get(12).contains((int)Math.pow(2, id))){
+                    Iterator itr = SelectedInterests.get(12).iterator();
+                    while (itr.hasNext())
+                    {
+                        int data = (Integer)itr.next();
+                        if (data == Math.pow(2, id))
+                            itr.remove();
+                    }
+                    view.setSelected(false);
+                    view.setBackgroundColor(Color.WHITE);
+                }
+                else{
+                    SelectedInterests.get(12).add((int) (Math.pow(2, id)));
+                    view.setBackgroundColor(Color.GRAY);
+                    view.setSelected(true);
+                }
             }
         });
         Faith.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                SelectedInterests.get(13).add(position);
+                if(SelectedInterests.get(13).contains((int)Math.pow(2, id))){
+                    Iterator itr = SelectedInterests.get(13).iterator();
+                    while (itr.hasNext())
+                    {
+                        int data = (Integer)itr.next();
+                        if (data == Math.pow(2, id))
+                            itr.remove();
+                    }
+                    view.setSelected(false);
+                    view.setBackgroundColor(Color.WHITE);
+                }
+                else{
+                    SelectedInterests.get(13).add((int) (Math.pow(2, id)));
+                    view.setBackgroundColor(Color.GRAY);
+                    view.setSelected(true);
+                }
             }
         });
 
@@ -378,10 +568,81 @@ public class EditProfile extends AppCompatActivity {
 
     }
 
+    private void InitializeSelectedInterests(ArrayList<ArrayList<Integer>> interests) {
+        SelectedInterests = interests;
+        for(int i = 0; i < 14; i++){
+            List<Integer> indexes = interests.get(i);
+
+            for(int j = 0; j < indexes.size(); j++){
+                switch (i){
+                    case 0:
+                        Wellness.getAdapter().getView((int)(Math.log(indexes.get(j)) / Math.log(2)), InterestEdit, null).setSelected(true);
+                        Wellness.getAdapter().getView((int)(Math.log(indexes.get(j)) / Math.log(2)), InterestEdit, null).setBackgroundColor(Color.GRAY);
+                        break;
+//                    case 1:
+//                        Identity.getAdapter().getView((int)(Math.log(indexes.get(j)) / Math.log(2)), null, null).setSelected(true);
+//                        Identity.getAdapter().getView((int)(Math.log(indexes.get(j)) / Math.log(2)), null, null).setBackgroundColor(Color.GRAY);
+//                        break;
+//                    case 2:
+//                        Places.getAdapter().getView((int)(Math.log(indexes.get(j)) / Math.log(2)), null, null).setSelected(true);
+//                        Places.getAdapter().getView((int)(Math.log(indexes.get(j)) / Math.log(2)), null, null).setBackgroundColor(Color.GRAY);
+//                        break;
+//                    case 3:
+//                        WorldAffairs.getAdapter().getView((int)(Math.log(indexes.get(j)) / Math.log(2)), null, null).setSelected(true);
+//                        WorldAffairs.getAdapter().getView((int)(Math.log(indexes.get(j)) / Math.log(2)), null, null).setBackgroundColor(Color.GRAY);
+//                        break;
+//                    case 4:
+//                        Tech.getAdapter().getView((int)(Math.log(indexes.get(j)) / Math.log(2)), null, null).setSelected(true);
+//                        Tech.getAdapter().getView((int)(Math.log(indexes.get(j)) / Math.log(2)), null, null).setBackgroundColor(Color.GRAY);
+//                        break;
+//                    case 5:
+//                        HangingOut.getAdapter().getView((int)(Math.log(indexes.get(j)) / Math.log(2)), null, null).setSelected(true);
+//                        HangingOut.getAdapter().getView((int)(Math.log(indexes.get(j)) / Math.log(2)), null, null).setBackgroundColor(Color.GRAY);
+//                        break;
+//                    case 6:
+//                        KnowLedge.getAdapter().getView((int)(Math.log(indexes.get(j)) / Math.log(2)), null, null).setSelected(true);
+//                        KnowLedge.getAdapter().getView((int)(Math.log(indexes.get(j)) / Math.log(2)), null, null).setBackgroundColor(Color.GRAY);
+//                        break;
+//                    case 7:
+//                        Hustle.getAdapter().getView((int)(Math.log(indexes.get(j)) / Math.log(2)), null, null).setSelected(true);
+//                        Hustle.getAdapter().getView((int)(Math.log(indexes.get(j)) / Math.log(2)), null, null).setBackgroundColor(Color.GRAY);
+//                        break;
+//                    case 8:
+//                        Sports.getAdapter().getView((int)(Math.log(indexes.get(j)) / Math.log(2)), null, null).setSelected(true);
+//                        Sports.getAdapter().getView((int)(Math.log(indexes.get(j)) / Math.log(2)), null, null).setBackgroundColor(Color.GRAY);
+//                        break;
+//                    case 9:
+//                        Arts.getAdapter().getView((int)(Math.log(indexes.get(j)) / Math.log(2)), null, null).setSelected(true);
+//                        Arts.getAdapter().getView((int)(Math.log(indexes.get(j)) / Math.log(2)), null, null).setBackgroundColor(Color.GRAY);
+//                        break;
+//                    case 10:
+//                        Life.getAdapter().getView((int)(Math.log(indexes.get(j)) / Math.log(2)), null, null).setSelected(true);
+//                        Life.getAdapter().getView((int)(Math.log(indexes.get(j)) / Math.log(2)), null, null).setBackgroundColor(Color.GRAY);
+//                        break;
+//                    case 11:
+//                        Languages.getAdapter().getView((int)(Math.log(indexes.get(j)) / Math.log(2)), null, null).setSelected(true);
+//                        Languages.getAdapter().getView((int)(Math.log(indexes.get(j)) / Math.log(2)), null, null).setBackgroundColor(Color.GRAY);
+//                        break;
+//                    case 12:
+//                        Entertainment.getAdapter().getView((int)(Math.log(indexes.get(j)) / Math.log(2)), null, null).setSelected(true);
+//                        Entertainment.getAdapter().getView((int)(Math.log(indexes.get(j)) / Math.log(2)), null, null).setBackgroundColor(Color.GRAY);
+//                        break;
+//                    case 13:
+//                        Faith.getAdapter().getView((int)(Math.log(indexes.get(j)) / Math.log(2)), null, null).setSelected(true);
+//                        Faith.getAdapter().getView((int)(Math.log(indexes.get(j)) / Math.log(2)), null, null).setBackgroundColor(Color.GRAY);
+//                        break;
+                }
+
+            }
+        }
+    }
 
 
     private UpdateProfileViewModel Edit(){
-        UpdateProfileViewModel post = new UpdateProfileViewModel(null, FirstName.getText().toString(), LastName.getText().toString(), Bio.getText().toString(), SelectedInterests);
+        String first = FirstName.getText().toString();
+        String last = LastName.getText().toString();
+        String bio = Bio.getText().toString();
+        UpdateProfileViewModel post = new UpdateProfileViewModel(null, first, last, bio, SelectedInterests);
 
         return post;
     }
