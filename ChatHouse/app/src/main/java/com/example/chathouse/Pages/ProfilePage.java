@@ -71,7 +71,7 @@ public class ProfilePage extends AppCompatActivity {
     private Button Message;
     private Button Follow;
     private ImageView ProfilePicture;
-//    private TextView Memberof;
+    //    private TextView Memberof;
     private Button EditProfile;
     private LinearLayout InterestContainer;
     private TextView UsernameText;
@@ -92,27 +92,27 @@ public class ProfilePage extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile_page);
 
-        Fake = (ConstraintLayout)findViewById(R.id.Fake);
-        UserName = (EditText)findViewById(R.id.Username);
+        Fake = (ConstraintLayout) findViewById(R.id.Fake);
+        UserName = (EditText) findViewById(R.id.Username);
         ProfilePicture = (ImageView) findViewById(R.id.ProfileImage);
-        LastName = (TextView)findViewById(R.id.LastName);
-        FirstName = (TextView)findViewById(R.id.FirstName);
-        Description = (TextView)findViewById(R.id.Bio);
-        FollowersNumber = (TextView)findViewById(R.id.Followers);
-        FollowingNumber = (TextView)findViewById(R.id.Following);
-        Followers = (TextView)findViewById(R.id.FollowersText);
-        Following = (TextView)findViewById(R.id.FollowingText);
-        Message = (Button)findViewById(R.id.MessageButton);
-        Follow = (Button)findViewById(R.id.FollowButton);
+        LastName = (TextView) findViewById(R.id.LastName);
+        FirstName = (TextView) findViewById(R.id.FirstName);
+        Description = (TextView) findViewById(R.id.Bio);
+        FollowersNumber = (TextView) findViewById(R.id.Followers);
+        FollowingNumber = (TextView) findViewById(R.id.Following);
+        Followers = (TextView) findViewById(R.id.FollowersText);
+        Following = (TextView) findViewById(R.id.FollowingText);
+        Message = (Button) findViewById(R.id.MessageButton);
+        Follow = (Button) findViewById(R.id.FollowButton);
 //        Memberof = (TextView)findViewById(R.id.MemberOf);
-        UsernameText = (TextView)findViewById(R.id.UsernameText);
-        EmailText = (TextView)findViewById(R.id.EmailText);
-        EditProfile = (Button)findViewById(R.id.EditProfileButton);
-        InterestContainer = (LinearLayout)findViewById(R.id.ContainerButton);
-        Interests = (HorizontalScrollView)findViewById(R.id.Interests);
-        FollowingFollowersListView = (ListView)findViewById(R.id.FollowingFollowersListView);
-        loading = (ProgressBar)findViewById(R.id.progressBar);
-        SearchButton = (Button)findViewById(R.id.SearchButton);
+        UsernameText = (TextView) findViewById(R.id.UsernameText);
+        EmailText = (TextView) findViewById(R.id.EmailText);
+        EditProfile = (Button) findViewById(R.id.EditProfileButton);
+        InterestContainer = (LinearLayout) findViewById(R.id.ContainerButton);
+        Interests = (HorizontalScrollView) findViewById(R.id.Interests);
+        FollowingFollowersListView = (ListView) findViewById(R.id.FollowingFollowersListView);
+        loading = (ProgressBar) findViewById(R.id.progressBar);
+        SearchButton = (Button) findViewById(R.id.SearchButton);
 //        OnOff = (Switch)findViewById(R.id.InterestsOnOff);
 //
 //        OnOff.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -139,11 +139,11 @@ public class ProfilePage extends AppCompatActivity {
         String Token = settings.getString("Token", "n/a");
 //        String Username = settings.getString("Username", "n/a");
 
-        String Username = bundle.getString("Username");
+        String UsernameX = bundle.getString("Username");
         OkHttpClient client = new OkHttpClient.Builder().addInterceptor(new Interceptor() {
             @Override
             public okhttp3.Response intercept(Chain chain) throws IOException {
-                Request newRequest  = chain.request().newBuilder()
+                Request newRequest = chain.request().newBuilder()
                         .addHeader("Authorization", Token)
                         .build();
                 return chain.proceed(newRequest);
@@ -162,12 +162,12 @@ public class ProfilePage extends AppCompatActivity {
                 .build();
         ChatHouseAPI GetProfileAPI = retrofit.create(ChatHouseAPI.class);
 
-        Call<ProfileInformation> GetProfile = GetProfileAPI.GetProfile(Username);
+        Call<ProfileInformation> GetProfile = GetProfileAPI.GetProfile(UsernameX);
 
         GetProfile.enqueue(new Callback<ProfileInformation>() {
             @Override
             public void onResponse(Call<ProfileInformation> call, Response<ProfileInformation> response) {
-                if(!response.isSuccessful()){
+                if (!response.isSuccessful()) {
                     try {
                         FirstName.setText(response.errorBody().string());
                     } catch (IOException e) {
@@ -182,14 +182,15 @@ public class ProfilePage extends AppCompatActivity {
                 ProfileInformation Response = response.body();
 
 
-                if(Response.getMe()){
+                if (Response.getMe()) {
                     Message.setVisibility(View.INVISIBLE);
                     Follow.setVisibility(View.INVISIBLE);
                     EditProfile.setVisibility(View.VISIBLE);
 //                    OnOff.setVisibility(View.VISIBLE);
-                }
-                else {
-                        Follow.setText("Unfollow");
+                } else {
+                    Message.setVisibility(View.VISIBLE);
+                    Follow.setVisibility(View.VISIBLE);
+                    EditProfile.setVisibility(View.INVISIBLE);
                 }
 
                 try {
@@ -216,7 +217,7 @@ public class ProfilePage extends AppCompatActivity {
                 new Handler().post(new Runnable() {
                     @Override
                     public void run() {
-                        Intent intent = new Intent(ProfilePage.this, Login.class);
+                        Intent intent = new Intent(ProfilePage.this, Search.class);
 
                         startActivity(intent);
                         finish();
@@ -224,7 +225,7 @@ public class ProfilePage extends AppCompatActivity {
                 });
             }
         });
-        EditProfile.setOnClickListener(new View.OnClickListener(){
+        EditProfile.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View v) {
@@ -272,7 +273,6 @@ public class ProfilePage extends AppCompatActivity {
                 .error(R.mipmap.ic_launcher_round);
 
 
-
         Glide.with(this).load(ImageLink).apply(options).skipMemoryCache(true) //2
                 .diskCacheStrategy(DiskCacheStrategy.NONE) //3
                 .transform(new CircleCrop()).into(ProfilePicture);
@@ -296,18 +296,16 @@ public class ProfilePage extends AppCompatActivity {
         FollowingNumber.setText(String.valueOf(FollowingList.size()));
 
 
-
-
         // Interests
-        ArrayList<ArrayList<Integer>> interests= new ArrayList<>(13);
+        ArrayList<ArrayList<Integer>> interests = new ArrayList<>(13);
         interests = response.getInterests();
 
 
         ArrayList<String> passToCreateLayout = new ArrayList<>();
-        for(int i = 0; i < 14; i++){
+        for (int i = 0; i < 14; i++) {
             List<Integer> indexes = interests.get(i);
             ArrayList<String> temp = new ArrayList<>();
-            switch (i){
+            switch (i) {
                 case 0:
                     temp = com.example.chathouse.ViewModels.Acount.Interests.Wellness.getArrayString();
                     break;
@@ -351,15 +349,16 @@ public class ProfilePage extends AppCompatActivity {
                     temp = com.example.chathouse.ViewModels.Acount.Interests.Faith.getArrayString();
                     break;
             }
-            for(int j = 0; j < indexes.size(); j++){
+            for (int j = 0; j < indexes.size(); j++) {
 
-                passToCreateLayout.add(temp.get((int)(Math.log(indexes.get(j)) / Math.log(2))));
+                passToCreateLayout.add(temp.get((int) (Math.log(indexes.get(j)) / Math.log(2))));
             }
         }
         CreateLayout(passToCreateLayout);
 
     }
-    private Button CreateButtonInterest(String name, int id){
+
+    private Button CreateButtonInterest(String name, int id) {
 
         Button button = new Button(this);
         button.setText(name);
@@ -370,29 +369,29 @@ public class ProfilePage extends AppCompatActivity {
         return button;
     }
 
-    private void CreateLayout(ArrayList<String> fields){
+    private void CreateLayout(ArrayList<String> fields) {
         int size = fields.size();
-            LinearLayout row = new LinearLayout(this);
-            row.setLayoutParams(new LinearLayout.LayoutParams
-                    (LinearLayout.LayoutParams.WRAP_CONTENT,
-                            LinearLayout.LayoutParams.WRAP_CONTENT));
-            for (int j = 0; j < size; j++) {
-                Button btnTag = CreateButtonInterest(fields.get(j), j);
-                LinearLayout.LayoutParams params = new LinearLayout.LayoutParams
-                        (400, 400);
-                params.setMargins(2, 0, 10, 0);
-                btnTag.setLayoutParams(params);
-                row.addView(btnTag);
-            }
-            InterestContainer.addView(row);
+        LinearLayout row = new LinearLayout(this);
+        row.setLayoutParams(new LinearLayout.LayoutParams
+                (LinearLayout.LayoutParams.WRAP_CONTENT,
+                        LinearLayout.LayoutParams.WRAP_CONTENT));
+        for (int j = 0; j < size; j++) {
+            Button btnTag = CreateButtonInterest(fields.get(j), j);
+            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams
+                    (400, 400);
+            params.setMargins(2, 0, 10, 0);
+            btnTag.setLayoutParams(params);
+            row.addView(btnTag);
+        }
+        InterestContainer.addView(row);
     }
 
-    private void MakeListOfEach(ListView layout, ArrayList<FollowingFollowers> fields){
+    private void MakeListOfEach(ListView layout, ArrayList<FollowingFollowers> fields) {
         ArrayAdapter arrayAdapter = new ArrayAdapter(this, R.layout.simple_list_1, R.id.textView, fields.toArray());
         layout.setAdapter(arrayAdapter);
     }
 
-    private void RandomPick(Button button, int j){
+    private void RandomPick(Button button, int j) {
         String[] colors = new String[]{"#826263", "#9c7463", "#E98074", "#E85A4F", "#FF5722"};
         button.setBackgroundColor(Color.parseColor(colors[j % 5]));
     }

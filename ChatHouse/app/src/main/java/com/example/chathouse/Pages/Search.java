@@ -7,7 +7,9 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
+import android.provider.Settings;
 import android.widget.AbsListView;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.SearchView;
@@ -79,6 +81,7 @@ public class Search extends AppCompatActivity implements SearchView.OnQueryTextL
                         String Username = settings.getString("Username", "n/a");
 
                         bundle.putString("Username", Username);
+                        intent.putExtras(bundle);
                         startActivity(intent);
                         finish();
                     }
@@ -87,10 +90,24 @@ public class Search extends AppCompatActivity implements SearchView.OnQueryTextL
         });
 
 
+        list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
+                Intent intent = new Intent(Search.this, com.example.chathouse.Pages.ProfilePage.class);
+                Bundle bundle = new Bundle();
+
+                SearchPerson p = (SearchPerson) list.getAdapter().getItem(position);
+                String Username = p.getUserName();
+                bundle.putString("Username", Username);
+                intent.putExtras(bundle);
+                startActivity(intent);
+            }
+        });
+
         //fill suggested users
         SharedPreferences settings = getSharedPreferences("Storage", MODE_PRIVATE);
         String Token = settings.getString("Token", "n/a");
-        String Username = settings.getString("Username", "n/a");
 
         ArrayList<SearchPerson> suggestedUsers = new ArrayList<SearchPerson>();
 
@@ -391,6 +408,11 @@ class ListViewAdapter extends BaseAdapter {
     public SearchPerson getItem(int position) {
         return SearchedPersonsList.get(position);
     }
+
+    public String getUsername(int position) {
+        return SearchedPersonsList.get(position).getUserName();
+    }
+
 
     @Override
     public long getItemId(int position) {

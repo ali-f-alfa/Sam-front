@@ -96,7 +96,6 @@ public class Login extends AppCompatActivity {
                             }
                             // Get Profile
                             Toast.makeText(Login.this, "Successfully Logged In ", Toast.LENGTH_LONG).show();
-                            Error.setText("Your are now logged in");
                             Token = response.body();
 
                             Load.setVisibility(View.INVISIBLE);
