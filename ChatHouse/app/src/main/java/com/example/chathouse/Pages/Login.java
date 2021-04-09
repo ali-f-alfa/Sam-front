@@ -12,6 +12,7 @@ import android.util.Patterns;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -39,6 +40,7 @@ public class Login extends AppCompatActivity {
     private TextView Error;
     private TextView SignUp;
     public String Token;
+    private ProgressBar Load;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,6 +51,7 @@ public class Login extends AppCompatActivity {
         LoginButton = (Button)findViewById(R.id.Button);
         Error  = (TextView)findViewById(R.id.ErrorMessage);
         SignUp = (TextView)findViewById(R.id.Signup);
+        Load = (ProgressBar)findViewById(R.id.progressBar);
 
         Gson gson = new GsonBuilder()
                 .setLenient()
@@ -63,13 +66,16 @@ public class Login extends AppCompatActivity {
         ChatHouseAPI LoginAPI = retrofit.create(ChatHouseAPI.class);
 
 
+        Load.setVisibility(View.GONE);
 
         // Send request for login
         LoginButton.setOnClickListener(new View.OnClickListener(){
 
 
+
             @Override
             public void onClick(View v){
+                Load.setVisibility(View.VISIBLE);
                 if(CheckFields()){
                     // Class for login body
                     OutputLoginViewModel Body = new OutputLoginViewModel(Username.getText().toString(),
@@ -93,21 +99,29 @@ public class Login extends AppCompatActivity {
                             Error.setText("Your are now logged in");
                             Token = response.body();
 
+                            Load.setVisibility(View.INVISIBLE);
 
                             SharedPreferences.Editor edit = getSharedPreferences("Storage", MODE_PRIVATE).edit();
                             edit.putString("Token", Token);
                             edit.putString("Username", Username.getText().toString());
                             edit.apply();
+                            new Handler().post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    Intent intent = new Intent(Login.this, ProfilePage.class);
+                                    Bundle bundle = new Bundle();
 
-                            Intent intent = new Intent(Login.this, ProfilePage.class);
-                            Bundle bundle = new Bundle();
+                                    bundle.putString("Token", Token);
+                                    bundle.putString("Username", Username.getText().toString());
 
-//                            bundle.putString("Token", Token);
-//                            bundle.putString("Username", Username.getText().toString());
+                                    intent.putExtras(bundle);
 
-                            intent.putExtras(bundle);
+                                    startActivity(intent);
+                                    finish();
+                                }
+                            });
 
-                            startActivity(intent);
+
 
                         }
                         @Override

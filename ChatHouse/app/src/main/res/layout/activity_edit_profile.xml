@@ -14,7 +14,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         tools:context=".Pages.EditProfile"
-        android:layout_marginHorizontal="10dp"
+        android:layout_marginHorizontal="15dp"
         >
 
 
@@ -46,7 +46,6 @@
             android:clickable="true">
 
         </TextView>
-
         <EditText
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -92,10 +91,12 @@
 
         </EditText>
 
+
         <HorizontalScrollView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/InterestEdit"
+            android:layout_marginTop="20dp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/InterestsEditText">
 
@@ -108,15 +109,46 @@
                 >
 
 
-                <ListView
-                    android:layout_width="170dp"
-                    android:layout_height="400dp"
-                    android:id="@+id/Wellness"
-                    android:layout_marginRight="20dp"
-                    >
+               <LinearLayout
+                   android:layout_width="match_parent"
+                   android:layout_height="match_parent"
+                   android:orientation="vertical"
+                   >
+                   <TextView
+                       android:layout_width="match_parent"
+                       android:layout_height="wrap_content"
+                       android:text="Wellness"
+                       android:textSize="20dp"
+                       android:textColor="@color/almostorange"
+                       android:layout_marginBottom="5dp">
 
+                   </TextView>
 
-                </ListView>
+                   <ListView
+                       android:layout_width="170dp"
+                       android:layout_height="400dp"
+                       android:id="@+id/Wellness"
+                       android:layout_marginRight="20dp"
+                       >
+
+                   </ListView>
+               </LinearLayout>
+
+                <LinearLayout
+                   android:layout_width="match_parent"
+                   android:layout_height="match_parent"
+                   android:orientation="vertical"
+                   >
+                   <TextView
+                       android:layout_width="match_parent"
+                       android:layout_height="wrap_content"
+                       android:textSize="20dp"
+                       android:textColor="@color/almostorange"
+                       android:layout_marginBottom="5dp"
+                       android:text="Identity"
+                       >
+
+                   </TextView>
 
                 <ListView
                     android:layout_width="170dp"
@@ -125,104 +157,316 @@
                     android:layout_marginRight="20dp">
 
                 </ListView>
-
-
-                <ListView
-                    android:layout_width="170dp"
-                    android:layout_height="400dp"
-                    android:id="@+id/Places"
-                    android:layout_marginRight="20dp">
-
-                </ListView>
-
-                <ListView
-                    android:layout_width="170dp"
-                    android:layout_height="400dp"
-                    android:id="@+id/WorldAffaris"
-                    android:layout_marginRight="20dp">
-
-                </ListView>
-
-                <ListView
-                    android:layout_width="170dp"
-                    android:layout_height="400dp"
-                    android:id="@+id/Tech"
-                    android:layout_marginRight="20dp">
-                </ListView>
-
-                <ListView
-                    android:layout_width="170dp"
-                    android:layout_height="400dp"
-                    android:id="@+id/HangingOut"
-                    android:layout_marginRight="20dp">
-
-                </ListView>
-
-                <ListView
-                    android:layout_width="170dp"
-                    android:layout_height="400dp"
-                    android:id="@+id/Knowledge"
-                    android:layout_marginRight="20dp">
-
-                </ListView>
-                <ListView
-                    android:layout_width="170dp"
-                    android:layout_height="400dp"
-                    android:id="@+id/Hustle"
-                    android:layout_marginRight="20dp">
-
-                </ListView>
-
-                <ListView
-                    android:layout_width="170dp"
-                    android:layout_height="400dp"
-                    android:id="@+id/Sports"
-                    android:layout_marginRight="20dp"
+                </LinearLayout>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical"
                     >
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textSize="20dp"
+                        android:textColor="@color/almostorange"
+                        android:layout_marginBottom="5dp"
+                        android:text="Places"
+                        >
 
-                </ListView>
+                    </TextView>
 
-                <ListView
-                    android:layout_width="170dp"
-                    android:layout_height="400dp"
-                    android:id="@+id/Arts"
-                    android:layout_marginRight="20dp">
+                    <ListView
+                        android:layout_width="170dp"
+                        android:layout_height="400dp"
+                        android:id="@+id/Places"
+                        android:layout_marginRight="20dp">
 
-                </ListView>
+                    </ListView>
+                </LinearLayout>
 
-                <ListView
-                    android:layout_width="170dp"
-                    android:layout_height="400dp"
-                    android:id="@+id/Life"
-                    android:layout_marginRight="20dp">
 
-                </ListView>
 
-                <ListView
-                    android:layout_width="170dp"
-                    android:layout_height="400dp"
-                    android:id="@+id/Languages"
-                    android:layout_marginRight="20dp"
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical"
                     >
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textSize="20dp"
+                        android:textColor="@color/almostorange"
+                        android:text="World Affaris"
+                        >
 
-                </ListView>
+                    </TextView>
 
-                <ListView
-                    android:layout_width="170dp"
-                    android:layout_height="500dp"
-                    android:id="@+id/Entertainment"
-                    android:layout_marginRight="20dp"
+                    <ListView
+                        android:layout_width="170dp"
+                        android:layout_height="400dp"
+                        android:id="@+id/WorldAffaris"
+                        android:layout_marginRight="20dp">
+
+                    </ListView>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical"
                     >
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textSize="20dp"
+                        android:textColor="@color/almostorange"
+                        android:layout_marginBottom="5dp"
+                        android:text="Tech"
+                        >
 
-                </ListView>
+                    </TextView>
 
-                <ListView
-                    android:layout_width="170dp"
-                    android:layout_height="400dp"
-                    android:id="@+id/Faith"
-                    android:layout_marginRight="20dp">
+                    <ListView
+                        android:layout_width="170dp"
+                        android:layout_height="400dp"
+                        android:id="@+id/Tech"
+                        android:layout_marginRight="20dp">
+                    </ListView>
 
-                </ListView>
+                </LinearLayout>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical"
+                    >
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textSize="20dp"
+                        android:textColor="@color/almostorange"
+                        android:layout_marginBottom="5dp"
+                        android:text="Hanging Out"
+                        >
+
+                    </TextView>
+
+                    <ListView
+                        android:layout_width="170dp"
+                        android:layout_height="400dp"
+                        android:id="@+id/HangingOut"
+                        android:layout_marginRight="20dp">
+
+                    </ListView>
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical"
+                    >
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textSize="20dp"
+                        android:textColor="@color/almostorange"
+                        android:layout_marginBottom="5dp"
+                        android:text="Knowledge"
+                        >
+
+                    </TextView>
+
+                    <ListView
+                        android:layout_width="170dp"
+                        android:layout_height="400dp"
+                        android:id="@+id/Knowledge"
+                        android:layout_marginRight="20dp">
+
+                    </ListView>
+
+                </LinearLayout>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical"
+                    >
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textSize="20dp"
+                        android:textColor="@color/almostorange"
+                        android:layout_marginBottom="5dp"
+                        android:text="Hustle"
+                        >
+
+                    </TextView>
+
+                    <ListView
+                        android:layout_width="170dp"
+                        android:layout_height="400dp"
+                        android:id="@+id/Hustle"
+                        android:layout_marginRight="20dp">
+
+                    </ListView>
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical"
+                    >
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textSize="20dp"
+                        android:textColor="@color/almostorange"
+                        android:layout_marginBottom="5dp"
+                        android:text="Sports"
+                        >
+
+                    </TextView>
+
+                    <ListView
+                        android:layout_width="170dp"
+                        android:layout_height="400dp"
+                        android:id="@+id/Sports"
+                        android:layout_marginRight="20dp"
+                        >
+
+                    </ListView>
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical"
+                    >
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textSize="20dp"
+                        android:textColor="@color/almostorange"
+                        android:layout_marginBottom="5dp"
+                        android:text="Arts"
+                        >
+
+                    </TextView>
+                    <ListView
+                        android:layout_width="170dp"
+                        android:layout_height="400dp"
+                        android:id="@+id/Arts"
+                        android:layout_marginRight="20dp">
+
+                    </ListView>
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical"
+                    >
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textSize="20dp"
+                        android:textColor="@color/almostorange"
+                        android:layout_marginBottom="5dp"
+                        android:text="Life"
+                        >
+
+                    </TextView>
+                    <ListView
+                        android:layout_width="170dp"
+                        android:layout_height="400dp"
+                        android:id="@+id/Life"
+                        android:layout_marginRight="20dp">
+
+                    </ListView>
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical"
+                    >
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textSize="20dp"
+                        android:textColor="@color/almostorange"
+                        android:layout_marginBottom="5dp"
+                        android:text="Languages"
+                        >
+
+                    </TextView>
+                    <ListView
+                        android:layout_width="170dp"
+                        android:layout_height="400dp"
+                        android:id="@+id/Languages"
+                        android:layout_marginRight="20dp"
+                        >
+
+                    </ListView>
+
+                </LinearLayout>
+
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical"
+                    >
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textSize="20dp"
+                        android:textColor="@color/almostorange"
+                        android:layout_marginBottom="5dp"
+                        android:text="Entertainment"
+                        >
+
+                    </TextView>
+                    <ListView
+                        android:layout_width="170dp"
+                        android:layout_height="500dp"
+                        android:id="@+id/Entertainment"
+                        android:layout_marginRight="20dp"
+                        >
+
+                    </ListView>
+
+                </LinearLayout>
+
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical"
+                    >
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textSize="20dp"
+                        android:textColor="@color/almostorange"
+                        android:layout_marginBottom="5dp"
+                        android:text="Faith"
+                        >
+
+                    </TextView>
+
+                    <ListView
+                        android:layout_width="170dp"
+                        android:layout_height="400dp"
+                        android:id="@+id/Faith"
+                        android:layout_marginRight="20dp">
+
+                    </ListView>
+
+                </LinearLayout>
+
 
             </LinearLayout>
         </HorizontalScrollView>
@@ -234,21 +478,11 @@
             android:id="@+id/InterestsEditText"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/BioEdit"
-            android:textSize="20dp"
+            android:textSize="24dp"
             android:textColor="@color/gray">
 
         </TextView>
-        <Switch
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/InterestsOnOff"
-            android:layout_marginTop="10dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            android:textOff="Hide"
-            android:textOn="Show"
-            app:layout_constraintTop_toBottomOf="@id/BioEdit">
 
-        </Switch>
 
 
         <Button

@@ -3,6 +3,8 @@ package com.example.chathouse.ViewModels.Acount;
 import com.example.chathouse.ViewModels.Acount.FollowingFollowers;
 import com.example.chathouse.ViewModels.Acount.Interests;
 
+import java.net.URI;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,6 +19,7 @@ public class ProfileInformation {
     private ArrayList<FollowingFollowers> followers;
     private ArrayList<FollowingFollowers> followings;
     private ArrayList<ArrayList<Integer>> interests;
+    private String imageLink;
 
 
     public String getUsername() {
@@ -25,6 +28,10 @@ public class ProfileInformation {
 
     public String getEmail() {
         return email;
+    }
+
+    public String getImageLink() {
+        return imageLink;
     }
 
     public Boolean getMe() {
