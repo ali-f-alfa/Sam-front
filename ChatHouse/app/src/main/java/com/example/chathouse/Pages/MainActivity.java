@@ -1,21 +1,13 @@
-package com.example.chathouse;
+package com.example.chathouse.Pages;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
-import android.view.View;
-import android.widget.Button;
-import android.widget.TextView;
 
-import java.util.List;
-
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
-import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
+import com.example.chathouse.R;
+import com.example.chathouse.Utility.Constants;
 
 public class MainActivity extends AppCompatActivity {
     @Override
@@ -30,7 +22,7 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(intent);
                 finish();
             }
-        },Constants.SPLASH_TIME_OUT);
+        }, Constants.SPLASH_TIME_OUT);
 
     }
 }

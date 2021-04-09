@@ -1,4 +1,4 @@
-package com.example.chathouse;
+package com.example.chathouse.Pages;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -7,13 +7,19 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.TextUtils;
-import android.util.Log;
 import android.util.Patterns;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.example.chathouse.API.ChatHouseAPI;
+import com.example.chathouse.R;
+import com.example.chathouse.Utility.Constants;
+import com.example.chathouse.ViewModels.Acount.InputSignupViewModel;
+import com.example.chathouse.ViewModels.Acount.OutputSignupViewModel;
 
 import java.io.IOException;
 
@@ -31,6 +37,7 @@ public class SignUp extends AppCompatActivity {
     private EditText confirmPasswordTextView;
     private Button SubmitButton;
     private TextView Login;
+    private ProgressBar Load;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,7 +46,7 @@ public class SignUp extends AppCompatActivity {
 
 
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("http://10.0.2.2:13524/api/")
+                .baseUrl(Constants.baseURL)
                 .addConverterFactory((GsonConverterFactory.create()))
                 .build();
         ChatHouseAPI chatHouseAPI = retrofit.create(ChatHouseAPI.class);
@@ -52,10 +59,13 @@ public class SignUp extends AppCompatActivity {
         confirmPasswordTextView = findViewById(R.id.confirmPasswordInput);
         SubmitButton = findViewById(R.id.submitBtn);
         Login = findViewById(R.id.LoginBtn);
+        Load = (ProgressBar)findViewById(R.id.progressBar);
+        Load.setVisibility(View.GONE);
 
         SubmitButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                Load.setVisibility(View.VISIBLE);
 
                 if (checkFields()) {
                     OutputSignupViewModel model1 = new OutputSignupViewModel(userNameTextView.getText().toString(),
@@ -78,13 +88,14 @@ public class SignUp extends AppCompatActivity {
                                 return;
                             }
                             Toast.makeText(SignUp.this, "Successfully Signed Up", Toast.LENGTH_LONG).show();
+                            Load.setVisibility(View.INVISIBLE);
 
                             textViewResult.setTextColor(Color.BLACK);
                             textViewResult.setText("We have sent an email with a confirmation link to " + response.body().getEmail());
                             new Handler().postDelayed(new Runnable() {
                                 @Override
                                 public void run() {
-                                    Intent intent = new Intent(SignUp.this, Login.class);
+                                    Intent intent = new Intent(SignUp.this, com.example.chathouse.Pages.Login.class);
                                     startActivity(intent);
                                     finish();
                                 }

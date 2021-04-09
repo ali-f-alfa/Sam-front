@@ -1,26 +1,29 @@
-package com.example.chathouse;
+package com.example.chathouse.Pages;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
-import android.text.BoringLayout;
 import android.text.TextUtils;
-import android.util.JsonReader;
 import android.util.Patterns;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.chathouse.API.ChatHouseAPI;
+import com.example.chathouse.ViewModels.Acount.OutputLoginViewModel;
+import com.example.chathouse.R;
+import com.example.chathouse.Utility.Constants;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 import java.io.IOException;
-import java.io.InputStreamReader;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -36,6 +39,8 @@ public class Login extends AppCompatActivity {
     private Button LoginButton;
     private TextView Error;
     private TextView SignUp;
+    public String Token;
+    private ProgressBar Load;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,6 +51,7 @@ public class Login extends AppCompatActivity {
         LoginButton = (Button)findViewById(R.id.Button);
         Error  = (TextView)findViewById(R.id.ErrorMessage);
         SignUp = (TextView)findViewById(R.id.Signup);
+        Load = (ProgressBar)findViewById(R.id.progressBar);
 
         Gson gson = new GsonBuilder()
                 .setLenient()
@@ -53,20 +59,23 @@ public class Login extends AppCompatActivity {
 
 
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("http://10.0.2.2:13524/api/")
+                .baseUrl(Constants.baseURL)
                 .addConverterFactory(ScalarsConverterFactory.create())
                 .addConverterFactory((GsonConverterFactory.create(gson)))
                 .build();
         ChatHouseAPI LoginAPI = retrofit.create(ChatHouseAPI.class);
 
 
+        Load.setVisibility(View.GONE);
 
         // Send request for login
         LoginButton.setOnClickListener(new View.OnClickListener(){
 
 
+
             @Override
             public void onClick(View v){
+                Load.setVisibility(View.VISIBLE);
                 if(CheckFields()){
                     // Class for login body
                     OutputLoginViewModel Body = new OutputLoginViewModel(Username.getText().toString(),
@@ -88,6 +97,31 @@ public class Login extends AppCompatActivity {
                             // Get Profile
                             Toast.makeText(Login.this, "Successfully Logged In ", Toast.LENGTH_LONG).show();
                             Error.setText("Your are now logged in");
+                            Token = response.body();
+
+                            Load.setVisibility(View.INVISIBLE);
+
+                            SharedPreferences.Editor edit = getSharedPreferences("Storage", MODE_PRIVATE).edit();
+                            edit.putString("Token", Token);
+                            edit.putString("Username", Username.getText().toString());
+                            edit.apply();
+                            new Handler().post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    Intent intent = new Intent(Login.this, ProfilePage.class);
+                                    Bundle bundle = new Bundle();
+
+                                    bundle.putString("Token", Token);
+                                    bundle.putString("Username", Username.getText().toString());
+
+                                    intent.putExtras(bundle);
+
+                                    startActivity(intent);
+                                    finish();
+                                }
+                            });
+
+
 
                         }
                         @Override
@@ -105,7 +139,7 @@ public class Login extends AppCompatActivity {
                 new Handler().post(new Runnable() {
                     @Override
                     public void run() {
-                        Intent intent = new Intent(Login.this, SignUp.class);
+                        Intent intent = new Intent(Login.this, com.example.chathouse.Pages.SignUp.class);
                         startActivity(intent);
                         finish();
                     }

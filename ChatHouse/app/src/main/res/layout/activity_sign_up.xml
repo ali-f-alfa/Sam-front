@@ -7,7 +7,7 @@
     android:paddingVertical="8dp"
     android:paddingHorizontal="35dp"
     android:background="@color/light"
-    tools:context=".MainActivity">
+    tools:context=".Pages.MainActivity">
 
     <TextView
         android:id="@+id/Logo"
@@ -26,6 +26,17 @@
         app:layout_constraintTop_toTopOf="parent">
 
     </TextView>
+    <ProgressBar
+        style="?android:attr/progressBarStyleLarge"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/progressBar"
+        android:progressDrawable="@drawable/loading"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/Logo"
+        />
+
 
     <EditText
         android:id="@+id/EmailInput"
