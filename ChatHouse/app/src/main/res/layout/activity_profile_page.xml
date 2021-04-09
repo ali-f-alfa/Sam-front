@@ -4,54 +4,83 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Pages.ProfilePage">
+    tools:context=".Pages.ProfilePage"
+    >
+<androidx.constraintlayout.widget.ConstraintLayout
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintTop_toTopOf="parent"
+    android:id="@+id/Fake">
+
 
     <ImageView
         android:layout_width="150dp"
         android:layout_height="100dp"
         android:ems="10"
-        android:layout_marginTop="30dp"
+        android:layout_marginTop="40dp"
         android:id="@+id/ProfileImage"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintBottom_toTopOf="@+id/Name"
-        android:src="@mipmap/ic_launcher"
+        android:src="@drawable/thumb_15951118880user"
         >
 
     </ImageView>
-    <TextView
+    <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/Name"
         android:layout_marginTop="15dp"
-        android:text="Melika Ahmadi Ranjbar"
-        android:textSize="20dp"
-        android:textColor="@color/almostpink"
-        android:fontFamily="sans-serif-medium"
-        android:gravity="center"
         app:layout_constraintTop_toBottomOf="@+id/ProfileImage"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintBottom_toTopOf="@+id/Bio"
+        app:layout_constraintBottom_toTopOf="@+id/UsernameText"
         android:ems="10"
-        >
+        android:orientation="horizontal"
 
-    </TextView>
+        >
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/FirstName"
+            android:text="Melika"
+            android:textSize="20dp"
+            android:layout_marginRight="5dp"
+            android:textColor="@color/almostpink"
+            android:fontFamily="sans-serif-medium"
+            android:gravity="center">
+
+        </TextView>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/LastName"
+            android:text="Ahmadi"
+            android:textSize="20dp"
+            android:textColor="@color/almostpink"
+            android:fontFamily="sans-serif-medium"
+            android:gravity="center">
+
+        </TextView>
+
+    </LinearLayout>
     <TextView
         android:layout_width="wrap_content"
-        android:text="Description"
+        android:text="Username"
         android:gravity="center"
         android:textColor="@color/almostpink"
         android:fontFamily="sans-serif-medium"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
-        android:id="@+id/Bio"
+        android:id="@+id/UsernameText"
         app:layout_constraintTop_toBottomOf="@+id/Name"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         android:ems="10"
-    >
+        >
     </TextView>
 
 
@@ -59,8 +88,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/Statics"
-        android:layout_marginTop="10dp"
-        app:layout_constraintTop_toBottomOf="@+id/Bio"
+        android:layout_marginTop="5dp"
+        app:layout_constraintTop_toBottomOf="@+id/UsernameText"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         android:columnCount="2"
@@ -77,7 +106,7 @@
             android:id="@+id/Followers"
             android:text="3453"
             android:clickable="true"
-            app:layout_constraintTop_toBottomOf="@+id/Bio"
+            app:layout_constraintTop_toBottomOf="@+id/UsernameText"
             app:layout_constraintEnd_toStartOf="@+id/FollowingText"
             app:layout_constraintStart_toStartOf="parent"
             >
@@ -94,7 +123,7 @@
             android:id="@+id/Following"
             android:text="1238"
             android:clickable="true"
-            app:layout_constraintTop_toBottomOf="@+id/Bio"
+            app:layout_constraintTop_toBottomOf="@+id/UsernameText"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             >
@@ -153,7 +182,7 @@
             android:text="Message"
             android:id="@+id/MessageButton"
             android:layout_width="170dp"
-            android:textColor="@color/almostpink"
+            android:textColor="@color/almostorange"
             android:backgroundTint="@color/light">
 
         </Button>
@@ -163,21 +192,21 @@
             android:layout_width="171dp"
             android:backgroundTint="@color/light"
             android:text="Follow"
-            android:textColor="@color/almostpink">
+            android:textColor="@color/almostorange">
 
         </Button>
 
     </GridLayout>
     <Button
-        android:layout_width="200dp"
+        android:layout_width="340dp"
         android:layout_height="wrap_content"
         android:id="@+id/EditProfileButton"
         app:layout_constraintTop_toBottomOf="@+id/Statics"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        android:layout_marginTop="15dp"
-        android:textColor="@color/almostpink"
-        android:backgroundTint="@color/light"
+        android:layout_marginTop="10dp"
+        android:textColor="@color/light"
+        android:backgroundTint="@color/gray"
         android:text="Edit Profile">
 
     </Button>
@@ -193,6 +222,23 @@
         app:layout_constraintStart_toStartOf="parent"
         android:tooltipText="Interests"
         />
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:drawableStart="@color/gray"
+        android:fontFamily="sans-serif-medium"
+        android:gravity="center"
+        android:text="Bio"
+        android:textColor="@color/almostpink"
+        app:layout_constraintTop_toBottomOf="@+id/LineBelow"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        android:id="@+id/Bio"
+        android:textSize="15dp">
+
+    </TextView>
+
 
     <HorizontalScrollView
         android:id="@+id/Interests"
@@ -201,7 +247,7 @@
         android:layout_marginTop="20dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/LineBelow">
+        app:layout_constraintTop_toBottomOf="@+id/EmailText">
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -214,64 +260,82 @@
 
 
     </HorizontalScrollView>
-    <GridLayout
-        android:paddingHorizontal="20dp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        app:layout_constraintTop_toBottomOf="@+id/MemberOf"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        android:rowCount="1"
-        android:columnCount="2"
-        android:id="@+id/UsernameEmail"
-        android:useDefaultMargins="true"
-        >
+    <!--    <TextView-->
+    <!--        android:layout_width="wrap_content"-->
+    <!--        android:layout_height="wrap_content"-->
+    <!--        android:id="@+id/InterestsOnOffText"-->
+    <!--        android:layout_marginLeft="0dp"-->
+    <!--        app:layout_constraintStart_toStartOf="parent"-->
+    <!--        android:text="Show interests in profile"-->
+    <!--        android:textSize="15dp"-->
+    <!--        android:fontFamily="sans-serif-medium"-->
+    <!--        android:textColor="@color/almostpink"-->
+    <!--        app:layout_constraintTop_toBottomOf="@id/Interests"></TextView>-->
+    <!--    <Switch-->
+    <!--        android:layout_width="wrap_content"-->
+    <!--        android:layout_height="wrap_content"-->
+    <!--        android:id="@+id/InterestsOnOff"-->
+    <!--        android:layout_marginLeft="0dp"-->
+    <!--        app:layout_constraintEnd_toEndOf="parent"-->
+    <!--        android:textOff="Hide"-->
+    <!--        android:textOn="Show"-->
+    <!--        app:layout_constraintTop_toBottomOf="@id/Interests">-->
 
-        <Button
-            android:id="@+id/UsernameText"
-            android:layout_width="170dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="5dp"
-            android:drawableStart="@color/gray"
-            android:fontFamily="sans-serif-medium"
-            android:gravity="center"
-            android:text="Username"
-            android:textColor="@color/almostpink"
-            android:backgroundTint="@color/light"
-            android:textSize="15dp">
-
-        </Button>
-
-        <Button
-            android:layout_width="170dp"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:layout_marginTop="5dp"
-            android:textSize="10dp"
-            android:fontFamily="sans-serif-medium"
-            android:id="@+id/EmailText"
-            android:textColor="@color/almostpink"
-            android:backgroundTint="@color/light"
-            android:text="Email">
-
-        </Button>
-
-    </GridLayout>
+    <!--    </Switch>-->
 
     <TextView
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/MemberOf"
-        android:layout_marginTop="30dp"
-        app:layout_constraintTop_toBottomOf="@+id/Interests"
+        android:gravity="center"
+        android:layout_marginTop="5dp"
+        android:textSize="15dp"
+        android:fontFamily="sans-serif-medium"
+        android:id="@+id/EmailText"
+        android:textColor="@color/almostpink"
+        android:text="Email"
+        app:layout_constraintTop_toBottomOf="@+id/Bio"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        android:text="Member of"
-        >
+        app:layout_constraintStart_toStartOf="parent">
 
     </TextView>
 
+    <!--    <TextView-->
+    <!--        android:layout_width="wrap_content"-->
+    <!--        android:layout_height="wrap_content"-->
+    <!--        android:id="@+id/MemberOf"-->
+    <!--        android:layout_marginTop="30dp"-->
+    <!--        app:layout_constraintTop_toBottomOf="@+id/Interests"-->
+    <!--        app:layout_constraintEnd_toEndOf="parent"-->
+    <!--        app:layout_constraintStart_toStartOf="parent"-->
+    <!--        android:text="Member of"-->
+    <!--        >-->
+
+    <!--    </TextView>-->
+</androidx.constraintlayout.widget.ConstraintLayout>
+    <ProgressBar
+        style="?android:attr/progressBarStyleLarge"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/progressBar"
+        android:progressDrawable="@drawable/loading"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginTop="20dp"
+/>
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginBottom="10dp"
+        android:text="Search"
+        android:backgroundTint="@color/light"
+        android:textColor="@color/almostorange"
+        android:id="@+id/SearchButton">
+
+    </Button>
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

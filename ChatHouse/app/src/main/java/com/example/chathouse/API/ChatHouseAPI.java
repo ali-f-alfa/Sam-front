@@ -9,11 +9,15 @@ import com.example.chathouse.ViewModels.Search.InputSearchViewModel;
 
 import java.util.List;
 
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.GET;
 import retrofit2.http.Header;
+import retrofit2.http.Multipart;
 import retrofit2.http.POST;
+import retrofit2.http.Part;
 import retrofit2.http.Query;
 
 public interface ChatHouseAPI {
@@ -43,4 +47,8 @@ public interface ChatHouseAPI {
     Call<List<InputSearchViewModel>> Item(@Query("name") String name, @Query("category") Integer category, @Query("item") int item, @Query("PageSize") int PageSize, @Query("PageNumber") int PageNumber);
 
 
+
+    @Multipart
+    @POST("Account/UpdateImage")
+    Call<ProfileInformation> UpdateImage(@Part MultipartBody.Part image);
 }

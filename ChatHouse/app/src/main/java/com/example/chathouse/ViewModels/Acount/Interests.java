@@ -45,14 +45,14 @@ public class Interests {
     {
         BIPOC ("BIPOC", 1),
         Black  ("Black", 2 << 0),
-        BabyBoomers  ("BabyBoomers", 2 << 1),
+        BabyBoomers  ("Baby Boomers", 2 << 1),
         Latino  ("Latino", 2 << 2),
         Disabled  ("Disabled", 2 << 3),
-        SouthAsian  ("SouthAsian", 2 << 4),
+        SouthAsian  ("South Asian", 2 << 4),
         GenX  ("GenX", 2 << 5),
         Indigenous  ("Indigenous", 2 << 6),
-        EastAsian  ("EastAsian", 2 << 7),
-        GenZ  ("GenZ", 2 << 8),
+        EastAsian  ("East Asian", 2 << 7),
+        GenZ  ("Gen Z", 2 << 8),
         LGBTQ ("LGBTQ", 2 << 9),
         Millennials ("Millennials", 2 << 10);
 
@@ -84,12 +84,12 @@ public class Interests {
     {
         Paris ("Paris", 1),
         London  ("London", 2 << 0),
-        LosAngeles  ("LosAngeles", 2 << 1),
+        LosAngeles  ("Los Angeles", 2 << 1),
         Nigeria  ("Nigeria", 2 << 2),
         Africa  ("Africa", 2 << 3),
         Atlanta  ("Atlanta", 2 << 4),
         India  ("India", 2 << 5),
-        SanFrancisco  ("SanFrancisco", 2 << 6),
+        SanFrancisco  ("San Francisco", 2 << 6),
         NewYork  ("NewYork", 2 << 7);
 
         private String stringValue;
@@ -118,7 +118,7 @@ public class Interests {
     {
         SocialIssues ("Social Issues", 1),
         Climate  ("Climate", 2 << 0),
-        CurrentEvents  ("CurrentEvents", 2 << 1),
+        CurrentEvents  ("Current Events", 2 << 1),
         Economics  ("Economics", 2 << 2),
         Markets  ("Markets", 2 << 3),
         Geopolitics  ("Geopolitics", 2 << 4),
@@ -151,7 +151,7 @@ public class Interests {
         AI ("AI", 1),
         DTC  ("DTC", 2 << 0),
         SaaS  ("SaaS", 2 << 1),
-        Startups  ("Startups", 2 << 2),
+        Startups  ("Start ups", 2 << 2),
         Engineering  ("Engineering", 2 << 3),
         AngelInvesting  ("Angel Investing", 2 << 4),
         VentureCapital  ("Venture Capital", 2 << 5),
@@ -184,7 +184,7 @@ public class Interests {
 
     public enum HangingOut
     {
-        Coworking ("Coworking", 1),
+        Coworking ("Co working", 1),
         Welcome_Newbies  ("Welcome Newbies", 2 << 0),
         LateNight  ("LateNight", 2 << 1),
         Bring_A_Drink  ("Bring A Drink", 2 << 2),
@@ -361,7 +361,7 @@ public class Interests {
 
     public enum Life
     {
-        Grownuping ("Grownuping", 1),
+        Grownuping ("Grown uping", 1),
         Support  ("Support", 2 << 0),
         Traveling  ("Traveling", 2 << 1),
         Weddings  ("Weddings", 2 << 2),
@@ -440,7 +440,7 @@ public class Interests {
         Karaoke  ("Karaoke", 2 << 5),
         Variety  ("Variety", 2 << 6),
         Advice  ("Advice", 2 << 7),
-        Anime_and_Manga  ("Anime_and_Manga", 2 << 8),
+        Anime_and_Manga  ("Anime and Manga", 2 << 8),
         Movies  ("Movies", 2 << 9),
         Trivia  ("Trivia", 2 << 10),
         Celebrities  ("Celebrities", 2 << 11),

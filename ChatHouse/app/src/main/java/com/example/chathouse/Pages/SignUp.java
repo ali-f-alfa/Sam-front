@@ -11,6 +11,7 @@ import android.util.Patterns;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -36,6 +37,7 @@ public class SignUp extends AppCompatActivity {
     private EditText confirmPasswordTextView;
     private Button SubmitButton;
     private TextView Login;
+    private ProgressBar Load;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,10 +59,13 @@ public class SignUp extends AppCompatActivity {
         confirmPasswordTextView = findViewById(R.id.confirmPasswordInput);
         SubmitButton = findViewById(R.id.submitBtn);
         Login = findViewById(R.id.LoginBtn);
+        Load = (ProgressBar)findViewById(R.id.progressBar);
+        Load.setVisibility(View.GONE);
 
         SubmitButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                Load.setVisibility(View.VISIBLE);
 
                 if (checkFields()) {
                     OutputSignupViewModel model1 = new OutputSignupViewModel(userNameTextView.getText().toString(),
@@ -83,6 +88,7 @@ public class SignUp extends AppCompatActivity {
                                 return;
                             }
                             Toast.makeText(SignUp.this, "Successfully Signed Up", Toast.LENGTH_LONG).show();
+                            Load.setVisibility(View.INVISIBLE);
 
                             textViewResult.setTextColor(Color.BLACK);
                             textViewResult.setText("We have sent an email with a confirmation link to " + response.body().getEmail());

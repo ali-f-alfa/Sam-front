@@ -12,4 +12,11 @@
     <color name="almostpink">#826263</color>
     <color name="gray">#646c6c</color>
     <color name="almostorange">#9c7463</color>
+    <color name="Pink">#E98074</color>
+    <color name="Verypink">#E85A4F</color>
+    <color name="Orange">#FF5722</color>
+    <color name="cyan">#673AB7</color>
+    <color name="almostgreen">#C0CA33</color>
+
+
 </resources>
