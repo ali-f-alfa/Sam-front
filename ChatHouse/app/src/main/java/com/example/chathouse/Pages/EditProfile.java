@@ -112,10 +112,32 @@ public class EditProfile extends AppCompatActivity {
     private Boolean Ans2 = false;
     private ChatHouseAPI API;
 
+
+    @Override
+    public void onBackPressed() {
+        // TODO Auto-generated method stub
+        super.onBackPressed();
+        System.gc();
+
+        Intent intent = new Intent(EditProfile.this, com.example.chathouse.Pages.ProfilePage.class);
+        Bundle bundle = new Bundle();
+
+        SharedPreferences settings = getSharedPreferences("Storage", MODE_PRIVATE);
+        String UsernameText = settings.getString("Username", "n/a");
+
+        bundle.putString("Username", UsernameText);
+        intent.putExtras(bundle);
+        startActivity(intent);
+
+        finish();
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_profile);
+
+
 
         Save =  (Button)findViewById(R.id.SaveButton);
         LogoutButton =  (Button)findViewById(R.id.LogoutButton);
@@ -233,6 +255,7 @@ public class EditProfile extends AppCompatActivity {
                         Bundle bundle = new Bundle();
 
                         bundle.putString("Username", UsernameText);
+                        intent.putExtras(bundle);
                         startActivity(intent);
                     }
 
@@ -736,7 +759,7 @@ public class EditProfile extends AppCompatActivity {
     }
 
     private void MakeListOfEach(ListView layout, ArrayList<String> fields, int cat){
-        ListViewAdapter arrayAdapter = new ListViewAdapter(this, fields, cat);
+        ListViewAdapter2 arrayAdapter = new ListViewAdapter2(this, fields, cat);
         layout.setAdapter(arrayAdapter);
     }
 
@@ -819,7 +842,7 @@ public class EditProfile extends AppCompatActivity {
 }
 
 
-class ListViewAdapter extends BaseAdapter {
+class ListViewAdapter2 extends BaseAdapter {
 
     // Declare Variables
 
@@ -829,7 +852,7 @@ class ListViewAdapter extends BaseAdapter {
     private ArrayList<String> arraylist;
     private int category;
 
-    public ListViewAdapter(Context context, List<String> items, int cat) {
+    public ListViewAdapter2(Context context, List<String> items, int cat) {
         mContext = context;
         this.Items = items;
         inflater = LayoutInflater.from(mContext);
