@@ -82,7 +82,7 @@ public class Login extends AppCompatActivity {
                             Password.getText().toString(), CheckUserNamePattern(Username.getText().toString()));
                     Call<String> Login = LoginAPI.PostLogin(Body);
 
-
+                    Error.setText("");
                     Login.enqueue(new Callback<String>() {
                         @Override
                         public void onResponse(Call<String> call, Response<String> response){

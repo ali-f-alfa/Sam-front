@@ -5,6 +5,8 @@ import com.example.chathouse.ViewModels.Acount.OutputLoginViewModel;
 import com.example.chathouse.ViewModels.Acount.OutputSignupViewModel;
 import com.example.chathouse.ViewModels.Acount.ProfileInformation;
 import com.example.chathouse.ViewModels.Acount.UpdateProfileViewModel;
+import com.example.chathouse.ViewModels.CreateRoomViewModel;
+import com.example.chathouse.ViewModels.GetRoomViewModel;
 import com.example.chathouse.ViewModels.Search.InputSearchViewModel;
 
 import java.util.List;
@@ -55,4 +57,8 @@ public interface ChatHouseAPI {
 
     @POST("Account/UnFollow")
     Call<ProfileInformation> UnFollowPost(@Query("username") String username);
+
+    @POST("Room/CreateRoom")
+    Call<GetRoomViewModel> CreateRoom(@Body CreateRoomViewModel createRoomViewModel);
+
 }
