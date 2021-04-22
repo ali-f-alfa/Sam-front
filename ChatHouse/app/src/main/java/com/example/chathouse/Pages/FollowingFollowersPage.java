@@ -2,15 +2,77 @@ package com.example.chathouse.Pages;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ListView;
 
 import com.example.chathouse.R;
+import com.example.chathouse.ViewModels.Acount.FollowingFollowers;
+
+import java.util.ArrayList;
 
 public class FollowingFollowersPage extends AppCompatActivity {
+    private ListView FollowingFollowersListView;
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        System.gc();
 
+        Intent intent = new Intent(FollowingFollowersPage.this, com.example.chathouse.Pages.ProfilePage.class);
+        Bundle bundle = getIntent().getExtras();
+
+        SharedPreferences settings = getSharedPreferences("Storage", MODE_PRIVATE);
+        String UsernameText = settings.getString("Username", "n/a");
+
+        if(UsernameText.equals(bundle.getString("User")))
+        {
+            bundle.putString("Username", UsernameText);
+            intent.putExtras(bundle);
+            startActivity(intent);
+
+            finish();
+        }
+    }
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_following_followers_page);
+
+        FollowingFollowersListView = (ListView) findViewById(R.id.FollowingFollowersListView);
+
+        Intent i = getIntent();
+        Bundle bundle = getIntent().getExtras();
+
+        ArrayList<FollowingFollowers> FollowingList = new ArrayList<FollowingFollowers>();
+        ArrayList<SearchPerson> suggestedUsers = new ArrayList<SearchPerson>();
+
+        FollowingList = (ArrayList<FollowingFollowers>)i.getSerializableExtra("Following");
+
+        for (FollowingFollowers person : FollowingList) {
+                SearchPerson Person = new SearchPerson(person.getUsername(), person.getImageLink(), person.getFirstName(), person.getLastName());
+                suggestedUsers.add(Person);
+            }
+
+            ListViewAdapter adapter = new ListViewAdapter(FollowingFollowersPage.this, suggestedUsers);
+            FollowingFollowersListView.setAdapter(adapter);
+
+        FollowingFollowersListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
+                Intent intent = new Intent(FollowingFollowersPage.this, com.example.chathouse.Pages.ProfilePage.class);
+                Bundle bundle = new Bundle();
+
+                SearchPerson p = (SearchPerson) FollowingFollowersListView.getAdapter().getItem(position);
+                String Username = p.getUserName();
+                bundle.putString("Username", Username);
+                intent.putExtras(bundle);
+                startActivity(intent);
+            }
+        });
+
     }
 }

@@ -89,13 +89,15 @@ public class Login extends AppCompatActivity {
                             if(!response.isSuccessful()){
                                 try {
                                     Error.setText(response.errorBody().string());
+                                    Load.setVisibility(View.INVISIBLE);
                                 } catch (IOException e) {
+                                    Load.setVisibility(View.INVISIBLE);
                                     e.printStackTrace();
                                 }
                                 return;
                             }
                             // Get Profile
-                            Toast.makeText(Login.this, "Successfully Logged In ", Toast.LENGTH_LONG).show();
+//                            Toast.makeText(Login.this, "Successfully Logged In ", Toast.LENGTH_LONG).show();
                             Token = response.body();
 
                             Load.setVisibility(View.INVISIBLE);
@@ -125,7 +127,8 @@ public class Login extends AppCompatActivity {
                         }
                         @Override
                         public void onFailure(Call<String> call, Throwable failure){
-                            Error.setText("please check your connection");                        }
+                            Error.setText("please check your connection");
+                            Load.setVisibility(View.INVISIBLE);}
                     });
                 }
             }

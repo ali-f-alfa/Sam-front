@@ -46,9 +46,13 @@ public interface ChatHouseAPI {
     @GET("Search/Item")
     Call<List<InputSearchViewModel>> Item(@Query("name") String name, @Query("category") Integer category, @Query("item") int item, @Query("PageSize") int PageSize, @Query("PageNumber") int PageNumber);
 
-
-
     @Multipart
     @POST("Account/UpdateImage")
     Call<ProfileInformation> UpdateImage(@Part MultipartBody.Part image);
+
+    @POST("Account/Follow")
+    Call<ProfileInformation> FollowPost(@Query("username") String username);
+
+    @POST("Account/UnFollow")
+    Call<ProfileInformation> UnFollowPost(@Query("username") String username);
 }
