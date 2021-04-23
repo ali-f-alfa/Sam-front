@@ -1,5 +1,6 @@
 package com.example.chathouse.Pages;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 
@@ -10,6 +11,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.util.TypedValue;
 import android.view.Gravity;
+import android.view.MenuItem;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.Button;
@@ -37,6 +39,7 @@ import com.example.chathouse.API.ChatHouseAPI;
 import com.example.chathouse.R;
 import com.example.chathouse.Utility.Constants;
 import com.example.chathouse.ViewModels.Search.InputSearchViewModel;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
@@ -74,6 +77,7 @@ public class Search extends AppCompatActivity implements SearchView.OnQueryTextL
     ScrollView category_scroll;
     GridLayout item_grid;
     HorizontalScrollView item_scroll;
+    BottomNavigationView menu;
 
 
     @Override
@@ -97,6 +101,7 @@ public class Search extends AppCompatActivity implements SearchView.OnQueryTextL
         category_scroll = (ScrollView) findViewById(R.id.Category);
         item_grid = (GridLayout) findViewById(R.id.item_grid);
         item_scroll = (HorizontalScrollView) findViewById(R.id.Items);
+        menu = (BottomNavigationView) findViewById(R.id.Search_menu);
 
         OkHttpClient client = new OkHttpClient.Builder().addInterceptor(new Interceptor() {
             @Override
@@ -118,20 +123,21 @@ public class Search extends AppCompatActivity implements SearchView.OnQueryTextL
                 .build();
         SearchAPI = retrofit.create(ChatHouseAPI.class);
 
-        int childCount = category_grid.getChildCount();
+        menu.setOnNavigationItemSelectedListener(navListener);
 
-        for (int i= 0; i < childCount; i++){
+        int childCount = category_grid.getChildCount();
+        for (int i = 0; i < childCount; i++) {
             int n = i;
             CardView container = (CardView) category_grid.getChildAt(i);
-            container.setOnClickListener(new View.OnClickListener(){
-                public void onClick(View view){
+            container.setOnClickListener(new View.OnClickListener() {
+                public void onClick(View view) {
                     selected_category = n;
                     mode = 1;
 
                     SearchedPersons.clear();
                     SearchError.setVisibility(View.INVISIBLE);
                     TextView t = (TextView) container.getChildAt(0);
-                    SearchTitle.setText("Search in "+ t.getText());
+                    SearchTitle.setText("Search in " + t.getText());
 
 
                     Call<List<InputSearchViewModel>> Req = SearchAPI.Category(editsearch.getQuery().toString(), selected_category, 10, 1);
@@ -164,7 +170,7 @@ public class Search extends AppCompatActivity implements SearchView.OnQueryTextL
                     });
 
                     category_scroll.setVisibility(View.INVISIBLE);
-                    CreateItems(n,item_grid);
+                    CreateItems(n, item_grid);
                 }
             });
         }
@@ -244,11 +250,10 @@ public class Search extends AppCompatActivity implements SearchView.OnQueryTextL
 
 
                         Call<List<InputSearchViewModel>> Req;
-                        if (mode == 0){
+                        if (mode == 0) {
                             String xxx = editsearch.getQuery().toString();
                             Req = SearchAPI.Category(editsearch.getQuery().toString(), null, 5, i++);
-                        }
-                        else if (mode == 1)
+                        } else if (mode == 1)
                             Req = SearchAPI.Category(editsearch.getQuery().toString(), selected_category, 5, i++);
                         else
                             Req = SearchAPI.Item(editsearch.getQuery().toString(), selected_category, selected_item, 5, i++);
@@ -321,7 +326,6 @@ public class Search extends AppCompatActivity implements SearchView.OnQueryTextL
             Req = SearchAPI.Item(editsearch.getQuery().toString(), selected_category, selected_item, 10, 1);
 
 
-
         Req.enqueue(new Callback<List<InputSearchViewModel>>() {
             @Override
             public void onResponse(Call<List<InputSearchViewModel>> call, Response<List<InputSearchViewModel>> response) {
@@ -356,10 +360,9 @@ public class Search extends AppCompatActivity implements SearchView.OnQueryTextL
     }
 
 
-
-    public void CreateItems(int n, GridLayout layout){
+    public void CreateItems(int n, GridLayout layout) {
         ArrayList<String> temp = new ArrayList<>();
-        switch (n){
+        switch (n) {
             case 0:
                 temp = com.example.chathouse.ViewModels.Acount.Interests.Wellness.getArrayString();
                 break;
@@ -407,10 +410,10 @@ public class Search extends AppCompatActivity implements SearchView.OnQueryTextL
         for (int x = 0; x < temp.size(); x++) {
             int xx = x;
             String t = temp.get(x);
-            AddItem(temp.get(x) , item_grid).setOnClickListener(new View.OnClickListener() {
+            AddItem(temp.get(x), item_grid).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    selected_item = (int)Math.pow(2, xx);
+                    selected_item = (int) Math.pow(2, xx);
                     mode = 2;
 
                     SearchedPersons.clear();
@@ -445,7 +448,7 @@ public class Search extends AppCompatActivity implements SearchView.OnQueryTextL
                         }
                     });
                     item_scroll.setVisibility(View.INVISIBLE);
-                    SearchTitle.setText("Search in "+ t);
+                    SearchTitle.setText("Search in " + t);
 
 
                 }
@@ -453,7 +456,7 @@ public class Search extends AppCompatActivity implements SearchView.OnQueryTextL
         }
     }
 
-    public CardView AddItem(String name, GridLayout layout){
+    public CardView AddItem(String name, GridLayout layout) {
 
         CardView cardview = new CardView(this);
 
@@ -461,7 +464,7 @@ public class Search extends AppCompatActivity implements SearchView.OnQueryTextL
                 450,
                 LayoutParams.WRAP_CONTENT
         );
-        layoutparams.setMargins(20,35,20,35   );
+        layoutparams.setMargins(20, 35, 20, 35);
 
         cardview.setLayoutParams(layoutparams);
 
@@ -481,7 +484,7 @@ public class Search extends AppCompatActivity implements SearchView.OnQueryTextL
                 LayoutParams.FILL_PARENT,
                 LayoutParams.FILL_PARENT
         );
-        tlayoutparams.setMargins(5,15,5,15   );
+        tlayoutparams.setMargins(5, 15, 5, 15);
 
         textview.setLayoutParams(tlayoutparams);
 
@@ -491,7 +494,7 @@ public class Search extends AppCompatActivity implements SearchView.OnQueryTextL
 
 //        textview.setTextColor(Color.WHITE);
 
-        textview.setPadding(8,8,8,8);
+        textview.setPadding(8, 8, 8, 8);
 
         textview.setGravity(Gravity.CENTER);
 
@@ -500,46 +503,62 @@ public class Search extends AppCompatActivity implements SearchView.OnQueryTextL
         layout.addView(cardview);
         return cardview;
     }
-//    public CardView AddCategory(String name, GridLayout layout){
-//
-//        CardView cardview = new CardView(this);
-//
-//        LayoutParams layoutparams = new LayoutParams(
-//                LayoutParams.WRAP_CONTENT,
-//                LayoutParams.WRAP_CONTENT
-//        );
-//        layoutparams.setMargins(12,12,12,12);
-//        cardview.setLayoutParams(layoutparams);
-//
-//        cardview.setRadius(15);
-//
-//        cardview.setPadding(25, 25, 25, 25);
-//
-//        cardview.setCardBackgroundColor(Color.MAGENTA);
-//
-//        cardview.setCardElevation(6);
-//        cardview.setcorner;
-//
-//        TextView textview = new TextView(this);
-//
-//        textview.setLayoutParams(layoutparams);
-//
-//        textview.setText("CardView Programmatically");
-//
-//        textview.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 25);
-//
-//        textview.setTextColor(Color.WHITE);
-//
-//        textview.setPadding(25,25,25,25);
-//
-//        textview.setGravity(Gravity.CENTER);
-//
-//        cardview.addView(textview);
-//
-//        layout.addView(cardview);
-//
-//    }
 
+    public BottomNavigationView.OnNavigationItemSelectedListener navListener = new BottomNavigationView.OnNavigationItemSelectedListener() {
+        @Override
+        public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+            switch (item.getItemId()) {
+                case R.id.nav_home:
+                    new Handler().post(new Runnable() {
+                        @Override
+                        public void run() {
+
+                            Intent intent = new Intent(Search.this, com.example.chathouse.Pages.ProfilePage.class);
+                            Bundle bundle = new Bundle();
+
+
+                            bundle.putString("Username", Username);
+                            intent.putExtras(bundle);
+                            startActivity(intent);
+                            finish();
+                        }
+                    });
+                    break;
+
+
+                case R.id.nav_Profile:
+                    new Handler().post(new Runnable() {
+                        @Override
+                        public void run() {
+
+                            Intent intent = new Intent(Search.this, com.example.chathouse.Pages.ProfilePage.class);
+                            Bundle bundle = new Bundle();
+
+
+                            bundle.putString("Username", Username);
+                            intent.putExtras(bundle);
+                            startActivity(intent);
+                            finish();
+                        }
+                    });
+                    break;
+
+
+                case R.id.nav_Search:
+                    new Handler().post(new Runnable() {
+                        @Override
+                        public void run() {
+
+                            Intent intent = new Intent(Search.this, com.example.chathouse.Pages.Search.class);
+                            startActivity(intent);
+                            finish();
+                        }
+                    });
+                    break;
+            }
+            return true;
+        }
+    };
 }
 
 class ListViewAdapter extends BaseAdapter {

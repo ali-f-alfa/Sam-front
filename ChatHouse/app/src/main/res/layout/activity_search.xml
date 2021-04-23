@@ -46,9 +46,11 @@
         app:iconTint="#00FF83" />
 
     <LinearLayout
+        android:id="@+id/s"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:layout_below="@+id/SearchTitle"
+        android:layout_above="@+id/Search_menu"
         android:orientation="vertical">
 
         <ListView
@@ -81,7 +83,6 @@
                     android:rowCount="3"></GridLayout>
 
             </HorizontalScrollView>
-
 
             <ScrollView
                 android:id="@+id/Category"
@@ -394,8 +395,17 @@
 
                 </GridLayout>
             </ScrollView>
+
+
         </RelativeLayout>
+
     </LinearLayout>
 
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/Search_menu"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        app:menu="@menu/bottom_navigation"/>
 </RelativeLayout>
 
