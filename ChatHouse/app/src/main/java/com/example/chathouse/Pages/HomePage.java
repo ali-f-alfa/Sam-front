@@ -3,20 +3,34 @@ package com.example.chathouse.Pages;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.cardview.widget.CardView;
 
+import android.app.DatePickerDialog;
 import android.app.Dialog;
+import android.app.TimePickerDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.TypedValue;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.DatePicker;
+import android.widget.GridLayout;
+import android.widget.HorizontalScrollView;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.EditText;
+import android.widget.TimePicker;
 import android.widget.Toast;
 
 import com.example.chathouse.API.ChatHouseAPI;
@@ -24,12 +38,18 @@ import com.example.chathouse.R;
 import com.example.chathouse.Utility.Constants;
 import com.example.chathouse.ViewModels.CreateRoomViewModel;
 import com.example.chathouse.ViewModels.GetRoomViewModel;
+import com.example.chathouse.ViewModels.Search.InputSearchViewModel;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 import java.io.IOException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
 
 import okhttp3.HttpUrl;
 import okhttp3.Interceptor;
@@ -49,7 +69,20 @@ public class HomePage extends AppCompatActivity {
     private Call<GetRoomViewModel> CreateRoom;
     private ChatHouseAPI APIS;
     BottomNavigationView menu;
-
+    private GridLayout category_grid_modal;
+    private ScrollView category_scroll_modal;
+    private GridLayout item_grid_modal;
+    private HorizontalScrollView item_scroll_modal;
+    private ArrayList<ArrayList<Integer>> SelectedInterest = new ArrayList<>();
+    private int Cat;
+    private int item;
+    private LinearLayout LinearLayoutCategory;
+    private TextView interestName;
+    private RadioButton Now;
+    private RadioButton Schedule;
+    private String Date;
+    private SimpleDateFormat dateFormat;
+    private Date RealDate;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -92,8 +125,7 @@ public class HomePage extends AppCompatActivity {
         menu.setOnNavigationItemSelectedListener(navListener);
         int a = menu.getSelectedItemId();
 
-        CreateRoomViewModel Room = RoomModel("test", "test", null, null);
-        Call<GetRoomViewModel> CreateRoom = APIS.CreateRoom(Room);
+
         StartRoom.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -102,38 +134,153 @@ public class HomePage extends AppCompatActivity {
 
             }
         });
+
+
+
+
     }
 
     private CreateRoomViewModel RoomModel(String name, String description, String startDate, String endDate) {
         CreateRoomViewModel RoomModel = new CreateRoomViewModel(name, description, CreateInterests(), startDate, endDate);
         return RoomModel;
     }
-
     private ArrayList<ArrayList<Integer>> CreateInterests() {
-        ArrayList<ArrayList<Integer>> interests = new ArrayList<>();
         for (int i = 0; i < 14; i++) {
-            interests.add(new ArrayList<>());
+            SelectedInterest.add(new ArrayList<>());
         }
 
-        interests.get(2).add((int) Math.pow(2, 3));
+        SelectedInterest.get(Cat).add((int) Math.pow(2, item));
 
-        return interests;
+        return SelectedInterest;
     }
 
     public void Open(View view) {
 
         final Dialog dialog = new Dialog(this);
         dialog.setContentView(R.layout.dialog_room_creation);
+        category_grid_modal = (GridLayout) dialog.findViewById(R.id.category_grid_modal);
+        category_scroll_modal = (ScrollView) dialog.findViewById(R.id.Category_modal);
+        item_grid_modal = (GridLayout) dialog.findViewById(R.id.item_grid_modal);
+        item_scroll_modal = (HorizontalScrollView) dialog.findViewById(R.id.Items_modal);
+        interestName = (TextView) dialog.findViewById(R.id.interestEditmodal);
+
+        int childCount = category_grid_modal.getChildCount();
+        for (int i = 0; i < childCount; i++) {
+            int n = i;
+            CardView container = (CardView) category_grid_modal.getChildAt(i);
+            container.setOnClickListener(new View.OnClickListener() {
+                public void onClick(View view) {
+                    category_scroll_modal.setVisibility(View.INVISIBLE);
+                    CreateItems(n, item_grid_modal);
+                }
+            });
+        }
 
 
         Button dialogButton = (Button) dialog.findViewById(R.id.Create);
+        Button date = (Button) dialog.findViewById(R.id.btn_date);
+        EditText dateText = (EditText) dialog.findViewById(R.id.in_date);
+        Button time = (Button) dialog.findViewById(R.id.btn_time);
+        EditText timeText = (EditText) dialog.findViewById(R.id.in_time);
+        LinearLayoutCategory = (LinearLayout)dialog.findViewById(R.id.LinearLayoutCategory);
+        Now = dialog.findViewById(R.id.Now);
+        Schedule = dialog.findViewById(R.id.Schedule);
+        Schedule.setVisibility(View.GONE);
+        date.setVisibility(View.GONE);
+        time.setVisibility(View.GONE);
+        dateText.setVisibility(View.GONE);
+        timeText.setVisibility(View.GONE);
+
+        Now.setOnClickListener(new RadioButton.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+               Date = null;
+                date.setVisibility(View.GONE);
+                time.setVisibility(View.GONE);
+                dateText.setVisibility(View.GONE);
+                timeText.setVisibility(View.GONE);
+            }
+
+        });
+//        Schedule.setOnClickListener(new RadioButton.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                Date = "";
+//                date.setVisibility(View.VISIBLE);
+//                time.setVisibility(View.VISIBLE);
+//                dateText.setVisibility(View.VISIBLE);
+//                timeText.setVisibility(View.VISIBLE);
+//            }
+//
+//        });
+
+
+            date.setOnClickListener(new View.OnClickListener() {
+            private int mYear, mMonth, mDay;
+            @Override
+            public void onClick(View v) {
+                // Get Current Date
+                final Calendar c = Calendar.getInstance();
+                mYear = c.get(Calendar.YEAR);
+                mMonth = c.get(Calendar.MONTH);
+                mDay = c.get(Calendar.DAY_OF_MONTH);
+
+
+                DatePickerDialog datePickerDialog = new DatePickerDialog(HomePage.this,
+                        new DatePickerDialog.OnDateSetListener() {
+
+                            @Override
+                            public void onDateSet(DatePicker view, int year,
+                                                  int monthOfYear, int dayOfMonth) {
+
+                                dateText.setText(dayOfMonth + "-" + (monthOfYear + 1) + "-" + year);
+
+                            }
+                        }, mYear, mMonth, mDay);
+                datePickerDialog.show();
+            }
+        });
+        time.setOnClickListener(new View.OnClickListener() {
+            private int mHour, mMinute;
+            @Override
+            public void onClick(View v) {
+                // Get Current Time
+                final Calendar c = Calendar.getInstance();
+                mHour = c.get(Calendar.HOUR_OF_DAY);
+                mMinute = c.get(Calendar.MINUTE);
+
+                // Launch Time Picker Dialog
+                TimePickerDialog timePickerDialog = new TimePickerDialog(HomePage.this,
+                        new TimePickerDialog.OnTimeSetListener() {
+
+                            @Override
+                            public void onTimeSet(TimePicker view, int hourOfDay,
+                                                  int minute) {
+
+                                timeText.setText(hourOfDay + ":" + minute);
+                            }
+                        }, mHour, mMinute, false);
+                timePickerDialog.show();
+            }
+        });
         // if button is clicked, close the custom dialog
         EditText name = (EditText)dialog.findViewById(R.id.editNameRoom);
         EditText description = (EditText)dialog.findViewById(R.id.editDesRoom);
         dialogButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                CreateRoomViewModel Room = RoomModel(name.getText().toString(), description.getText().toString(), null, null);
+                if(Date != null){
+                    Date = dateText.toString() + " " + timeText.toString();
+                    dateFormat = new SimpleDateFormat("dd-MM-yyyy hh:mm");
+
+                }
+                CreateRoomViewModel Room = Room = RoomModel(name.getText().toString(), description.getText().toString(), null, null);;
+//                try {
+//                    System.out.println(dateFormat.parse(Date));
+//                    Room = RoomModel(name.getText().toString(), description.getText().toString(), "2022-04-23T17:13:17.020Z", null);
+//                } catch (ParseException e) {
+//                    e.printStackTrace();
+//                }
                 CreateRoom = APIS.CreateRoom(Room);
                 loading.setVisibility(View.VISIBLE);
                 CreateRoom.enqueue(new Callback<GetRoomViewModel>() {
@@ -229,4 +376,102 @@ public class HomePage extends AppCompatActivity {
         }
     };
 
+    public void CreateItems(int n, GridLayout layout) {
+        ArrayList<String> temp = new ArrayList<>();
+        switch (n) {
+            case 0:
+                temp = com.example.chathouse.ViewModels.Acount.Interests.Wellness.getArrayString();
+                break;
+            case 1:
+                temp = com.example.chathouse.ViewModels.Acount.Interests.Identity.getArrayString();
+                break;
+            case 2:
+                temp = com.example.chathouse.ViewModels.Acount.Interests.Places.getArrayString();
+                break;
+            case 3:
+                temp = com.example.chathouse.ViewModels.Acount.Interests.WorldAffairs.getArrayString();
+                break;
+            case 4:
+                temp = com.example.chathouse.ViewModels.Acount.Interests.Tech.getArrayString();
+                break;
+            case 5:
+                temp = com.example.chathouse.ViewModels.Acount.Interests.HangingOut.getArrayString();
+                break;
+            case 6:
+                temp = com.example.chathouse.ViewModels.Acount.Interests.KnowLedge.getArrayString();
+                break;
+            case 7:
+                temp = com.example.chathouse.ViewModels.Acount.Interests.Hustle.getArrayString();
+                break;
+            case 8:
+                temp = com.example.chathouse.ViewModels.Acount.Interests.Sports.getArrayString();
+                break;
+            case 9:
+                temp = com.example.chathouse.ViewModels.Acount.Interests.Arts.getArrayString();
+                break;
+            case 10:
+                temp = com.example.chathouse.ViewModels.Acount.Interests.Life.getArrayString();
+                break;
+            case 11:
+                temp = com.example.chathouse.ViewModels.Acount.Interests.Languages.getArrayString();
+                break;
+            case 12:
+                temp = com.example.chathouse.ViewModels.Acount.Interests.Entertainment.getArrayString();
+                break;
+            case 13:
+                temp = com.example.chathouse.ViewModels.Acount.Interests.Faith.getArrayString();
+                break;
+        }
+
+        for (int x = 0; x < temp.size(); x++) {
+            int xx = x;
+            String itemName = temp.get(x);
+
+            AddItem(temp.get(x), item_grid_modal).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+//                    item_scroll_modal.setVisibility(View.INVISIBLE);
+                    Cat = n;
+                    item = xx;
+                    CardView t = (CardView)v;
+                    ((CardView) v).setCardBackgroundColor(Color.GRAY);
+                    LinearLayoutCategory.setVisibility(View.GONE);
+                    interestName.setText(itemName);
+                }
+
+            });
+        }
+    }
+
+    public CardView AddItem(String name, GridLayout layout) {
+
+        CardView cardview = new CardView(this);
+
+        LinearLayout.LayoutParams layoutparams = new LinearLayout.LayoutParams(
+                450,
+                LinearLayout.LayoutParams.WRAP_CONTENT
+        );
+        layoutparams.setMargins(20, 25, 20, 25);
+        cardview.setLayoutParams(layoutparams);
+        cardview.setRadius(50);
+        cardview.setPadding(25, 25, 25, 25);
+        cardview.setCardBackgroundColor(Color.WHITE);
+        cardview.setMaxCardElevation(6);
+        TextView textview = new TextView(this);
+        LinearLayout.LayoutParams tlayoutparams = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.FILL_PARENT,
+                LinearLayout.LayoutParams.FILL_PARENT
+        );
+        tlayoutparams.setMargins(5, 15, 5, 15);
+        textview.setLayoutParams(tlayoutparams);
+        textview.setText(name);
+        textview.setTextColor(Color.WHITE);
+        textview.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 18);
+        textview.setPadding(8, 8, 8, 8);
+        textview.setGravity(Gravity.CENTER);
+        cardview.addView(textview);
+        cardview.setCardBackgroundColor(Color.parseColor("#E98980"));
+        layout.addView(cardview);
+        return cardview;
+    }
 }
