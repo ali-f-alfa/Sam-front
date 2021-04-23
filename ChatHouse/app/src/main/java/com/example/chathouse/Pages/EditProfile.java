@@ -79,7 +79,6 @@ import retrofit2.converter.scalars.ScalarsConverterFactory;
 
 public class EditProfile extends AppCompatActivity {
     private Button Save;
-    private Button LogoutButton;
     private ListView Wellness;
     private ListView Identity;
     private ListView Places;
@@ -140,7 +139,6 @@ public class EditProfile extends AppCompatActivity {
 
 
         Save =  (Button)findViewById(R.id.SaveButton);
-        LogoutButton =  (Button)findViewById(R.id.LogoutButton);
         Wellness = (ListView)findViewById(R.id.Wellness);
         Identity = (ListView)findViewById(R.id.Identity);
         Places = (ListView)findViewById(R.id.Places);
@@ -273,33 +271,7 @@ public class EditProfile extends AppCompatActivity {
 
         });
 
-        LogoutButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // Logout Request
-                Logout.enqueue(new Callback<Void>() {
-                    @Override
-                    public void onResponse(Call<Void> call, Response<Void> response) {
-                        if(!response.isSuccessful()){
-                            try {
-                                SetNewPicture.setText(response.errorBody().string());
-                            } catch (IOException e) {
-                                SetNewPicture.setText(response.errorBody().toString());
-                                e.printStackTrace();
-                            }
-                            return;
-                        }
-                        Intent intent = new Intent(EditProfile.this, Login.class);
-                        startActivity(intent);
-                    }
 
-                    @Override
-                    public void onFailure(Call<Void> call, Throwable t) {
-                        Toast.makeText(EditProfile.this, "Request failed", Toast.LENGTH_LONG).show();
-                    }
-                });
-            }
-        });
 
         SetNewPicture.setOnClickListener(new View.OnClickListener() {
             @Override

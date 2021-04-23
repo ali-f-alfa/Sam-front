@@ -107,7 +107,7 @@ public class Login extends AppCompatActivity {
                             new Handler().post(new Runnable() {
                                 @Override
                                 public void run() {
-                                    Intent intent = new Intent(Login.this, HomePage.class);
+                                    Intent intent = new Intent(Login.this, ProfilePage.class);
                                     Bundle bundle = new Bundle();
 
                                     bundle.putString("Token", Token);

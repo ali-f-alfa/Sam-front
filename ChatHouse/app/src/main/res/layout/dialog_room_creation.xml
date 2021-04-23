@@ -1,37 +1,53 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
+    android:layout_width="300dp"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_margin="10dp">
+>
     <TextView
         android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Room creation"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:textSize="20dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginTop="10dp"
+        android:id="@+id/Title">
+
+    </TextView>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_marginTop="30dp"
         android:layout_height="50dp"
         android:gravity="center_vertical"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toTopOf="@id/Title"
         android:text="Name: "
         android:textSize="18dp"
-        android:textColor="@color/almostorange"
+        android:layout_marginLeft="20dp"
+        android:textColor="@color/gray"
         android:id="@+id/NameRoom">
 
     </TextView>
     <EditText
         android:id="@+id/editNameRoom"
+        android:layout_marginTop="30dp"
         app:layout_constraintStart_toEndOf="@+id/NameRoom"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toTopOf="@id/Title"
         android:text="Name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"/>
     <TextView
         android:layout_width="wrap_content"
+        android:layout_marginLeft="20dp"
         android:layout_height="50dp"
         android:gravity="center_vertical"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/NameRoom"
         android:text="Description: "
         android:textSize="18dp"
-        android:textColor="@color/almostorange"
+        android:textColor="@color/gray"
         android:id="@+id/DesRoom">
 
     </TextView>
@@ -42,15 +58,72 @@
         android:text="Name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"/>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_marginLeft="20dp"
+        android:layout_height="50dp"
+        android:gravity="center_vertical"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/DesRoom"
+        android:text="Time: "
+        android:textSize="18dp"
+        android:textColor="@color/gray"
+        android:id="@+id/TimeText">
 
+    </TextView>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_marginLeft="20dp"
+        android:layout_height="50dp"
+        android:gravity="center_vertical"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/Time"
+        android:text="Interest: "
+        android:textSize="18dp"
+        android:textColor="@color/gray"
+        android:id="@+id/InterestText">
+
+    </TextView>
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="wrap_content"
+        android:layout_height="200dp"
+        android:id="@+id/LinearLayoutCategory"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/InterestText"
+        android:layout_marginTop="5dp">
+
+    </LinearLayout>
+    <RadioGroup xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/Time"
+        android:layout_marginLeft="20dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/TimeText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+        <RadioButton android:id="@+id/radio_pirates"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Now"
+            android:onClick="onRadioButtonClicked"/>
+        <RadioButton android:id="@+id/radio_ninjas"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Schedule"
+            android:onClick="onRadioButtonClicked"/>
+    </RadioGroup>
 
     <Button
         android:layout_width="wrap_content"
+        android:layout_marginLeft="20dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
         android:text="Create"
         android:id="@+id/Create"
-        app:layout_constraintTop_toBottomOf="@id/editDesRoom"
+        android:textColor="@color/almostorange"
+        app:layout_constraintTop_toBottomOf="@id/LinearLayoutCategory"
         app:layout_constraintStart_toStartOf="parent"
         ></Button>
 </androidx.constraintlayout.widget.ConstraintLayout>
