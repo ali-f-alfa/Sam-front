@@ -75,6 +75,7 @@
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
             android:layout_below="@+id/search"
+            android:fadeScrollbars="false"
             android:layout_weight="4"></ListView>
 
         <View
@@ -427,6 +428,8 @@
         android:id="@+id/Search_menu"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        app:itemIconTint="@color/black"
+        app:itemTextColor="@color/black"
         android:layout_alignParentBottom="true"
         android:background="@color/light"
         app:menu="@menu/bottom_navigation" />

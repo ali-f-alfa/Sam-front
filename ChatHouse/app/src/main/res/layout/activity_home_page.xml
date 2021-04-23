@@ -45,6 +45,8 @@
         android:id="@+id/Home_menu"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        app:itemIconTint="@color/black"
+        app:itemTextColor="@color/black"
         android:layout_alignParentBottom="true"
         android:background="@color/light"
         app:menu="@menu/bottom_navigation"/>
