@@ -1,6 +1,7 @@
 package com.example.chathouse.ViewModels;
 
 import java.util.ArrayList;
+import java.util.Date;
 
 public class CreateRoomViewModel {
     private String name;

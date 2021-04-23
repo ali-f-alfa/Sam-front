@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import com.example.chathouse.R;
 import com.example.chathouse.ViewModels.Acount.FollowingFollowers;
@@ -16,6 +17,7 @@ import java.util.ArrayList;
 
 public class FollowingFollowersPage extends AppCompatActivity {
     private ListView FollowingFollowersListView;
+    private TextView FollowerFollowing;
     @Override
     public void onBackPressed() {
         super.onBackPressed();
@@ -40,11 +42,15 @@ public class FollowingFollowersPage extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_following_followers_page);
-
+        FollowerFollowing = (TextView)findViewById(R.id.FollowingfollowersText);
         FollowingFollowersListView = (ListView) findViewById(R.id.FollowingFollowersListView);
 
         Intent i = getIntent();
         Bundle bundle = getIntent().getExtras();
+        String Title = bundle.getString("Name");
+        System.out.println(Title);
+
+        FollowerFollowing.setText(Title);
 
         ArrayList<FollowingFollowers> FollowingList = new ArrayList<FollowingFollowers>();
         ArrayList<SearchPerson> suggestedUsers = new ArrayList<SearchPerson>();

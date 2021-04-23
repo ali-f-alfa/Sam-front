@@ -1,6 +1,7 @@
 package com.example.chathouse.Pages;
 
 import androidx.annotation.ColorInt;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 import androidx.constraintlayout.widget.ConstraintLayout;
@@ -39,10 +40,12 @@ import com.bumptech.glide.load.resource.bitmap.CircleCrop;
 import com.bumptech.glide.request.RequestOptions;
 import com.example.chathouse.API.ChatHouseAPI;
 import com.example.chathouse.R;
+import com.example.chathouse.SettingPage;
 import com.example.chathouse.Utility.Constants;
 import com.example.chathouse.ViewModels.Acount.FollowingFollowers;
 import com.example.chathouse.ViewModels.Acount.ProfileInformation;
 import com.example.chathouse.ViewModels.Search.InputSearchViewModel;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
@@ -79,6 +82,7 @@ public class ProfilePage extends AppCompatActivity {
     private TextView Following;
     private Button Message;
     private Button Follow;
+    private Button Setting;
     private ImageView ProfilePicture;
     //    private TextView Memberof;
     private Button EditProfile;
@@ -94,7 +98,10 @@ public class ProfilePage extends AppCompatActivity {
     private ProgressBar loading;
     private ConstraintLayout Fake;
     private TextView SearchButton;
+    private TextView Followsyou;
     private Boolean followCheck = false;
+    BottomNavigationView menu;
+
 //    private Switch OnOff;
 
 
@@ -119,15 +126,18 @@ public class ProfilePage extends AppCompatActivity {
         UsernameText = (TextView) findViewById(R.id.UsernameText);
         EmailText = (TextView) findViewById(R.id.EmailText);
         EditProfile = (Button) findViewById(R.id.EditProfileButton);
+        Setting = (Button) findViewById(R.id.Setting);
         InterestContainer = (LinearLayout) findViewById(R.id.ContainerButton);
         Interests = (HorizontalScrollView) findViewById(R.id.Interests);
         FollowingFollowersListView = (ListView) findViewById(R.id.FollowingFollowersListView);
         loading = (ProgressBar) findViewById(R.id.progressBar);
-        SearchButton = (TextView) findViewById(R.id.SearchButton);
+        Followsyou = (TextView) findViewById(R.id.FollowsYouText);
+        menu = (BottomNavigationView) findViewById(R.id.Profile_menu);
 
         Bundle bundle = getIntent().getExtras();
         Fake.setVisibility(View.INVISIBLE);
         loading.setVisibility(View.GONE);
+        Followsyou.setVisibility(View.INVISIBLE);
 
         loading.setVisibility(View.VISIBLE);
 
@@ -195,15 +205,24 @@ public class ProfilePage extends AppCompatActivity {
 //                    OnOff.setVisibility(View.VISIBLE);
                 } else {
                     Gson gson = new Gson();
-                    String json = settings.getString("Following", "");
-                    Type type = new TypeToken<List<String>>() {}.getType();
-                    ArrayList<String> followingCheck = gson.fromJson(json, type);
+                    String jsonIng = settings.getString("Following", "");
+                    Type typeIng = new TypeToken<List<String>>() {}.getType();
+                    ArrayList<String> followingCheck = gson.fromJson(jsonIng, typeIng);
                     for(String X:followingCheck){
                         if(X.equals(Response.getUsername())){
                             followCheck = true;
                             Follow.setText("Unfollow");
                         }
                     }
+                    String jsonEr = settings.getString("Followers", "");
+                    Type typeEr = new TypeToken<List<String>>() {}.getType();
+                    ArrayList<String> followerCheck = gson.fromJson(jsonEr, typeEr);
+                    for(String X:followerCheck){
+                        if(X.equals(Response.getUsername())){
+                            Followsyou.setVisibility(View.VISIBLE);
+                        }
+                    }
+
                     Message.setVisibility(View.VISIBLE);
                     Follow.setVisibility(View.VISIBLE);
                     EditProfile.setVisibility(View.INVISIBLE);
@@ -228,20 +247,7 @@ public class ProfilePage extends AppCompatActivity {
             }
         });
 
-        SearchButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                new Handler().post(new Runnable() {
-                    @Override
-                    public void run() {
-                        Intent intent = new Intent(ProfilePage.this, Search.class);
-
-                        startActivity(intent);
-                        finish();
-                    }
-                });
-            }
-        });
+        menu.setOnNavigationItemSelectedListener(navListener);
         EditProfile.setOnClickListener(new View.OnClickListener() {
 
             @Override
@@ -260,7 +266,16 @@ public class ProfilePage extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+        Setting.setOnClickListener(new View.OnClickListener() {
 
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(ProfilePage.this, SettingPage.class);
+                Bundle bundle = new Bundle();
+
+                startActivity(intent);
+            }
+        });
 
         FollowingNumber.setOnClickListener(new View.OnClickListener() {
             ArrayList<SearchPerson> suggestedUsers = new ArrayList<SearchPerson>();
@@ -268,9 +283,11 @@ public class ProfilePage extends AppCompatActivity {
             public void onClick(View v) {
                 Intent intent = new Intent(ProfilePage.this, FollowingFollowersPage.class);
                 Bundle bundle = new Bundle();
+                String name = "Following";
 
 //                bundle.putParcelableArrayList("Following", FollowingList);
                 bundle.putString("User", UsernameX);
+                bundle.putString("Name", name);
 
                 intent.putExtra("Following", (Serializable)FollowingList);
                 intent.putExtras(bundle);
@@ -283,10 +300,13 @@ public class ProfilePage extends AppCompatActivity {
             public void onClick(View v) {
                 Intent intent = new Intent(ProfilePage.this, FollowingFollowersPage.class);
                 Bundle bundle = new Bundle();
+                String name = "Followers";
+                bundle.putString("Name", name);
 
 //                bundle.putSerializable("Following", FollowersList);
 
                 intent.putExtra("Following", FollowersList);
+                intent.putExtras(bundle);
                 startActivity(intent);
             }
         });
@@ -384,9 +404,9 @@ public class ProfilePage extends AppCompatActivity {
     private void SetInformation(ProfileInformation response) throws IOException {
         ImageLink = response.getImageLink();
         RequestOptions options = new RequestOptions()
-                .centerCrop()
-                .placeholder(R.mipmap.ic_launcher_round)
-                .error(R.mipmap.ic_launcher_round);
+                .placeholder(R.mipmap.default_user_profile)
+                .centerCrop();
+
 
 
         Glide.with(this).load(ImageLink).apply(options).skipMemoryCache(true) //2
@@ -549,6 +569,60 @@ public class ProfilePage extends AppCompatActivity {
         return cardview;
 
     }
+
+    public BottomNavigationView.OnNavigationItemSelectedListener navListener = new BottomNavigationView.OnNavigationItemSelectedListener() {
+        @Override
+        public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+            SharedPreferences settings = getSharedPreferences("Storage", MODE_PRIVATE);
+            String Username = settings.getString("Username", "n/a");
+
+            switch (item.getItemId()) {
+                case R.id.nav_home:
+                    new Handler().post(new Runnable() {
+                        @Override
+                        public void run() {
+                            Intent intent = new Intent(ProfilePage.this, com.example.chathouse.Pages.HomePage.class);
+                            startActivity(intent);
+                            finish();
+                        }
+                    });
+                    break;
+
+
+                case R.id.nav_Profile:
+                    new Handler().post(new Runnable() {
+                        @Override
+                        public void run() {
+
+                            Intent intent = new Intent(ProfilePage.this, com.example.chathouse.Pages.ProfilePage.class);
+                            Bundle bundle = new Bundle();
+
+
+                            bundle.putString("Username", Username);
+                            intent.putExtras(bundle);
+                            startActivity(intent);
+                            finish();
+                        }
+                    });
+                    break;
+
+
+                case R.id.nav_Search:
+                    new Handler().post(new Runnable() {
+                        @Override
+                        public void run() {
+
+                            Intent intent = new Intent(ProfilePage.this, com.example.chathouse.Pages.Search.class);
+                            startActivity(intent);
+                            finish();
+                        }
+                    });
+                    break;
+            }
+            return false;
+        }
+    };
+
 
 
 

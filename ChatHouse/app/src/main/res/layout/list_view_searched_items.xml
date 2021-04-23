@@ -11,7 +11,7 @@
         android:id="@+id/itemImage"
         android:layout_width="70dp"
         android:layout_height="70dp"
-        app:srcCompat="@drawable/thumb_15951118880user" />
+        app:srcCompat="@mipmap/default_user_profile" />
 
     <TextView
         android:id="@+id/name"
@@ -33,8 +33,9 @@
             android:paddingLeft="8dp"
             android:paddingEnd="16dp"
             android:paddingRight="16dp"
-            android:textColor="#000000"
-            android:textSize="19sp" />
+            android:textColor="@color/Verypink"
+            android:textSize="19sp"
+            />
         <TextView
             android:id="@+id/itemFirstNameAndLastName"
             android:layout_width="match_parent"
@@ -43,7 +44,7 @@
             android:paddingLeft="8dp"
             android:paddingEnd="16dp"
             android:paddingRight="16dp"
-            android:textColor="#000000"
+            android:textColor="@color/Verypink"
             android:textSize="15sp" />
     </LinearLayout>
 

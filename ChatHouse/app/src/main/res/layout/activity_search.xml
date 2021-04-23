@@ -1,8 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent">
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/b22"
+    android:orientation="vertical">
 
     <SearchView
         android:id="@+id/search"
@@ -13,31 +16,423 @@
         <requestFocus />
     </SearchView>
 
+    <LinearLayout
+        android:id="@+id/search_loading"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_below="@+id/search"
+        android:layout_marginTop="7dp"
+        android:gravity="center"
+        >
+
+        <TextView
+            android:id="@+id/SearchTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Search in all people"
+            android:textColor="@color/Verypink"
+            android:textStyle="bold"
+            android:textSize="22dp"
+            android:layout_gravity="center" />
+
+        <ProgressBar
+            android:id="@+id/search_progressbar"
+            android:layout_marginLeft="10dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            style="?android:attr/progressBarStyle"
+            android:progressDrawable="@drawable/loading"
+            android:visibility="gone"
+            >
+
+        </ProgressBar>
+
+    </LinearLayout>
+
     <TextView
         android:id="@+id/SearchError"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="15dp"
-        android:layout_below="@+id/search"
+        android:layout_below="@+id/search_loading"
+        android:layout_marginVertical="10dp"
         android:gravity="center"
+        android:text="No Results Found"
         android:textColor="@color/black"
         android:textSize="20dp"
-        android:text="No Results Found"
-        android:visibility="invisible"/>
+        android:visibility="invisible" />
 
-    <ListView
-        android:id="@+id/SearchedPersonListView"
+    <LinearLayout
+        android:id="@+id/s"
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/search" >
-    </ListView>
+        android:layout_height="fill_parent"
+        android:layout_above="@+id/Search_menu"
+        android:layout_below="@+id/search_loading"
+        android:orientation="vertical">
 
-    <Button
-        android:id="@+id/ProfBtn"
-        android:layout_width="wrap_content"
-        android:layout_height="40dp"
+        <ListView
+            android:id="@+id/SearchedPersonListView"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_below="@+id/search"
+            android:fadeScrollbars="false"
+            android:layout_weight="4"></ListView>
+
+        <View
+            android:layout_width="wrap_content"
+            android:layout_height="5dp"
+            android:layout_marginTop="5dp"
+            android:background="@color/white"
+            android:tooltipText="Interests" />
+
+        <RelativeLayout
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_below="@+id/SearchedPersonListView"
+            android:layout_alignParentBottom="true"
+            android:layout_weight="7">
+
+            <HorizontalScrollView
+                android:id="@+id/Items"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:fadeScrollbars="false">
+
+                <GridLayout
+                    android:id="@+id/item_grid"
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"
+                    android:alignmentMode="alignMargins"
+                    android:columnCount="5"
+                    android:rowCount="3"></GridLayout>
+
+            </HorizontalScrollView>
+
+            <ScrollView
+                android:id="@+id/Category"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:fadeScrollbars="false">
+
+                <GridLayout
+                    android:id="@+id/category_grid"
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"
+                    android:alignmentMode="alignMargins"
+                    android:columnCount="2"
+                    android:columnOrderPreserved="false"
+                    android:rowCount="7">
+
+                    <androidx.cardview.widget.CardView
+                        android:id="@+id/Wellness"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_rowWeight="1"
+                        android:layout_columnWeight="1"
+                        android:layout_margin="12dp"
+                        app:cardCornerRadius="50dp"
+                        app:cardElevation="6dp">
+
+                        <TextView
+                            android:layout_width="fill_parent"
+                            android:layout_height="fill_parent"
+                            android:layout_marginVertical="8dp"
+                            android:gravity="center"
+                            android:text="Wellness"
+                            android:textSize="20sp"
+                            android:textStyle="bold" />
+
+                    </androidx.cardview.widget.CardView>
+
+                    <androidx.cardview.widget.CardView
+                        android:id="@+id/Identity"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_rowWeight="1"
+                        android:layout_columnWeight="1"
+                        android:layout_margin="12dp"
+                        app:cardCornerRadius="50dp"
+                        app:cardElevation="6dp">
+
+                        <TextView
+                            android:layout_width="fill_parent"
+                            android:layout_height="fill_parent"
+                            android:layout_marginVertical="8dp"
+                            android:gravity="center"
+                            android:text="Identity"
+                            android:textSize="20sp"
+                            android:textStyle="bold" />
+
+                    </androidx.cardview.widget.CardView>
+
+                    <androidx.cardview.widget.CardView
+                        android:id="@+id/Places"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_rowWeight="1"
+                        android:layout_columnWeight="1"
+                        android:layout_margin="12dp"
+                        app:cardCornerRadius="50dp"
+                        app:cardElevation="6dp">
+
+                        <TextView
+                            android:layout_width="fill_parent"
+                            android:layout_height="fill_parent"
+                            android:layout_marginVertical="8dp"
+                            android:gravity="center"
+                            android:text="Places"
+                            android:textSize="20sp"
+                            android:textStyle="bold" />
+
+                    </androidx.cardview.widget.CardView>
+
+                    <androidx.cardview.widget.CardView
+                        android:id="@+id/WorldAffaris"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_rowWeight="1"
+                        android:layout_columnWeight="1"
+                        android:layout_margin="12dp"
+                        app:cardCornerRadius="50dp"
+                        app:cardElevation="6dp">
+
+                        <TextView
+                            android:layout_width="fill_parent"
+                            android:layout_height="fill_parent"
+                            android:layout_marginVertical="8dp"
+                            android:gravity="center"
+                            android:text="World affairs"
+                            android:textSize="20sp"
+                            android:textStyle="bold" />
+
+                    </androidx.cardview.widget.CardView>
+
+                    <androidx.cardview.widget.CardView
+                        android:id="@+id/Tech"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_rowWeight="1"
+                        android:layout_columnWeight="1"
+                        android:layout_margin="12dp"
+                        app:cardCornerRadius="50dp"
+                        app:cardElevation="6dp">
+
+                        <TextView
+                            android:layout_width="fill_parent"
+                            android:layout_height="fill_parent"
+                            android:layout_marginVertical="8dp"
+                            android:gravity="center"
+                            android:text="Tech"
+                            android:textSize="20sp"
+                            android:textStyle="bold" />
+
+                    </androidx.cardview.widget.CardView>
+
+                    <androidx.cardview.widget.CardView
+                        android:id="@+id/HangingOut"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_rowWeight="1"
+                        android:layout_columnWeight="1"
+                        android:layout_margin="12dp"
+                        app:cardCornerRadius="50dp"
+                        app:cardElevation="6dp">
+
+                        <TextView
+                            android:layout_width="fill_parent"
+                            android:layout_height="fill_parent"
+                            android:layout_marginVertical="8dp"
+                            android:gravity="center"
+                            android:text="HangingOut"
+                            android:textSize="20sp"
+                            android:textStyle="bold" />
+
+                    </androidx.cardview.widget.CardView>
+
+                    <androidx.cardview.widget.CardView
+                        android:id="@+id/Knowledge"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_rowWeight="1"
+                        android:layout_columnWeight="1"
+                        android:layout_margin="12dp"
+                        app:cardCornerRadius="50dp"
+                        app:cardElevation="6dp">
+
+                        <TextView
+                            android:layout_width="fill_parent"
+                            android:layout_height="fill_parent"
+                            android:layout_marginVertical="8dp"
+                            android:gravity="center"
+                            android:text="KnowLedge"
+                            android:textSize="20sp"
+                            android:textStyle="bold" />
+
+                    </androidx.cardview.widget.CardView>
+
+                    <androidx.cardview.widget.CardView
+                        android:id="@+id/Hustle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_rowWeight="1"
+                        android:layout_columnWeight="1"
+                        android:layout_margin="12dp"
+                        app:cardCornerRadius="50dp"
+                        app:cardElevation="6dp">
+
+                        <TextView
+                            android:layout_width="fill_parent"
+                            android:layout_height="fill_parent"
+                            android:layout_marginVertical="8dp"
+                            android:gravity="center"
+                            android:text="Hustle"
+                            android:textSize="20sp"
+                            android:textStyle="bold" />
+
+                    </androidx.cardview.widget.CardView>
+
+                    <androidx.cardview.widget.CardView
+                        android:id="@+id/Sports"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_rowWeight="1"
+                        android:layout_columnWeight="1"
+                        android:layout_margin="12dp"
+                        app:cardCornerRadius="50dp"
+                        app:cardElevation="6dp">
+
+                        <TextView
+                            android:layout_width="fill_parent"
+                            android:layout_height="fill_parent"
+                            android:layout_marginVertical="8dp"
+                            android:gravity="center"
+                            android:text="Sports"
+                            android:textSize="20sp"
+                            android:textStyle="bold" />
+
+                    </androidx.cardview.widget.CardView>
+
+                    <androidx.cardview.widget.CardView
+                        android:id="@+id/Arts"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_rowWeight="1"
+                        android:layout_columnWeight="1"
+                        android:layout_margin="12dp"
+                        app:cardCornerRadius="50dp"
+                        app:cardElevation="6dp">
+
+                        <TextView
+                            android:layout_width="fill_parent"
+                            android:layout_height="fill_parent"
+                            android:layout_marginVertical="8dp"
+                            android:gravity="center"
+                            android:text="Arts"
+                            android:textSize="20sp"
+                            android:textStyle="bold" />
+
+                    </androidx.cardview.widget.CardView>
+
+                    <androidx.cardview.widget.CardView
+                        android:id="@+id/Life"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_rowWeight="1"
+                        android:layout_columnWeight="1"
+                        android:layout_margin="12dp"
+                        app:cardCornerRadius="50dp"
+                        app:cardElevation="6dp">
+
+                        <TextView
+                            android:layout_width="fill_parent"
+                            android:layout_height="fill_parent"
+                            android:layout_marginVertical="8dp"
+                            android:gravity="center"
+                            android:text="Life"
+                            android:textSize="20sp"
+                            android:textStyle="bold" />
+
+                    </androidx.cardview.widget.CardView>
+
+                    <androidx.cardview.widget.CardView
+                        android:id="@+id/Languages"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_rowWeight="1"
+                        android:layout_columnWeight="1"
+                        android:layout_margin="12dp"
+                        app:cardCornerRadius="50dp"
+                        app:cardElevation="6dp">
+
+                        <TextView
+                            android:layout_width="fill_parent"
+                            android:layout_height="fill_parent"
+                            android:layout_marginVertical="8dp"
+                            android:gravity="center"
+                            android:text="Languages"
+                            android:textSize="20sp"
+                            android:textStyle="bold" />
+
+                    </androidx.cardview.widget.CardView>
+
+                    <androidx.cardview.widget.CardView
+                        android:id="@+id/Entertainment"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_rowWeight="1"
+                        android:layout_columnWeight="1"
+                        android:layout_margin="12dp"
+                        app:cardCornerRadius="50dp"
+                        app:cardElevation="6dp">
+
+                        <TextView
+                            android:layout_width="fill_parent"
+                            android:layout_height="fill_parent"
+                            android:layout_marginVertical="8dp"
+                            android:gravity="center"
+                            android:text="Entertainment"
+                            android:textSize="20sp"
+                            android:textStyle="bold" />
+
+                    </androidx.cardview.widget.CardView>
+
+                    <androidx.cardview.widget.CardView
+                        android:id="@+id/Faith"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_rowWeight="1"
+                        android:layout_columnWeight="1"
+                        android:layout_margin="12dp"
+                        app:cardCornerRadius="50dp"
+                        app:cardElevation="6dp">
+
+                        <TextView
+                            android:layout_width="fill_parent"
+                            android:layout_height="fill_parent"
+                            android:layout_marginVertical="8dp"
+                            android:gravity="center"
+                            android:text="Faith"
+                            android:textSize="20sp"
+                            android:textStyle="bold" />
+
+                    </androidx.cardview.widget.CardView>
+
+                </GridLayout>
+            </ScrollView>
+
+        </RelativeLayout>
+
+    </LinearLayout>
+
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/Search_menu"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:itemIconTint="@color/black"
+        app:itemTextColor="@color/black"
         android:layout_alignParentBottom="true"
-        android:text="profile"
-        app:iconTint="#00FF83" />
+        android:background="@color/light"
+        app:menu="@menu/bottom_navigation" />
 
 </RelativeLayout>
+
