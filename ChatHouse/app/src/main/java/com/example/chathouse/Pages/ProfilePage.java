@@ -283,9 +283,11 @@ public class ProfilePage extends AppCompatActivity {
             public void onClick(View v) {
                 Intent intent = new Intent(ProfilePage.this, FollowingFollowersPage.class);
                 Bundle bundle = new Bundle();
+                String name = "Following";
 
 //                bundle.putParcelableArrayList("Following", FollowingList);
                 bundle.putString("User", UsernameX);
+                bundle.putString("Name", name);
 
                 intent.putExtra("Following", (Serializable)FollowingList);
                 intent.putExtras(bundle);
@@ -298,10 +300,13 @@ public class ProfilePage extends AppCompatActivity {
             public void onClick(View v) {
                 Intent intent = new Intent(ProfilePage.this, FollowingFollowersPage.class);
                 Bundle bundle = new Bundle();
+                String name = "Followers";
+                bundle.putString("Name", name);
 
 //                bundle.putSerializable("Following", FollowersList);
 
                 intent.putExtra("Following", FollowersList);
+                intent.putExtras(bundle);
                 startActivity(intent);
             }
         });

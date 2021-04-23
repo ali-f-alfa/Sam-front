@@ -3,6 +3,7 @@ package com.example.chathouse.ViewModels;
 import com.example.chathouse.ViewModels.Acount.ProfileInformation;
 
 import java.util.ArrayList;
+import java.util.Date;
 
 public class GetRoomViewModel {
     private Integer id;

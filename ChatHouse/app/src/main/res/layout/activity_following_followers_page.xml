@@ -4,13 +4,29 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Pages.ProfilePage">
+    tools:context=".Pages.ProfilePage"
+    android:background="@drawable/b22">
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="10dp"
+        android:text="Following"
+        android:textSize="24dp"
+        android:textStyle="bold"
+        android:id="@+id/FollowingfollowersText"
+        android:textColor="@color/almostblack">
+
+    </TextView>
     <ListView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/FollowingfollowersText"
+        android:layout_marginTop="10dp"
         android:id="@+id/FollowingFollowersListView">
 
 
