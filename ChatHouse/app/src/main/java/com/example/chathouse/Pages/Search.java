@@ -3,15 +3,11 @@ package com.example.chathouse.Pages;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 
-import android.app.ActionBar;
-import android.app.ActionBar.LayoutParams;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
-import android.provider.Settings;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.widget.AbsListView;
@@ -20,10 +16,11 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.SearchView;
 import android.widget.ListView;
-import android.widget.LinearLayout;
 import android.widget.GridLayout;
+import android.widget.ScrollView;
 import android.content.Context;
 import android.view.LayoutInflater;
+import android.widget.LinearLayout.LayoutParams;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
@@ -33,7 +30,6 @@ import android.widget.Toast;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 
 import com.bumptech.glide.Glide;
 import com.example.chathouse.API.ChatHouseAPI;
@@ -72,6 +68,9 @@ public class Search extends AppCompatActivity implements SearchView.OnQueryTextL
     int selected_category;
     int selected_item;
     boolean endOfList;
+    GridLayout category_grid;
+    ScrollView category_scroll;
+    GridLayout item_grid;
 
 
     @Override
@@ -90,6 +89,9 @@ public class Search extends AppCompatActivity implements SearchView.OnQueryTextL
         settings = getSharedPreferences("Storage", MODE_PRIVATE);
         Token = settings.getString("Token", "n/a");
         Username = settings.getString("Username", "n/a");
+        category_grid = (GridLayout) findViewById(R.id.category_grid);
+        category_scroll = (ScrollView) findViewById(R.id.Category);
+        item_grid = (GridLayout) findViewById(R.id.item_grid);
 
         OkHttpClient client = new OkHttpClient.Builder().addInterceptor(new Interceptor() {
             @Override
@@ -111,12 +113,11 @@ public class Search extends AppCompatActivity implements SearchView.OnQueryTextL
                 .build();
         SearchAPI = retrofit.create(ChatHouseAPI.class);
 
-        GridLayout grid = (GridLayout) findViewById(R.id.category_grid);
-        int childCount = grid.getChildCount();
+        int childCount = category_grid.getChildCount();
 
         for (int i= 0; i < childCount; i++){
             int n = i;
-            CardView container = (CardView) grid.getChildAt(i);
+            CardView container = (CardView) category_grid.getChildAt(i);
             container.setOnClickListener(new View.OnClickListener(){
                 public void onClick(View view){
                     selected_category = n;
@@ -153,7 +154,8 @@ public class Search extends AppCompatActivity implements SearchView.OnQueryTextL
                         }
                     });
 
-                    grid.setVisibility(View.INVISIBLE);
+                    category_scroll.setVisibility(View.INVISIBLE);
+                    CreateItems(n,item_grid);
                 }
             });
         }
@@ -298,9 +300,8 @@ public class Search extends AppCompatActivity implements SearchView.OnQueryTextL
 
         SearchError.setVisibility(View.INVISIBLE);
 
-
-//        ArrayList<SearchPerson> CategoryUsers = new ArrayList<SearchPerson>();
         SearchedPersons.clear();
+        adapter.notifyDataSetChanged();
         endOfList = false;
         Call<List<InputSearchViewModel>> Req;
         if (mode == 0)
@@ -319,6 +320,8 @@ public class Search extends AppCompatActivity implements SearchView.OnQueryTextL
                     Toast.makeText(Search.this, "not 200 ", Toast.LENGTH_LONG).show();
                     Toast.makeText(Search.this, response.toString(), Toast.LENGTH_LONG).show();
                 }
+                SearchedPersons.clear();
+                adapter.notifyDataSetChanged();
                 for (InputSearchViewModel person : response.body()) {
                     SearchPerson Person = new SearchPerson(person.getUsername(), person.getImagelink(), person.getFirstName(), person.getLastName());
                     SearchedPersons.add(Person);
@@ -343,11 +346,107 @@ public class Search extends AppCompatActivity implements SearchView.OnQueryTextL
         return false;
     }
 
-    public void onCategoryClick(View view, int n) {
-        Toast.makeText(this, "category pressed", Toast.LENGTH_LONG).show();
 
+
+    public void CreateItems(int n, GridLayout layout){
+        ArrayList<String> temp = new ArrayList<>();
+        switch (n){
+            case 0:
+                temp = com.example.chathouse.ViewModels.Acount.Interests.Wellness.getArrayString();
+                break;
+            case 1:
+                temp = com.example.chathouse.ViewModels.Acount.Interests.Identity.getArrayString();
+                break;
+            case 2:
+                temp = com.example.chathouse.ViewModels.Acount.Interests.Places.getArrayString();
+                break;
+            case 3:
+                temp = com.example.chathouse.ViewModels.Acount.Interests.WorldAffairs.getArrayString();
+                break;
+            case 4:
+                temp = com.example.chathouse.ViewModels.Acount.Interests.Tech.getArrayString();
+                break;
+            case 5:
+                temp = com.example.chathouse.ViewModels.Acount.Interests.HangingOut.getArrayString();
+                break;
+            case 6:
+                temp = com.example.chathouse.ViewModels.Acount.Interests.KnowLedge.getArrayString();
+                break;
+            case 7:
+                temp = com.example.chathouse.ViewModels.Acount.Interests.Hustle.getArrayString();
+                break;
+            case 8:
+                temp = com.example.chathouse.ViewModels.Acount.Interests.Sports.getArrayString();
+                break;
+            case 9:
+                temp = com.example.chathouse.ViewModels.Acount.Interests.Arts.getArrayString();
+                break;
+            case 10:
+                temp = com.example.chathouse.ViewModels.Acount.Interests.Life.getArrayString();
+                break;
+            case 11:
+                temp = com.example.chathouse.ViewModels.Acount.Interests.Languages.getArrayString();
+                break;
+            case 12:
+                temp = com.example.chathouse.ViewModels.Acount.Interests.Entertainment.getArrayString();
+                break;
+            case 13:
+                temp = com.example.chathouse.ViewModels.Acount.Interests.Faith.getArrayString();
+                break;
+        }
+
+        for (int x = 0; x < temp.size(); x++) {
+            AddItem(temp.get(x) , item_grid);
+        }
     }
-//    public void AddItem(){}
+
+    public CardView AddItem(String name, GridLayout layout){
+
+        CardView cardview = new CardView(this);
+
+        LayoutParams layoutparams = new LayoutParams(
+                450,
+                LayoutParams.WRAP_CONTENT
+        );
+        layoutparams.setMargins(20,35,20,35   );
+
+        cardview.setLayoutParams(layoutparams);
+
+        cardview.setRadius(50);
+
+        cardview.setPadding(25, 25, 25, 25);
+
+        cardview.setCardBackgroundColor(Color.WHITE);
+
+
+        cardview.setMaxCardElevation(6);
+
+
+        TextView textview = new TextView(this);
+
+        LayoutParams tlayoutparams = new LayoutParams(
+                LayoutParams.FILL_PARENT,
+                LayoutParams.FILL_PARENT
+        );
+        tlayoutparams.setMargins(5,15,5,15   );
+
+        textview.setLayoutParams(tlayoutparams);
+
+        textview.setText(name);
+
+        textview.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 18);
+
+//        textview.setTextColor(Color.WHITE);
+
+        textview.setPadding(8,8,8,8);
+
+        textview.setGravity(Gravity.CENTER);
+
+        cardview.addView(textview);
+
+        layout.addView(cardview);
+        return cardview;
+    }
 //    public CardView AddCategory(String name, GridLayout layout){
 //
 //        CardView cardview = new CardView(this);
