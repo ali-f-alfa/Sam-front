@@ -4,13 +4,13 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/b22"
     tools:context=".Pages.ProfilePage">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@drawable/b22"
+        tools:context=".Pages.ProfilePage"
         android:layout_above="@+id/Profile_menu">
 
         <androidx.constraintlayout.widget.ConstraintLayout
@@ -108,17 +108,31 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/Name"></TextView>
 
+            <TextView
+                android:id="@+id/FollowsYouText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="2dp"
+                android:ems="10"
+                android:fontFamily="sans-serif-condensed"
+                android:gravity="center"
+                android:text="(Follows You)"
+                android:textColor="@color/almostblack"
+                android:textSize="10dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/UsernameText"></TextView>
 
             <GridLayout
                 android:id="@+id/Statics"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
-                android:layout_marginTop="5dp"
+                android:layout_marginTop="2dp"
                 android:columnCount="2"
                 android:rowCount="1"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/UsernameText">
+                app:layout_constraintTop_toBottomOf="@+id/FollowsYouText">
 
                 <TextView
                     android:id="@+id/Followers"
@@ -132,8 +146,7 @@
                     android:textColor="@color/Verypink"
                     android:textSize="18dp"
                     app:layout_constraintEnd_toStartOf="@+id/FollowingText"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/UsernameText">
+                    app:layout_constraintStart_toStartOf="parent">
 
                 </TextView>
 
@@ -142,7 +155,6 @@
                     android:layout_width="90dp"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="40dp"
-                    android:clickable="true"
                     android:fontFamily="sans-serif-medium"
                     android:gravity="center"
                     android:text="1238"
@@ -225,21 +237,41 @@
 
             </GridLayout>
 
-            <Button
-                android:id="@+id/EditProfileButton"
-                android:layout_width="340dp"
-                android:layout_height="40dp"
+            <GridLayout
+                android:id="@+id/SeetingEdit"
+                android:layout_width="match_parent"
+                android:layout_height="45dp"
                 android:layout_marginTop="0dp"
-                android:text="Edit Profile"
-                android:textColor="@color/almostorange"
-                android:textSize="12dp"
+                android:columnCount="2"
+                android:paddingHorizontal="20dp"
+                android:rowCount="1"
+                android:useDefaultMargins="true"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/Statics">
 
-            </Button>
+                <Button
+                    android:id="@+id/EditProfileButton"
+                    android:layout_width="170dp"
+                    android:backgroundTint="@color/white"
+                    android:text="Edit Profile"
+                    android:textColor="@color/almostorange"
+                    android:textSize="12dp">
 
-    </GridLayout>
+                </Button>
+
+                <Button
+                    android:id="@+id/Setting"
+                    android:layout_width="171dp"
+                    android:backgroundTint="@color/white"
+                    android:text="Setting"
+                    android:textColor="@color/almostorange"
+
+                    android:textSize="12dp">
+
+                </Button>
+
+            </GridLayout>
 
 
             <TextView
@@ -344,6 +376,8 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
+
+
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

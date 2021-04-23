@@ -7,7 +7,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 
-import com.example.chathouse.HomePage;
+import com.example.chathouse.Pages.HomePage;
 import com.example.chathouse.R;
 import com.example.chathouse.Utility.Constants;
 
