@@ -17,6 +17,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.chathouse.API.ChatHouseAPI;
+import com.example.chathouse.HomePage;
 import com.example.chathouse.ViewModels.Acount.OutputLoginViewModel;
 import com.example.chathouse.R;
 import com.example.chathouse.Utility.Constants;
@@ -109,7 +110,7 @@ public class Login extends AppCompatActivity {
                             new Handler().post(new Runnable() {
                                 @Override
                                 public void run() {
-                                    Intent intent = new Intent(Login.this, ProfilePage.class);
+                                    Intent intent = new Intent(Login.this, HomePage.class);
                                     Bundle bundle = new Bundle();
 
                                     bundle.putString("Token", Token);
