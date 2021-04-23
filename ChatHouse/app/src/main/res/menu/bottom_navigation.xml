@@ -1,18 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
+
     <item
         android:id="@+id/nav_Search"
         android:icon="@drawable/ic_baseline_search_24"
-        android:title="Search"/>
+        android:title="Search" />
 
     <item
         android:id="@+id/nav_home"
         android:icon="@drawable/ic_home_black_24dp"
-        android:title="Home"/>
+        android:title="Home" />
+
 
     <item
         android:id="@+id/nav_Profile"
         android:icon="@drawable/ic_baseline_account_circle_24"
-        android:title="Profile"/>
+        android:title="Profile" />
+
+
 </menu>

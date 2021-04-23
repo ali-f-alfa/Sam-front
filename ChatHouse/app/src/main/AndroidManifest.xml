@@ -17,7 +17,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.ChatHouse"
         android:usesCleartextTraffic="true">
-        <activity android:name=".HomePage"></activity>
+        <activity android:name=".Pages.HomePage"></activity>
         <activity android:name=".Pages.FollowingFollowersPage" />
         <activity android:name=".Pages.EditProfile" />
         <activity android:name=".Pages.Search"></activity>

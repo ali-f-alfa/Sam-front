@@ -20,6 +20,7 @@ import android.widget.SearchView;
 import android.widget.ListView;
 import android.widget.GridLayout;
 import android.widget.ScrollView;
+import android.widget.ProgressBar;
 import android.widget.HorizontalScrollView;
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -35,6 +36,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.resource.bitmap.CircleCrop;
+import com.bumptech.glide.request.RequestOptions;
 import com.example.chathouse.API.ChatHouseAPI;
 import com.example.chathouse.R;
 import com.example.chathouse.Utility.Constants;
@@ -78,6 +81,7 @@ public class Search extends AppCompatActivity implements SearchView.OnQueryTextL
     GridLayout item_grid;
     HorizontalScrollView item_scroll;
     BottomNavigationView menu;
+    ProgressBar loading;
 
 
     @Override
@@ -93,7 +97,6 @@ public class Search extends AppCompatActivity implements SearchView.OnQueryTextL
         SearchTitle = findViewById(R.id.SearchTitle);
         list = (ListView) findViewById(R.id.SearchedPersonListView);
         editsearch = (SearchView) findViewById(R.id.search);
-        profileBtn = (Button) findViewById(R.id.ProfBtn);
         settings = getSharedPreferences("Storage", MODE_PRIVATE);
         Token = settings.getString("Token", "n/a");
         Username = settings.getString("Username", "n/a");
@@ -102,6 +105,7 @@ public class Search extends AppCompatActivity implements SearchView.OnQueryTextL
         item_grid = (GridLayout) findViewById(R.id.item_grid);
         item_scroll = (HorizontalScrollView) findViewById(R.id.Items);
         menu = (BottomNavigationView) findViewById(R.id.Search_menu);
+        loading = (ProgressBar) findViewById(R.id.search_progressbar);
 
         OkHttpClient client = new OkHttpClient.Builder().addInterceptor(new Interceptor() {
             @Override
@@ -124,6 +128,8 @@ public class Search extends AppCompatActivity implements SearchView.OnQueryTextL
         SearchAPI = retrofit.create(ChatHouseAPI.class);
 
         menu.setOnNavigationItemSelectedListener(navListener);
+        int a = menu.getSelectedItemId();
+        menu.setSelected(false);
 
         int childCount = category_grid.getChildCount();
         for (int i = 0; i < childCount; i++) {
@@ -141,12 +147,13 @@ public class Search extends AppCompatActivity implements SearchView.OnQueryTextL
 
 
                     Call<List<InputSearchViewModel>> Req = SearchAPI.Category(editsearch.getQuery().toString(), selected_category, 10, 1);
+                    loading.setVisibility(View.VISIBLE);
                     Req.enqueue(new Callback<List<InputSearchViewModel>>() {
                         @Override
                         public void onResponse(Call<List<InputSearchViewModel>> call, Response<List<InputSearchViewModel>> response) {
                             if (!response.isSuccessful()) {
                                 Toast.makeText(Search.this, "unsuccessful", Toast.LENGTH_LONG).show();
-//                                Toast.makeText(Search.this, response.toString(), Toast.LENGTH_LONG).show();
+                                loading.setVisibility(View.GONE);
                             }
                             for (InputSearchViewModel person : response.body()) {
                                 SearchPerson Person = new SearchPerson(person.getUsername(), person.getImagelink(), person.getFirstName(), person.getLastName());
@@ -160,12 +167,15 @@ public class Search extends AppCompatActivity implements SearchView.OnQueryTextL
                             if (SearchedPersons.size() == 0) {
                                 SearchError.setVisibility(View.VISIBLE);
                             }
+                            loading.setVisibility(View.GONE);
 
                         }
 
                         @Override
                         public void onFailure(Call<List<InputSearchViewModel>> call, Throwable t) {
-                            Toast.makeText(Search.this, "Request failed", Toast.LENGTH_LONG).show();
+                            Toast.makeText(Search.this, "Check your network", Toast.LENGTH_LONG).show();
+                            loading.setVisibility(View.GONE);
+
                         }
                     });
 
@@ -174,26 +184,6 @@ public class Search extends AppCompatActivity implements SearchView.OnQueryTextL
                 }
             });
         }
-
-        profileBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                new Handler().post(new Runnable() {
-                    @Override
-                    public void run() {
-
-                        Intent intent = new Intent(Search.this, com.example.chathouse.Pages.ProfilePage.class);
-                        Bundle bundle = new Bundle();
-
-
-                        bundle.putString("Username", Username);
-                        intent.putExtras(bundle);
-                        startActivity(intent);
-                        finish();
-                    }
-                });
-            }
-        });
 
         list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -212,31 +202,38 @@ public class Search extends AppCompatActivity implements SearchView.OnQueryTextL
 
 
         Call<List<InputSearchViewModel>> Suggest = SearchAPI.Suggest(10, 1);
+        loading.setVisibility(View.VISIBLE);
         Suggest.enqueue(new Callback<List<InputSearchViewModel>>() {
             @Override
             public void onResponse(Call<List<InputSearchViewModel>> call, Response<List<InputSearchViewModel>> response) {
                 if (!response.isSuccessful()) {
                     Toast.makeText(Search.this, "request was not successful ", Toast.LENGTH_LONG).show();
+                    loading.setVisibility(View.GONE);
                 }
+                else {
+                    for (InputSearchViewModel person : response.body()) {
+                        SearchPerson Person = new SearchPerson(person.getUsername(), person.getImagelink(), person.getFirstName(), person.getLastName());
+                        SearchedPersons.add(Person);
+                    }
 
-                for (InputSearchViewModel person : response.body()) {
-                    SearchPerson Person = new SearchPerson(person.getUsername(), person.getImagelink(), person.getFirstName(), person.getLastName());
-                    SearchedPersons.add(Person);
-                }
+                    adapter = new ListViewAdapter(Search.this, SearchedPersons);
+                    list.setAdapter(adapter);
 
-                adapter = new ListViewAdapter(Search.this, SearchedPersons);
-                list.setAdapter(adapter);
-
-                if (SearchedPersons.size() == 0) {
-                    SearchError.setVisibility(View.VISIBLE);
+                    if (SearchedPersons.size() == 0) {
+                        SearchError.setVisibility(View.VISIBLE);
+                    }
+                    loading.setVisibility(View.GONE);
                 }
             }
 
             @Override
             public void onFailure(Call<List<InputSearchViewModel>> call, Throwable t) {
-                Toast.makeText(Search.this, "Request failed", Toast.LENGTH_LONG).show();
+                Toast.makeText(Search.this, "Check your network", Toast.LENGTH_LONG).show();
+                loading.setVisibility(View.GONE);
+
             }
         });
+
 
         //pagination
         list.setOnScrollListener(new AbsListView.OnScrollListener() {
@@ -258,38 +255,42 @@ public class Search extends AppCompatActivity implements SearchView.OnQueryTextL
                         else
                             Req = SearchAPI.Item(editsearch.getQuery().toString(), selected_category, selected_item, 5, i++);
 
+                        loading.setVisibility(View.VISIBLE);
                         Req.enqueue(new Callback<List<InputSearchViewModel>>() {
                             @Override
                             public void onResponse(Call<List<InputSearchViewModel>> call, Response<List<InputSearchViewModel>> response) {
                                 if (!response.isSuccessful()) {
                                     Toast.makeText(Search.this, "request was not successful ", Toast.LENGTH_LONG).show();
+                                    loading.setVisibility(View.GONE);
                                 }
+                                else {
 
-                                if (response.body().size() == 0)
-                                    endOfList = true;
-                                else
-                                    endOfList = false;
+                                    if (response.body().size() == 0)
+                                        endOfList = true;
+                                    else
+                                        endOfList = false;
 
-                                for (InputSearchViewModel person : response.body()) {
-                                    SearchPerson Person = new SearchPerson(person.getUsername(), person.getImagelink(), person.getFirstName(), person.getLastName());
-                                    SearchedPersons.add(Person);
+                                    for (InputSearchViewModel person : response.body()) {
+                                        SearchPerson Person = new SearchPerson(person.getUsername(), person.getImagelink(), person.getFirstName(), person.getLastName());
+                                        SearchedPersons.add(Person);
+                                    }
+
+                                    adapter.notifyDataSetChanged();
+
+
+                                    if (SearchedPersons.size() == 0) {
+                                        SearchError.setVisibility(View.VISIBLE);
+                                    }
+                                    loading.setVisibility(View.GONE);
                                 }
-
-                                adapter.notifyDataSetChanged();
-
-
-                                if (SearchedPersons.size() == 0) {
-                                    SearchError.setVisibility(View.VISIBLE);
-                                }
-
                             }
 
                             @Override
                             public void onFailure(Call<List<InputSearchViewModel>> call, Throwable t) {
-                                Toast.makeText(Search.this, "Request failed", Toast.LENGTH_LONG).show();
+                                Toast.makeText(Search.this, "Check your network", Toast.LENGTH_LONG).show();
+                                loading.setVisibility(View.GONE);
                             }
                         });
-
                     }
                 }
             }
@@ -325,34 +326,38 @@ public class Search extends AppCompatActivity implements SearchView.OnQueryTextL
         else
             Req = SearchAPI.Item(editsearch.getQuery().toString(), selected_category, selected_item, 10, 1);
 
-
+        loading.setVisibility(View.VISIBLE);
         Req.enqueue(new Callback<List<InputSearchViewModel>>() {
             @Override
             public void onResponse(Call<List<InputSearchViewModel>> call, Response<List<InputSearchViewModel>> response) {
                 if (!response.isSuccessful()) {
-                    Toast.makeText(Search.this, "not 200 ", Toast.LENGTH_LONG).show();
-                    Toast.makeText(Search.this, response.toString(), Toast.LENGTH_LONG).show();
+                    Toast.makeText(Search.this, "unsuccessful ", Toast.LENGTH_LONG).show();
+                    loading.setVisibility(View.GONE);
                 }
-                SearchedPersons.clear();
-                adapter.notifyDataSetChanged();
-                for (InputSearchViewModel person : response.body()) {
-                    SearchPerson Person = new SearchPerson(person.getUsername(), person.getImagelink(), person.getFirstName(), person.getLastName());
-                    SearchedPersons.add(Person);
+                else {
+                    SearchedPersons.clear();
+                    adapter.notifyDataSetChanged();
+                    for (InputSearchViewModel person : response.body()) {
+                        SearchPerson Person = new SearchPerson(person.getUsername(), person.getImagelink(), person.getFirstName(), person.getLastName());
+                        SearchedPersons.add(Person);
+                    }
+
+                    adapter = new ListViewAdapter(Search.this, SearchedPersons);
+                    list.setAdapter(adapter);
+                    adapter.notifyDataSetChanged();
+
+                    if (SearchedPersons.size() == 0) {
+                        SearchError.setVisibility(View.VISIBLE);
+                    }
+                    loading.setVisibility(View.GONE);
                 }
-
-                adapter = new ListViewAdapter(Search.this, SearchedPersons);
-                list.setAdapter(adapter);
-                adapter.notifyDataSetChanged();
-
-                if (SearchedPersons.size() == 0) {
-                    SearchError.setVisibility(View.VISIBLE);
-                }
-
             }
 
             @Override
             public void onFailure(Call<List<InputSearchViewModel>> call, Throwable t) {
-                Toast.makeText(Search.this, "Request failed", Toast.LENGTH_LONG).show();
+                Toast.makeText(Search.this, "Check your network", Toast.LENGTH_LONG).show();
+                loading.setVisibility(View.GONE);
+
             }
         });
 
@@ -420,38 +425,41 @@ public class Search extends AppCompatActivity implements SearchView.OnQueryTextL
                     SearchError.setVisibility(View.INVISIBLE);
 
                     Call<List<InputSearchViewModel>> Req = SearchAPI.Item(editsearch.getQuery().toString(), selected_category, selected_item, 10, 1);
+                    loading.setVisibility(View.VISIBLE);
                     Req.enqueue(new Callback<List<InputSearchViewModel>>() {
                         @Override
                         public void onResponse(Call<List<InputSearchViewModel>> call, Response<List<InputSearchViewModel>> response) {
                             if (!response.isSuccessful()) {
                                 Toast.makeText(Search.this, "unsuccessful", Toast.LENGTH_LONG).show();
-//                                Toast.makeText(Search.this, response.toString(), Toast.LENGTH_LONG).show();
+                                loading.setVisibility(View.GONE);
                             }
-                            for (InputSearchViewModel person : response.body()) {
-                                SearchPerson Person = new SearchPerson(person.getUsername(), person.getImagelink(), person.getFirstName(), person.getLastName());
-                                SearchedPersons.add(Person);
+                            else {
+                                for (InputSearchViewModel person : response.body()) {
+                                    SearchPerson Person = new SearchPerson(person.getUsername(), person.getImagelink(), person.getFirstName(), person.getLastName());
+                                    SearchedPersons.add(Person);
+                                }
+
+                                adapter = new ListViewAdapter(Search.this, SearchedPersons);
+                                list.setAdapter(adapter);
+                                adapter.notifyDataSetChanged();
+
+                                if (SearchedPersons.size() == 0) {
+                                    SearchError.setVisibility(View.VISIBLE);
+                                }
+                                loading.setVisibility(View.GONE);
                             }
-
-                            adapter = new ListViewAdapter(Search.this, SearchedPersons);
-                            list.setAdapter(adapter);
-                            adapter.notifyDataSetChanged();
-
-                            if (SearchedPersons.size() == 0) {
-                                SearchError.setVisibility(View.VISIBLE);
-                            }
-
                         }
 
                         @Override
                         public void onFailure(Call<List<InputSearchViewModel>> call, Throwable t) {
-                            Toast.makeText(Search.this, "Request failed", Toast.LENGTH_LONG).show();
+                            Toast.makeText(Search.this, "Check your network", Toast.LENGTH_LONG).show();
+                            loading.setVisibility(View.GONE);
                         }
                     });
                     item_scroll.setVisibility(View.INVISIBLE);
                     SearchTitle.setText("Search in " + t);
-
-
                 }
+
             });
         }
     }
@@ -464,42 +472,24 @@ public class Search extends AppCompatActivity implements SearchView.OnQueryTextL
                 450,
                 LayoutParams.WRAP_CONTENT
         );
-        layoutparams.setMargins(20, 35, 20, 35);
-
+        layoutparams.setMargins(20, 25, 20, 25);
         cardview.setLayoutParams(layoutparams);
-
         cardview.setRadius(50);
-
         cardview.setPadding(25, 25, 25, 25);
-
         cardview.setCardBackgroundColor(Color.WHITE);
-
-
         cardview.setMaxCardElevation(6);
-
-
         TextView textview = new TextView(this);
-
         LayoutParams tlayoutparams = new LayoutParams(
                 LayoutParams.FILL_PARENT,
                 LayoutParams.FILL_PARENT
         );
         tlayoutparams.setMargins(5, 15, 5, 15);
-
         textview.setLayoutParams(tlayoutparams);
-
         textview.setText(name);
-
         textview.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 18);
-
-//        textview.setTextColor(Color.WHITE);
-
         textview.setPadding(8, 8, 8, 8);
-
         textview.setGravity(Gravity.CENTER);
-
         cardview.addView(textview);
-
         layout.addView(cardview);
         return cardview;
     }
@@ -507,20 +497,16 @@ public class Search extends AppCompatActivity implements SearchView.OnQueryTextL
     public BottomNavigationView.OnNavigationItemSelectedListener navListener = new BottomNavigationView.OnNavigationItemSelectedListener() {
         @Override
         public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+            item.setEnabled(false);
             switch (item.getItemId()) {
                 case R.id.nav_home:
                     new Handler().post(new Runnable() {
                         @Override
                         public void run() {
-
-                            Intent intent = new Intent(Search.this, com.example.chathouse.Pages.ProfilePage.class);
-                            Bundle bundle = new Bundle();
-
-
-                            bundle.putString("Username", Username);
-                            intent.putExtras(bundle);
+                            Intent intent = new Intent(Search.this, com.example.chathouse.Pages.HomePage.class);
                             startActivity(intent);
                             finish();
+
                         }
                     });
                     break;
@@ -556,7 +542,7 @@ public class Search extends AppCompatActivity implements SearchView.OnQueryTextL
                     });
                     break;
             }
-            return true;
+            return false;
         }
     };
 }
@@ -612,13 +598,20 @@ class ListViewAdapter extends BaseAdapter {
         // Set the results into TextViews
         if (SearchedPersonsList.get(position).getFirstName() != null && SearchedPersonsList.get(position).getLastName() != null)
             holder.name.setText(SearchedPersonsList.get(position).getFirstName() + " " + SearchedPersonsList.get(position).getLastName());
+        else
+            holder.name.setVisibility(View.GONE);
 
         holder.userName.setText(SearchedPersonsList.get(position).getUserName());
 
 
-        if (SearchedPersonsList.get(position).getImageLink() != null)
-            Glide.with(mContext).load(SearchedPersonsList.get(position).getImageLink()).into(holder.Image);
+        if (SearchedPersonsList.get(position).getImageLink() != null) {
+            RequestOptions options = new RequestOptions()
+                    .placeholder(R.mipmap.default_user_profile)
+                    .centerCrop();
 
+            Glide.with(mContext).load(SearchedPersonsList.get(position).getImageLink())
+                    .apply(options).transform(new CircleCrop()).into(holder.Image);
+        }
         return view;
     }
 }

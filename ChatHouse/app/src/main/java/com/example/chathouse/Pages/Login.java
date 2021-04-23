@@ -2,7 +2,6 @@ package com.example.chathouse.Pages;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -14,10 +13,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.chathouse.API.ChatHouseAPI;
-import com.example.chathouse.HomePage;
 import com.example.chathouse.ViewModels.Acount.OutputLoginViewModel;
 import com.example.chathouse.R;
 import com.example.chathouse.Utility.Constants;
