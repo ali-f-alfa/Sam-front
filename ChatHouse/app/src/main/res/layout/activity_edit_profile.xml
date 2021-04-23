@@ -573,19 +573,7 @@
             app:layout_constraintTop_toBottomOf="@id/InterestEditContainer">
 
         </Button>
-        <Button
-            android:layout_width="300dp"
-            android:layout_height="wrap_content"
-            android:id="@+id/LogoutButton"
-            android:layout_marginTop="20dp"
-            android:backgroundTint="@color/white"
-            android:text="Logout"
-            android:textColor="@color/almostorange"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/SaveButton">
 
-        </Button>
         <TextView
             android:id="@+id/textView"
             android:layout_width="fill_parent"
@@ -595,7 +583,7 @@
             android:textColor="#000"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/LogoutButton"/>
+            app:layout_constraintTop_toBottomOf="@id/SaveButton"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
