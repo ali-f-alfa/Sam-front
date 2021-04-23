@@ -20,6 +20,8 @@ public class ProfileInformation {
     private ArrayList<FollowingFollowers> followings;
     private ArrayList<ArrayList<Integer>> interests;
     private String imageLink;
+    private ArrayList<Room> createdRooms;
+    private ArrayList<Room> inRooms;
 
 
     public String getUsername() {
@@ -60,5 +62,13 @@ public class ProfileInformation {
 
     public ArrayList<ArrayList<Integer>> getInterests() {
         return interests;
+    }
+
+    public ArrayList<Room> getCreatedRooms() {
+        return createdRooms;
+    }
+
+    public ArrayList<Room> getInRooms() {
+        return inRooms;
     }
 }

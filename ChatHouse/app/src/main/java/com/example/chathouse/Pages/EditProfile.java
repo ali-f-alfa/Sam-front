@@ -185,7 +185,7 @@ public class EditProfile extends AppCompatActivity {
         ArrayList<ArrayList<Integer>> interests = new ArrayList<>();
         interests = (ArrayList<ArrayList<Integer>>)bundle.getSerializable("Interests");
 
-//        InitializeSelectedInterests(interests);
+
 
         RequestOptions options = new RequestOptions()
                 .centerCrop()
@@ -204,7 +204,7 @@ public class EditProfile extends AppCompatActivity {
         }
 
         SelectedInterests = interests;
-
+//        InitializeSelectedInterests(interests);
         OkHttpClient client = new OkHttpClient.Builder().addInterceptor(new Interceptor() {
             @Override
             public okhttp3.Response intercept(Chain chain) throws IOException {
@@ -312,20 +312,20 @@ public class EditProfile extends AppCompatActivity {
 
 
 
-        MakeListOfEach(Wellness, com.example.chathouse.ViewModels.Acount.Interests.Wellness.getArrayString(), 0);
-        MakeListOfEach(Identity, com.example.chathouse.ViewModels.Acount.Interests.Identity.getArrayString(), 1);
-        MakeListOfEach(Places, com.example.chathouse.ViewModels.Acount.Interests.Places.getArrayString(), 2);
-        MakeListOfEach(WorldAffairs, com.example.chathouse.ViewModels.Acount.Interests.WorldAffairs.getArrayString(), 3);
-        MakeListOfEach(Tech, com.example.chathouse.ViewModels.Acount.Interests.Tech.getArrayString(), 4);
-        MakeListOfEach(HangingOut, com.example.chathouse.ViewModels.Acount.Interests.HangingOut.getArrayString(), 5);
-        MakeListOfEach(KnowLedge, com.example.chathouse.ViewModels.Acount.Interests.KnowLedge.getArrayString(), 6);
-        MakeListOfEach(Hustle, com.example.chathouse.ViewModels.Acount.Interests.Hustle.getArrayString(), 7);
-        MakeListOfEach(Sports, com.example.chathouse.ViewModels.Acount.Interests.Sports.getArrayString(), 8);
-        MakeListOfEach(Arts, com.example.chathouse.ViewModels.Acount.Interests.Arts.getArrayString(), 9);
-        MakeListOfEach(Life, com.example.chathouse.ViewModels.Acount.Interests.Life.getArrayString(), 10);
-        MakeListOfEach(Languages, com.example.chathouse.ViewModels.Acount.Interests.Languages.getArrayString(), 11);
-        MakeListOfEach(Entertainment, com.example.chathouse.ViewModels.Acount.Interests.Entertainment.getArrayString(), 12);
-        MakeListOfEach(Faith, com.example.chathouse.ViewModels.Acount.Interests.Faith.getArrayString(), 13);
+        MakeListOfEach(Wellness, com.example.chathouse.ViewModels.Acount.Interests.Wellness.getArrayString(), 0, SelectedInterests);
+        MakeListOfEach(Identity, com.example.chathouse.ViewModels.Acount.Interests.Identity.getArrayString(), 1, SelectedInterests);
+        MakeListOfEach(Places, com.example.chathouse.ViewModels.Acount.Interests.Places.getArrayString(), 2, SelectedInterests);
+        MakeListOfEach(WorldAffairs, com.example.chathouse.ViewModels.Acount.Interests.WorldAffairs.getArrayString(), 3, SelectedInterests);
+        MakeListOfEach(Tech, com.example.chathouse.ViewModels.Acount.Interests.Tech.getArrayString(), 4, SelectedInterests);
+        MakeListOfEach(HangingOut, com.example.chathouse.ViewModels.Acount.Interests.HangingOut.getArrayString(), 5, SelectedInterests);
+        MakeListOfEach(KnowLedge, com.example.chathouse.ViewModels.Acount.Interests.KnowLedge.getArrayString(), 6, SelectedInterests);
+        MakeListOfEach(Hustle, com.example.chathouse.ViewModels.Acount.Interests.Hustle.getArrayString(), 7, SelectedInterests);
+        MakeListOfEach(Sports, com.example.chathouse.ViewModels.Acount.Interests.Sports.getArrayString(), 8, SelectedInterests);
+        MakeListOfEach(Arts, com.example.chathouse.ViewModels.Acount.Interests.Arts.getArrayString(), 9, SelectedInterests);
+        MakeListOfEach(Life, com.example.chathouse.ViewModels.Acount.Interests.Life.getArrayString(), 10, SelectedInterests);
+        MakeListOfEach(Languages, com.example.chathouse.ViewModels.Acount.Interests.Languages.getArrayString(), 11, SelectedInterests);
+        MakeListOfEach(Entertainment, com.example.chathouse.ViewModels.Acount.Interests.Entertainment.getArrayString(), 12, SelectedInterests);
+        MakeListOfEach(Faith, com.example.chathouse.ViewModels.Acount.Interests.Faith.getArrayString(), 13, SelectedInterests);
 
 
 
@@ -758,8 +758,8 @@ public class EditProfile extends AppCompatActivity {
         return post;
     }
 
-    private void MakeListOfEach(ListView layout, ArrayList<String> fields, int cat){
-        ListViewAdapter2 arrayAdapter = new ListViewAdapter2(this, fields, cat);
+    private void MakeListOfEach(ListView layout, ArrayList<String> fields, int cat, ArrayList<ArrayList<Integer>> selected){
+        ListViewAdapter2 arrayAdapter = new ListViewAdapter2(this, fields, cat, selected);
         layout.setAdapter(arrayAdapter);
     }
 
@@ -771,73 +771,7 @@ public class EditProfile extends AppCompatActivity {
             Manifest.permission.ACCESS_NETWORK_STATE,
     };
     private static final int REQUEST_PERMISSIONS = 12345;
-    private void InitializeSelectedInterests(ArrayList<ArrayList<Integer>> interests) {
-        for(int i = 0; i < 14; i++){
-            List<Integer> indexes = interests.get(i);
 
-            for(int j = 0; j < indexes.size(); j++){
-                switch (i){
-                    case 0:
-                        Wellness.getAdapter().getView((int)(Math.log(indexes.get(j)) / Math.log(2)), Wellness, null).setSelected(true);
-                        Wellness.getAdapter().getView((int)(Math.log(indexes.get(j)) / Math.log(2)), Wellness, null).setBackgroundColor(Color.GRAY);
-                        break;
-                    case 1:
-                        Identity.getAdapter().getView((int)(Math.log(indexes.get(j)) / Math.log(2)), Wellness, null).setSelected(true);
-                        Identity.getAdapter().getView((int)(Math.log(indexes.get(j)) / Math.log(2)), Wellness, null).setBackgroundColor(Color.GRAY);
-                        break;
-                    case 2:
-                        Places.getAdapter().getView((int)(Math.log(indexes.get(j)) / Math.log(2)), Wellness, null).setSelected(true);
-                        Places.getAdapter().getView((int)(Math.log(indexes.get(j)) / Math.log(2)), Wellness, null).setBackgroundColor(Color.GRAY);
-                        break;
-                    case 3:
-                        WorldAffairs.getAdapter().getView((int)(Math.log(indexes.get(j)) / Math.log(2)), Wellness, null).setSelected(true);
-                        WorldAffairs.getAdapter().getView((int)(Math.log(indexes.get(j)) / Math.log(2)), Wellness, null).setBackgroundColor(Color.GRAY);
-                        break;
-                    case 4:
-                        Tech.getAdapter().getView((int)(Math.log(indexes.get(j)) / Math.log(2)), Wellness, null).setSelected(true);
-                        Tech.getAdapter().getView((int)(Math.log(indexes.get(j)) / Math.log(2)), Wellness, null).setBackgroundColor(Color.GRAY);
-                        break;
-                    case 5:
-                        HangingOut.getAdapter().getView((int)(Math.log(indexes.get(j)) / Math.log(2)), Wellness, null).setSelected(true);
-                        HangingOut.getAdapter().getView((int)(Math.log(indexes.get(j)) / Math.log(2)), Wellness, null).setBackgroundColor(Color.GRAY);
-                        break;
-                    case 6:
-                        KnowLedge.getAdapter().getView((int)(Math.log(indexes.get(j)) / Math.log(2)), Wellness, null).setSelected(true);
-                        KnowLedge.getAdapter().getView((int)(Math.log(indexes.get(j)) / Math.log(2)), Wellness, null).setBackgroundColor(Color.GRAY);
-                        break;
-                    case 7:
-                        Hustle.getAdapter().getView((int)(Math.log(indexes.get(j)) / Math.log(2)), Wellness, null).setSelected(true);
-                        Hustle.getAdapter().getView((int)(Math.log(indexes.get(j)) / Math.log(2)), Wellness, null).setBackgroundColor(Color.GRAY);
-                        break;
-                    case 8:
-                        Sports.getAdapter().getView((int)(Math.log(indexes.get(j)) / Math.log(2)), Wellness, null).setSelected(true);
-                        Sports.getAdapter().getView((int)(Math.log(indexes.get(j)) / Math.log(2)), Wellness, null).setBackgroundColor(Color.GRAY);
-                        break;
-                    case 9:
-                        Arts.getAdapter().getView((int)(Math.log(indexes.get(j)) / Math.log(2)), Wellness, null).setSelected(true);
-                        Arts.getAdapter().getView((int)(Math.log(indexes.get(j)) / Math.log(2)), Wellness, null).setBackgroundColor(Color.GRAY);
-                        break;
-                    case 10:
-                        Life.getAdapter().getView((int)(Math.log(indexes.get(j)) / Math.log(2)), Wellness, null).setSelected(true);
-                        Life.getAdapter().getView((int)(Math.log(indexes.get(j)) / Math.log(2)), Wellness, null).setBackgroundColor(Color.GRAY);
-                        break;
-                    case 11:
-                        Languages.getAdapter().getView((int)(Math.log(indexes.get(j)) / Math.log(2)), Wellness, null).setSelected(true);
-                        Languages.getAdapter().getView((int)(Math.log(indexes.get(j)) / Math.log(2)), Wellness, null).setBackgroundColor(Color.GRAY);
-                        break;
-                    case 12:
-                        Entertainment.getAdapter().getView((int)(Math.log(indexes.get(j)) / Math.log(2)), Wellness, null).setSelected(true);
-                        Entertainment.getAdapter().getView((int)(Math.log(indexes.get(j)) / Math.log(2)), Wellness, null).setBackgroundColor(Color.GRAY);
-                        break;
-                    case 13:
-                        Faith.getAdapter().getView((int)(Math.log(indexes.get(j)) / Math.log(2)), Wellness, null).setSelected(true);
-                        Faith.getAdapter().getView((int)(Math.log(indexes.get(j)) / Math.log(2)), Wellness, null).setBackgroundColor(Color.GRAY);
-                        break;
-                }
-
-            }
-        }
-    }
 
 }
 
@@ -850,19 +784,24 @@ class ListViewAdapter2 extends BaseAdapter {
     LayoutInflater inflater;
     private List<String> Items = null;
     private ArrayList<String> arraylist;
+    private ArrayList<ArrayList<Integer>> Seledted;
     private int category;
 
-    public ListViewAdapter2(Context context, List<String> items, int cat) {
+    public ListViewAdapter2(Context context, List<String> items, int cat, ArrayList<ArrayList<Integer>> selected) {
         mContext = context;
         this.Items = items;
         inflater = LayoutInflater.from(mContext);
         this.arraylist = new ArrayList<String>();
         this.arraylist.addAll(Items);
         this.category = cat;
+        this.Seledted = selected;
+
+
     }
 
     public class ViewHolder {
         TextView name;
+
     }
 
     @Override
@@ -882,19 +821,28 @@ class ListViewAdapter2 extends BaseAdapter {
 
     public View getView(final int position, View view, ViewGroup parent) {
 
-        final ViewHolder holder;
-        holder = new ViewHolder();
+        inflater = (LayoutInflater) mContext
+                .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+//        final ViewHolder holder;
+//        holder = new ViewHolder();
         view = inflater.inflate(R.layout.simple_list_1, null);
-        // Locate the TextViews in listview_item.xml
-        holder.name = (TextView) view.findViewById(R.id.textView);
-        view.setTag(holder);
+        TextView textView = (TextView) view.findViewById(R.id.textView);
+//        holder.name = (TextView) view.findViewById(R.id.textView);
+//        view.setTag(holder);
 
-        holder.name.setText(Items.get(position));
+        textView.setText(Items.get(position));
 
 
-        return holder.name;
+        for(int i = 0; i < Seledted.get(category).size(); i++){
+            System.out.println("position" + (int)Math.pow(2, position));
+            System.out.println("real" + Seledted.get(category).get(i));
+            if(Seledted.get(category).get(i).equals((int)Math.pow(2, position))){
+                view.setBackgroundColor(Color.GRAY);
+            }
+        }
+
+        return view ;
     }
-
 
 }
 
