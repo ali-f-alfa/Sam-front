@@ -18,6 +18,7 @@ import android.widget.SearchView;
 import android.widget.ListView;
 import android.widget.GridLayout;
 import android.widget.ScrollView;
+import android.widget.HorizontalScrollView;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.widget.LinearLayout.LayoutParams;
@@ -58,6 +59,7 @@ public class Search extends AppCompatActivity implements SearchView.OnQueryTextL
     SearchView editsearch;
     ArrayList<SearchPerson> SearchedPersons = new ArrayList<SearchPerson>();
     TextView SearchError;
+    TextView SearchTitle;
     Button profileBtn;
     int i = 3;
     SharedPreferences settings;
@@ -71,6 +73,7 @@ public class Search extends AppCompatActivity implements SearchView.OnQueryTextL
     GridLayout category_grid;
     ScrollView category_scroll;
     GridLayout item_grid;
+    HorizontalScrollView item_scroll;
 
 
     @Override
@@ -83,6 +86,7 @@ public class Search extends AppCompatActivity implements SearchView.OnQueryTextL
         selected_item = 0;
         endOfList = false;
         SearchError = findViewById(R.id.SearchError);
+        SearchTitle = findViewById(R.id.SearchTitle);
         list = (ListView) findViewById(R.id.SearchedPersonListView);
         editsearch = (SearchView) findViewById(R.id.search);
         profileBtn = (Button) findViewById(R.id.ProfBtn);
@@ -92,6 +96,7 @@ public class Search extends AppCompatActivity implements SearchView.OnQueryTextL
         category_grid = (GridLayout) findViewById(R.id.category_grid);
         category_scroll = (ScrollView) findViewById(R.id.Category);
         item_grid = (GridLayout) findViewById(R.id.item_grid);
+        item_scroll = (HorizontalScrollView) findViewById(R.id.Items);
 
         OkHttpClient client = new OkHttpClient.Builder().addInterceptor(new Interceptor() {
             @Override
@@ -125,6 +130,10 @@ public class Search extends AppCompatActivity implements SearchView.OnQueryTextL
 
                     SearchedPersons.clear();
                     SearchError.setVisibility(View.INVISIBLE);
+                    TextView t = (TextView) container.getChildAt(0);
+                    SearchTitle.setText("Search in "+ t.getText());
+
+
                     Call<List<InputSearchViewModel>> Req = SearchAPI.Category(editsearch.getQuery().toString(), selected_category, 10, 1);
                     Req.enqueue(new Callback<List<InputSearchViewModel>>() {
                         @Override
@@ -396,7 +405,51 @@ public class Search extends AppCompatActivity implements SearchView.OnQueryTextL
         }
 
         for (int x = 0; x < temp.size(); x++) {
-            AddItem(temp.get(x) , item_grid);
+            int xx = x;
+            String t = temp.get(x);
+            AddItem(temp.get(x) , item_grid).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    selected_item = (int)Math.pow(2, xx);
+                    mode = 2;
+
+                    SearchedPersons.clear();
+                    SearchError.setVisibility(View.INVISIBLE);
+
+                    Call<List<InputSearchViewModel>> Req = SearchAPI.Item(editsearch.getQuery().toString(), selected_category, selected_item, 10, 1);
+                    Req.enqueue(new Callback<List<InputSearchViewModel>>() {
+                        @Override
+                        public void onResponse(Call<List<InputSearchViewModel>> call, Response<List<InputSearchViewModel>> response) {
+                            if (!response.isSuccessful()) {
+                                Toast.makeText(Search.this, "unsuccessful", Toast.LENGTH_LONG).show();
+//                                Toast.makeText(Search.this, response.toString(), Toast.LENGTH_LONG).show();
+                            }
+                            for (InputSearchViewModel person : response.body()) {
+                                SearchPerson Person = new SearchPerson(person.getUsername(), person.getImagelink(), person.getFirstName(), person.getLastName());
+                                SearchedPersons.add(Person);
+                            }
+
+                            adapter = new ListViewAdapter(Search.this, SearchedPersons);
+                            list.setAdapter(adapter);
+                            adapter.notifyDataSetChanged();
+
+                            if (SearchedPersons.size() == 0) {
+                                SearchError.setVisibility(View.VISIBLE);
+                            }
+
+                        }
+
+                        @Override
+                        public void onFailure(Call<List<InputSearchViewModel>> call, Throwable t) {
+                            Toast.makeText(Search.this, "Request failed", Toast.LENGTH_LONG).show();
+                        }
+                    });
+                    item_scroll.setVisibility(View.INVISIBLE);
+                    SearchTitle.setText("Search in "+ t);
+
+
+                }
+            });
         }
     }
 
