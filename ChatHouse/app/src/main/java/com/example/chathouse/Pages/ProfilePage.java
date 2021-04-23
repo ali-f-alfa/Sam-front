@@ -1,6 +1,8 @@
 package com.example.chathouse.Pages;
 
+import androidx.annotation.ColorInt;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.cardview.widget.CardView;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
 import android.content.Intent;
@@ -8,8 +10,11 @@ import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.graphics.fonts.Font;
 import android.os.Bundle;
 import android.os.Handler;
+import android.preference.PreferenceManager;
+import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -37,11 +42,15 @@ import com.example.chathouse.R;
 import com.example.chathouse.Utility.Constants;
 import com.example.chathouse.ViewModels.Acount.FollowingFollowers;
 import com.example.chathouse.ViewModels.Acount.ProfileInformation;
+import com.example.chathouse.ViewModels.Search.InputSearchViewModel;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.reflect.TypeToken;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.Serializable;
+import java.lang.reflect.Type;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
@@ -77,15 +86,17 @@ public class ProfilePage extends AppCompatActivity {
     private TextView UsernameText;
     private TextView EmailText;
     private HorizontalScrollView Interests;
-    private ArrayList<FollowingFollowers> FollowersList = new ArrayList<>();
-    private ArrayList<FollowingFollowers> FollowingList = new ArrayList<>();
+    static private ArrayList<FollowingFollowers> FollowersList = new ArrayList<>();
+    static private ArrayList<FollowingFollowers> FollowingList = new ArrayList<>();
     private ArrayList<ArrayList<Integer>> ResponseInterests = new ArrayList<>();
     private ListView FollowingFollowersListView;
     private String ImageLink;
     private ProgressBar loading;
     private ConstraintLayout Fake;
-    private Button SearchButton;
+    private TextView SearchButton;
+    private Boolean followCheck = false;
 //    private Switch OnOff;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -112,32 +123,20 @@ public class ProfilePage extends AppCompatActivity {
         Interests = (HorizontalScrollView) findViewById(R.id.Interests);
         FollowingFollowersListView = (ListView) findViewById(R.id.FollowingFollowersListView);
         loading = (ProgressBar) findViewById(R.id.progressBar);
-        SearchButton = (Button) findViewById(R.id.SearchButton);
-//        OnOff = (Switch)findViewById(R.id.InterestsOnOff);
-//
-//        OnOff.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-//            @Override
-//            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-//                if(isChecked){
-//                    Interests.setVisibility(View.INVISIBLE);
-//                }
-//                else{
-//                    Interests.setVisibility(View.VISIBLE);
-//                }
-//            }
-//        });
+        SearchButton = (TextView) findViewById(R.id.SearchButton);
 
-//        Memberof.setVisibility(View.INVISIBLE);
         Bundle bundle = getIntent().getExtras();
         Fake.setVisibility(View.INVISIBLE);
         loading.setVisibility(View.GONE);
 
         loading.setVisibility(View.VISIBLE);
+
         SharedPreferences settings = getSharedPreferences("Storage", MODE_PRIVATE);
+        SharedPreferences.Editor edit = getSharedPreferences("Storage", MODE_PRIVATE).edit();
 
 
         String Token = settings.getString("Token", "n/a");
-//        String Username = settings.getString("Username", "n/a");
+
 
         String UsernameX = bundle.getString("Username");
         OkHttpClient client = new OkHttpClient.Builder().addInterceptor(new Interceptor() {
@@ -170,24 +169,41 @@ public class ProfilePage extends AppCompatActivity {
                 if (!response.isSuccessful()) {
                     try {
                         FirstName.setText(response.errorBody().string());
+                        loading.setVisibility(View.INVISIBLE);
+                        System.out.println("1" + response.errorBody().string());
+                        System.out.println("1" + response.code());
                     } catch (IOException e) {
                         FirstName.setText(response.errorBody().toString());
+                        loading.setVisibility(View.INVISIBLE);
+                        System.out.println("2" + response.errorBody().toString());
 
                         e.printStackTrace();
                     }
+
                     return;
                 }
 
                 // Set the values from back
                 ProfileInformation Response = response.body();
 
-
                 if (Response.getMe()) {
+
                     Message.setVisibility(View.INVISIBLE);
                     Follow.setVisibility(View.INVISIBLE);
                     EditProfile.setVisibility(View.VISIBLE);
+
 //                    OnOff.setVisibility(View.VISIBLE);
                 } else {
+                    Gson gson = new Gson();
+                    String json = settings.getString("Following", "");
+                    Type type = new TypeToken<List<String>>() {}.getType();
+                    ArrayList<String> followingCheck = gson.fromJson(json, type);
+                    for(String X:followingCheck){
+                        if(X.equals(Response.getUsername())){
+                            followCheck = true;
+                            Follow.setText("Unfollow");
+                        }
+                    }
                     Message.setVisibility(View.VISIBLE);
                     Follow.setVisibility(View.VISIBLE);
                     EditProfile.setVisibility(View.INVISIBLE);
@@ -206,6 +222,7 @@ public class ProfilePage extends AppCompatActivity {
 
             @Override
             public void onFailure(Call<ProfileInformation> call, Throwable t) {
+                loading.setVisibility(View.INVISIBLE);
                 FirstName.setText(t.getMessage().toString());
                 Toast.makeText(ProfilePage.this, "Request failed", Toast.LENGTH_LONG).show();
             }
@@ -244,20 +261,119 @@ public class ProfilePage extends AppCompatActivity {
             }
         });
 
+
         FollowingNumber.setOnClickListener(new View.OnClickListener() {
+            ArrayList<SearchPerson> suggestedUsers = new ArrayList<SearchPerson>();
             @Override
             public void onClick(View v) {
-                MakeListOfEach(FollowingFollowersListView, FollowingList);
                 Intent intent = new Intent(ProfilePage.this, FollowingFollowersPage.class);
+                Bundle bundle = new Bundle();
+
+//                bundle.putParcelableArrayList("Following", FollowingList);
+                bundle.putString("User", UsernameX);
+
+                intent.putExtra("Following", (Serializable)FollowingList);
+                intent.putExtras(bundle);
                 startActivity(intent);
             }
         });
         FollowersNumber.setOnClickListener(new View.OnClickListener() {
+            ArrayList<SearchPerson> suggestedUsers = new ArrayList<SearchPerson>();
             @Override
             public void onClick(View v) {
-                MakeListOfEach(FollowingFollowersListView, FollowersList);
                 Intent intent = new Intent(ProfilePage.this, FollowingFollowersPage.class);
+                Bundle bundle = new Bundle();
+
+//                bundle.putSerializable("Following", FollowersList);
+
+                intent.putExtra("Following", FollowersList);
                 startActivity(intent);
+            }
+        });
+
+        Follow.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Follow API or Unfollow
+                if(!followCheck){
+                    Call<ProfileInformation> Followpost = GetProfileAPI.FollowPost(UsernameX);
+                    Followpost.enqueue(new Callback<ProfileInformation>() {
+
+                        @Override
+                        public void onResponse(Call<ProfileInformation> call, Response<ProfileInformation> response) {
+                            if(!response.isSuccessful()){
+                                try {
+                                    FirstName.setText(response.code() + response.errorBody().string());
+                                } catch (IOException e) {
+                                    FirstName.setText(response.code() +response.errorBody().toString());
+
+                                    e.printStackTrace();
+                                }
+                                return;
+                            }
+
+                            ProfileInformation Response = response.body();
+                            ArrayList<String> FollowingListUsername = new ArrayList<>();
+                            FollowingList = Response.getFollowings();
+                            for(FollowingFollowers X : FollowingList){
+                                FollowingListUsername.add(X.getUsername());
+                            }
+
+                            Gson gson = new Gson();
+                            String Flwi = gson.toJson(FollowingListUsername);
+                            edit.putString("Following",Flwi );
+                            edit.commit();
+
+                            finish();
+                            startActivity(getIntent());
+                        }
+
+                        @Override
+                        public void onFailure(Call<ProfileInformation> call, Throwable t) {
+                            FirstName.setText(t.getMessage());
+                        }
+                    });
+                }
+                else{
+                    Call<ProfileInformation> UnFollowpost = GetProfileAPI.UnFollowPost(UsernameX);
+                    UnFollowpost.enqueue(new Callback<ProfileInformation>() {
+                        @Override
+                        public void onResponse(Call<ProfileInformation> call, Response<ProfileInformation> response) {
+                            if(!response.isSuccessful()){
+                                try {
+                                    FirstName.setText(response.code() + response.errorBody().string());
+                                } catch (IOException e) {
+                                    FirstName.setText(response.code() +response.errorBody().toString());
+
+                                    e.printStackTrace();
+                                }
+                                return;
+                            }
+                            ProfileInformation Response = response.body();
+                            ArrayList<String> FollowingListUsername = new ArrayList<>();
+                            FollowingList = Response.getFollowings();
+                            for(FollowingFollowers X : FollowingList){
+                                FollowingListUsername.add(X.getUsername());
+                            }
+
+                            Gson gson = new Gson();
+                            String Flwi = gson.toJson(FollowingListUsername);
+                            edit.putString("Following",Flwi );
+                            edit.commit();
+
+                            finish();
+                            startActivity(getIntent());
+//
+//
+                        }
+
+                        @Override
+                        public void onFailure(Call<ProfileInformation> call, Throwable t) {
+                            FirstName.setText(t.getMessage());
+                        }
+                    });
+
+                }
             }
         });
 
@@ -287,9 +403,30 @@ public class ProfilePage extends AppCompatActivity {
         // Interests
         ResponseInterests = response.getInterests();
 
+        SharedPreferences.Editor edit = getSharedPreferences("Storage", MODE_PRIVATE).edit();
+
         // Followers and Followings
         FollowersList = response.getFollowers();
         FollowingList = response.getFollowings();
+
+        ArrayList<String> FollowersListUsername = new ArrayList<>();
+        ArrayList<String> FollowingListUsername = new ArrayList<>();
+
+        for(FollowingFollowers X : FollowersList){
+            FollowersListUsername.add(X.getUsername());
+        }
+        for(FollowingFollowers X : FollowingList){
+            FollowingListUsername.add(X.getUsername());
+        }
+
+        if(response.getMe()){
+            Gson gson = new Gson();
+            String Flwr = gson.toJson(FollowersListUsername);
+            String Flwi = gson.toJson(FollowingListUsername);
+            edit.putString("Followers",Flwr );
+            edit.putString("Following",Flwi );
+            edit.commit();
+        }
 
         // Create a list view for following and followers
         FollowersNumber.setText(String.valueOf(FollowersList.size()));
@@ -358,16 +495,6 @@ public class ProfilePage extends AppCompatActivity {
 
     }
 
-    private Button CreateButtonInterest(String name, int id) {
-
-        Button button = new Button(this);
-        button.setText(name);
-        button.setTextSize(14);
-        button.setId(id);
-        button.setGravity(Gravity.CENTER);
-        RandomPick(button, id);
-        return button;
-    }
 
     private void CreateLayout(ArrayList<String> fields) {
         int size = fields.size();
@@ -376,9 +503,9 @@ public class ProfilePage extends AppCompatActivity {
                 (LinearLayout.LayoutParams.WRAP_CONTENT,
                         LinearLayout.LayoutParams.WRAP_CONTENT));
         for (int j = 0; j < size; j++) {
-            Button btnTag = CreateButtonInterest(fields.get(j), j);
+            CardView btnTag = CreateCardViewProgrammatically(fields.get(j), j);
             LinearLayout.LayoutParams params = new LinearLayout.LayoutParams
-                    (400, 400);
+                    (350, 350);
             params.setMargins(2, 0, 10, 0);
             btnTag.setLayoutParams(params);
             row.addView(btnTag);
@@ -386,13 +513,44 @@ public class ProfilePage extends AppCompatActivity {
         InterestContainer.addView(row);
     }
 
-    private void MakeListOfEach(ListView layout, ArrayList<FollowingFollowers> fields) {
-        ArrayAdapter arrayAdapter = new ArrayAdapter(this, R.layout.simple_list_1, R.id.textView, fields.toArray());
-        layout.setAdapter(arrayAdapter);
+    private void RandomPick(CardView button, int j) {
+        String[] colors = new String[]{"#FFC5D0", "#b5838d", "#E98980", "#FB6B90", "#D48C70", "#EBBBB0", "#B6E2D3"};
+        button.setCardBackgroundColor(Color.parseColor(colors[j % 7]));
     }
 
-    private void RandomPick(Button button, int j) {
-        String[] colors = new String[]{"#826263", "#9c7463", "#E98074", "#E85A4F", "#FF5722"};
-        button.setBackgroundColor(Color.parseColor(colors[j % 5]));
+    public CardView CreateCardViewProgrammatically(String name, int id){
+
+        CardView cardview = new CardView(this);
+
+        LinearLayout.LayoutParams layoutparams = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.WRAP_CONTENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT
+        );
+        int margin = (8);
+        layoutparams.setMargins(margin, margin, margin, margin);
+
+        cardview.setLayoutParams(layoutparams);
+        cardview.setId(id);
+        cardview.setRadius(20);
+        cardview.setPadding(5, 5, 5, 5);
+        RandomPick(cardview, id);
+        cardview.setMaxCardElevation(30);
+        cardview.setMaxCardElevation(6);
+        cardview.setForegroundGravity(View.TEXT_ALIGNMENT_GRAVITY);
+
+        TextView textview = new TextView(this);
+        textview.setText(name);
+        textview.setTextSize(16);
+        textview.setTextColor(Color.WHITE);
+        textview.setGravity(Gravity.CENTER);
+
+        cardview.addView(textview);
+
+        return cardview;
+
     }
+
+
+
+
 }

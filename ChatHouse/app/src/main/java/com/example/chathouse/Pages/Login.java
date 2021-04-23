@@ -17,6 +17,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.chathouse.API.ChatHouseAPI;
+import com.example.chathouse.HomePage;
 import com.example.chathouse.ViewModels.Acount.OutputLoginViewModel;
 import com.example.chathouse.R;
 import com.example.chathouse.Utility.Constants;
@@ -82,20 +83,22 @@ public class Login extends AppCompatActivity {
                             Password.getText().toString(), CheckUserNamePattern(Username.getText().toString()));
                     Call<String> Login = LoginAPI.PostLogin(Body);
 
-
+                    Error.setText("");
                     Login.enqueue(new Callback<String>() {
                         @Override
                         public void onResponse(Call<String> call, Response<String> response){
                             if(!response.isSuccessful()){
                                 try {
                                     Error.setText(response.errorBody().string());
+                                    Load.setVisibility(View.INVISIBLE);
                                 } catch (IOException e) {
+                                    Load.setVisibility(View.INVISIBLE);
                                     e.printStackTrace();
                                 }
                                 return;
                             }
                             // Get Profile
-                            Toast.makeText(Login.this, "Successfully Logged In ", Toast.LENGTH_LONG).show();
+//                            Toast.makeText(Login.this, "Successfully Logged In ", Toast.LENGTH_LONG).show();
                             Token = response.body();
 
                             Load.setVisibility(View.INVISIBLE);
@@ -107,7 +110,7 @@ public class Login extends AppCompatActivity {
                             new Handler().post(new Runnable() {
                                 @Override
                                 public void run() {
-                                    Intent intent = new Intent(Login.this, ProfilePage.class);
+                                    Intent intent = new Intent(Login.this, HomePage.class);
                                     Bundle bundle = new Bundle();
 
                                     bundle.putString("Token", Token);
@@ -125,7 +128,8 @@ public class Login extends AppCompatActivity {
                         }
                         @Override
                         public void onFailure(Call<String> call, Throwable failure){
-                            Error.setText("please check your connection");                        }
+                            Error.setText("please check your connection");
+                            Load.setVisibility(View.INVISIBLE);}
                     });
                 }
             }

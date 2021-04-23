@@ -17,13 +17,10 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.ChatHouse"
         android:usesCleartextTraffic="true">
-        <activity
-            android:name=".Pages.menu"
-            android:label="@string/title_activity_menu"></activity>
-        <activity android:name=".Pages.SearchL2" />
+        <activity android:name=".HomePage"></activity>
         <activity android:name=".Pages.FollowingFollowersPage" />
         <activity android:name=".Pages.EditProfile" />
-        <activity android:name=".Pages.Search" />
+        <activity android:name=".Pages.Search"></activity>
         <activity android:name=".Pages.EditProfile" />
         <activity android:name=".Pages.ProfilePage" />
         <activity android:name=".Pages.SignUp" />
@@ -35,9 +32,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity
-            android:name="com.theartofdev.edmodo.cropper.CropImageActivity"
-            android:theme="@style/Base.Theme.AppCompat" />
     </application>
 
 </manifest>

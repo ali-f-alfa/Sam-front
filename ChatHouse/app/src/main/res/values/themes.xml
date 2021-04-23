@@ -2,13 +2,13 @@
     <!-- Base application theme. -->
     <style name="Theme.ChatHouse" parent="Theme.MaterialComponents.Light.NoActionBar">
         <!-- Primary brand color. -->
-        <item name="colorPrimary">@color/almostorange</item>
+        <item name="colorPrimary">@color/white</item>
         <item name="colorPrimaryVariant">@color/light</item>
-        <item name="colorOnPrimary">@color/almostpink</item>
+        <item name="colorOnPrimary">@color/Pink</item>
         <!-- Secondary brand color. -->
-        <item name="colorSecondary">@color/almostpink</item>
-        <item name="colorSecondaryVariant">@color/almostblack</item>
-        <item name="colorOnSecondary">@color/black</item>
+        <item name="colorSecondary">@color/Verypink</item>
+        <item name="colorSecondaryVariant">@color/cyan</item>
+        <item name="colorOnSecondary">@color/almostgreen</item>
         <!-- Status bar color. -->
         <item name="android:statusBarColor" tools:targetApi="l">?attr/colorPrimaryVariant</item>
         <!-- Customize your theme here. -->
