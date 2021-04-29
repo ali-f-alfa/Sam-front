@@ -138,6 +138,7 @@ public class ProfilePage extends AppCompatActivity {
         Fake.setVisibility(View.INVISIBLE);
         loading.setVisibility(View.GONE);
         Followsyou.setVisibility(View.INVISIBLE);
+        Setting.setVisibility(View.INVISIBLE);
 
         loading.setVisibility(View.VISIBLE);
 
@@ -201,6 +202,7 @@ public class ProfilePage extends AppCompatActivity {
                     Message.setVisibility(View.INVISIBLE);
                     Follow.setVisibility(View.INVISIBLE);
                     EditProfile.setVisibility(View.VISIBLE);
+                    Setting.setVisibility(View.VISIBLE);
 
 //                    OnOff.setVisibility(View.VISIBLE);
                 } else {
