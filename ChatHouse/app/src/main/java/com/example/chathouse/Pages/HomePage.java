@@ -35,6 +35,7 @@ import android.widget.Toast;
 
 import com.example.chathouse.API.ChatHouseAPI;
 import com.example.chathouse.R;
+import com.example.chathouse.Room;
 import com.example.chathouse.Utility.Constants;
 import com.example.chathouse.ViewModels.CreateRoomViewModel;
 import com.example.chathouse.ViewModels.GetRoomViewModel;
@@ -92,6 +93,11 @@ public class HomePage extends AppCompatActivity {
         loading.setVisibility(View.INVISIBLE);
         menu = (BottomNavigationView) findViewById(R.id.Home_menu);
 
+        for (int i = 0; i < 14; i++) {
+            SelectedInterest.add(new ArrayList<>());
+        }
+
+
 
         SharedPreferences settings = getSharedPreferences("Storage", MODE_PRIVATE);
         SharedPreferences.Editor edit = getSharedPreferences("Storage", MODE_PRIVATE).edit();
@@ -112,6 +118,7 @@ public class HomePage extends AppCompatActivity {
 
         Gson gson = new GsonBuilder()
                 .setLenient()
+                .setDateFormat("yyyy-MM-dd'T'HH:mm:ss")
                 .create();
 
         Retrofit retrofit = new Retrofit.Builder()
@@ -140,15 +147,16 @@ public class HomePage extends AppCompatActivity {
 
     }
 
-    private CreateRoomViewModel RoomModel(String name, String description, String startDate, String endDate) {
+    private CreateRoomViewModel RoomModel(String name, String description, Date startDate, Date endDate) {
         CreateRoomViewModel RoomModel = new CreateRoomViewModel(name, description, CreateInterests(), startDate, endDate);
         return RoomModel;
     }
     private ArrayList<ArrayList<Integer>> CreateInterests() {
         for (int i = 0; i < 14; i++) {
-            SelectedInterest.add(new ArrayList<>());
+            if(!SelectedInterest.get(i).isEmpty()){
+                SelectedInterest.get(i).remove(0);
+            };
         }
-
         SelectedInterest.get(Cat).add((int) Math.pow(2, item));
 
         return SelectedInterest;
@@ -178,6 +186,7 @@ public class HomePage extends AppCompatActivity {
 
 
         Button dialogButton = (Button) dialog.findViewById(R.id.Create);
+//        dialogButton.setVisibility(View.GONE);
         Button date = (Button) dialog.findViewById(R.id.btn_date);
         EditText dateText = (EditText) dialog.findViewById(R.id.in_date);
         Button time = (Button) dialog.findViewById(R.id.btn_time);
@@ -185,7 +194,7 @@ public class HomePage extends AppCompatActivity {
         LinearLayoutCategory = (LinearLayout)dialog.findViewById(R.id.LinearLayoutCategory);
         Now = dialog.findViewById(R.id.Now);
         Schedule = dialog.findViewById(R.id.Schedule);
-        Schedule.setVisibility(View.GONE);
+//        Schedule.setVisibility(View.GONE);
         date.setVisibility(View.GONE);
         time.setVisibility(View.GONE);
         dateText.setVisibility(View.GONE);
@@ -202,17 +211,17 @@ public class HomePage extends AppCompatActivity {
             }
 
         });
-//        Schedule.setOnClickListener(new RadioButton.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                Date = "";
-//                date.setVisibility(View.VISIBLE);
-//                time.setVisibility(View.VISIBLE);
-//                dateText.setVisibility(View.VISIBLE);
-//                timeText.setVisibility(View.VISIBLE);
-//            }
-//
-//        });
+        Schedule.setOnClickListener(new RadioButton.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Date = "";
+                date.setVisibility(View.VISIBLE);
+                time.setVisibility(View.VISIBLE);
+                dateText.setVisibility(View.VISIBLE);
+                timeText.setVisibility(View.VISIBLE);
+            }
+
+        });
 
 
             date.setOnClickListener(new View.OnClickListener() {
@@ -233,7 +242,7 @@ public class HomePage extends AppCompatActivity {
                             public void onDateSet(DatePicker view, int year,
                                                   int monthOfYear, int dayOfMonth) {
 
-                                dateText.setText(dayOfMonth + "-" + (monthOfYear + 1) + "-" + year);
+                                dateText.setText(year+ "-" + (monthOfYear + 1) + "-" + dayOfMonth);
 
                             }
                         }, mYear, mMonth, mDay);
@@ -266,21 +275,28 @@ public class HomePage extends AppCompatActivity {
         // if button is clicked, close the custom dialog
         EditText name = (EditText)dialog.findViewById(R.id.editNameRoom);
         EditText description = (EditText)dialog.findViewById(R.id.editDesRoom);
+
         dialogButton.setOnClickListener(new View.OnClickListener() {
+            CreateRoomViewModel Room = null;
+
             @Override
             public void onClick(View v) {
                 if(Date != null){
-                    Date = dateText.toString() + " " + timeText.toString();
-                    dateFormat = new SimpleDateFormat("dd-MM-yyyy hh:mm");
-
+                    Date = dateText.getText().toString() + "T" + timeText.getText().toString() + "Z";
+                    dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm'Z'");
+                    try {
+                        RealDate = dateFormat.parse(Date);
+                        Room = RoomModel(name.getText().toString(), description.getText().toString(), RealDate, null);
+                    }
+                    catch (ParseException e) {
+                        e.printStackTrace();
+                    }
                 }
-                CreateRoomViewModel Room = Room = RoomModel(name.getText().toString(), description.getText().toString(), null, null);;
-//                try {
-//                    System.out.println(dateFormat.parse(Date));
-//                    Room = RoomModel(name.getText().toString(), description.getText().toString(), "2022-04-23T17:13:17.020Z", null);
-//                } catch (ParseException e) {
-//                    e.printStackTrace();
-//                }
+                else{
+                    Room = RoomModel(name.getText().toString(), description.getText().toString(), null, null);
+                }
+                System.out.println("Interest" + SelectedInterest);
+
                 CreateRoom = APIS.CreateRoom(Room);
                 loading.setVisibility(View.VISIBLE);
                 CreateRoom.enqueue(new Callback<GetRoomViewModel>() {
@@ -302,6 +318,27 @@ public class HomePage extends AppCompatActivity {
                         }
                         loading.setVisibility(View.INVISIBLE);
                         System.out.println("Room just Created Okay" + response.body());
+                        GetRoomViewModel Response = response.body();
+                        if(Date == null){
+                            Intent intent = new Intent(HomePage.this, com.example.chathouse.Room.class);
+                            Bundle bundle = new Bundle();
+                            bundle.putInt("RoomId", Response.getId());
+                            bundle.putString("Creator", Response.getCreator());
+                            bundle.putString("Name", Response.getName());
+                            intent.putExtras(bundle);
+//                            intent.putExtra("GetRoom", Response);
+                            startActivity(intent);
+                        }
+                        else{
+                            Intent intent = new Intent(HomePage.this, com.example.chathouse.AcitivityPage.class);
+                            Bundle bundle = new Bundle();
+                            bundle.putInt("RoomId", Response.getId());
+                            bundle.putString("Creator", Response.getCreator());
+                            bundle.putString("Name", Response.getName());
+//                            intent.putExtra("GetRoom", Response);
+                            intent.putExtras(bundle);
+                            startActivity(intent);
+                        }
                     }
 
                     @Override
@@ -366,6 +403,18 @@ public class HomePage extends AppCompatActivity {
                         public void run() {
 
                             Intent intent = new Intent(HomePage.this, com.example.chathouse.Pages.Search.class);
+                            startActivity(intent);
+                            finish();
+                        }
+                    });
+                    break;
+
+                case R.id.nav_Activity:
+                    new Handler().post(new Runnable() {
+                        @Override
+                        public void run() {
+
+                            Intent intent = new Intent(HomePage.this, com.example.chathouse.AcitivityPage.class);
                             startActivity(intent);
                             finish();
                         }

@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".Room"
+    android:layout_margin="2dp">
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:background="@color/light">
+
+    </View>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:id="@+id/RoomName"
+        android:layout_alignParentTop="true"
+        android:text="Room"
+        android:gravity="center"
+        android:textStyle="bold"
+        android:textSize="20dp"
+        android:fontFamily="serif"
+        android:textColor="@color/Verypink"
+        android:clickable="true">
+
+    </TextView>
+<!--    <fragment-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="match_parent"-->
+<!--        android:layout_below="@+id/RoomName"-->
+<!--        android:layout_above="@+id/LeaveRoom"-->
+<!--      >-->
+
+<!--    </fragment>-->
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:gravity="center"
+        android:id="@+id/LeaveRoom"
+        android:layout_alignParentBottom="true"
+        android:text="Leave"
+        android:fontFamily="serif"
+        android:backgroundTint="@color/light"
+        android:textStyle="bold"
+        android:textColor="@color/Verypink">
+
+    </Button>
+
+<!--    <View-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="40dp"-->
+<!--        app:layout_constraintBottom_toBottomOf="parent"-->
+<!--        app:layout_constraintStart_toStartOf="parent"-->
+<!--        android:background="@color/light">-->
+
+<!--    </View>-->
+
+</RelativeLayout>

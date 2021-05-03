@@ -15,6 +15,7 @@ import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.http.Body;
+import retrofit2.http.DELETE;
 import retrofit2.http.GET;
 import retrofit2.http.Header;
 import retrofit2.http.Multipart;
@@ -60,5 +61,23 @@ public interface ChatHouseAPI {
 
     @POST("Room/CreateRoom")
     Call<GetRoomViewModel> CreateRoom(@Body CreateRoomViewModel createRoomViewModel);
+
+    @GET("Room/GetRoom")
+    Call<GetRoomViewModel> GetRoom(@Query("roomid") int roomId);
+
+    @DELETE("Room/DeleteRoom")
+    Call<Void> DeleteRoom(@Query("roomid") int roomId);
+
+    @DELETE("Room/LeaveRoom")
+    Call<Void> LeaveRoom(@Query("roomid") int roomId);
+
+    @POST("Room/JoinRoom")
+    Call<Void> JoinRoom(@Query("roomid") int roomId);
+
+    @DELETE("Room/RemoveUser")
+    Call<Void> RemoveUser(@Query("roomid") int roomId, @Query("username") String username);
+
+    @POST("Room/UpdateRoom")
+    Call<GetRoomViewModel> UpdateRoom(@Body GetRoomViewModel updateRoom);
 
 }

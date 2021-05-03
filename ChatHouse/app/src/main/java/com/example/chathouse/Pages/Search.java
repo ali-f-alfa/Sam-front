@@ -541,6 +541,18 @@ public class Search extends AppCompatActivity implements SearchView.OnQueryTextL
                         }
                     });
                     break;
+
+                case R.id.nav_Activity:
+                    new Handler().post(new Runnable() {
+                        @Override
+                        public void run() {
+
+                            Intent intent = new Intent(Search.this, com.example.chathouse.AcitivityPage.class);
+                            startActivity(intent);
+                            finish();
+                        }
+                    });
+                    break;
             }
             return false;
         }

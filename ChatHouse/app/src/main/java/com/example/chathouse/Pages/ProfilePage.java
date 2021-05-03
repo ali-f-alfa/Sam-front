@@ -620,6 +620,18 @@ public class ProfilePage extends AppCompatActivity {
                         }
                     });
                     break;
+
+                case R.id.nav_Activity:
+                    new Handler().post(new Runnable() {
+                        @Override
+                        public void run() {
+
+                            Intent intent = new Intent(ProfilePage.this, com.example.chathouse.AcitivityPage.class);
+                            startActivity(intent);
+                            finish();
+                        }
+                    });
+                    break;
             }
             return false;
         }

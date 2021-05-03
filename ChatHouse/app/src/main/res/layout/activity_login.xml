@@ -18,7 +18,7 @@
         android:layout_marginTop="30dp"
         android:layout_marginBottom="20dp"
         android:ems="10"
-        android:fontFamily="cursive"
+        android:fontFamily="serif"
         android:gravity="center"
         android:text="GoNuts"
         android:textColor="@color/Verypink"

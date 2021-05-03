@@ -11,6 +11,13 @@
         android:title="Search" />
 
     <item
+        android:id="@+id/nav_Activity"
+        android:icon="@drawable/ic_notifications_black_24dp"
+        android:title="Activities"
+        app:showAsAction="never"
+        />
+
+    <item
         android:id="@+id/nav_home"
         android:icon="@drawable/ic_home_black_24dp"
         android:title="Home"
@@ -24,6 +31,8 @@
         android:title="Profile"
         app:showAsAction="never"
         />
+
+
 
 
 </menu>

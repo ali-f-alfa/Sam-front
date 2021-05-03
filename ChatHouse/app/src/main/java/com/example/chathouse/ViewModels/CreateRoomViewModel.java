@@ -7,10 +7,10 @@ public class CreateRoomViewModel {
     private String name;
     private String description;
     private ArrayList<ArrayList<Integer>> interests;
-    private String startDate;
-    private String endDate;
+    private Date startDate;
+    private Date endDate;
 
-    public CreateRoomViewModel(String name, String description, ArrayList<ArrayList<Integer>> interests, String startDate, String endDate) {
+    public CreateRoomViewModel(String name, String description, ArrayList<ArrayList<Integer>> interests, Date startDate, Date endDate) {
         this.name = name;
         this.description = description;
         this.interests = interests;
