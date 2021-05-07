@@ -7,6 +7,7 @@ import com.example.chathouse.ViewModels.Acount.ProfileInformation;
 import com.example.chathouse.ViewModels.Acount.UpdateProfileViewModel;
 import com.example.chathouse.ViewModels.CreateRoomViewModel;
 import com.example.chathouse.ViewModels.GetRoomViewModel;
+import com.example.chathouse.ViewModels.Search.InputRoomSearchViewModel;
 import com.example.chathouse.ViewModels.Search.InputSearchViewModel;
 
 import java.util.List;
@@ -47,6 +48,12 @@ public interface ChatHouseAPI {
 
     @GET("Search/Item")
     Call<List<InputSearchViewModel>> Item(@Query("name") String name, @Query("category") Integer category, @Query("item") int item, @Query("PageSize") int PageSize, @Query("PageNumber") int PageNumber);
+
+    @GET("Search/RoomCategory")
+    Call<List<InputRoomSearchViewModel>> RoomCategory(@Query("name") String name, @Query("category") Integer category, @Query("PageSize") int PageSize, @Query("PageNumber") int PageNumber);
+
+    @GET("Search/RoomItem")
+    Call<List<InputRoomSearchViewModel>> RoomItem(@Query("name") String name, @Query("category") Integer category, @Query("item") int item, @Query("PageSize") int PageSize, @Query("PageNumber") int PageNumber);
 
     @Multipart
     @POST("Account/UpdateImage")

@@ -17,14 +17,39 @@
     </SearchView>
 
     <LinearLayout
-        android:id="@+id/search_loading"
+        android:id="@+id/toggle"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:layout_below="@+id/search"
         android:layout_marginTop="7dp"
-        android:gravity="center"
-        >
+        android:gravity="center">
+
+        <com.llollox.androidtoggleswitch.widgets.ToggleSwitch
+            android:id="@+id/search_switch"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:textToggleLeft="People"
+            app:textToggleRight="Rooms"
+            app:borderRadius="15dp"
+            app:checkedBorderColor="@color/blue"
+            app:uncheckedBorderColor="@color/gray_border"
+            app:checkedTextColor="@android:color/white"
+            app:uncheckedBackgroundColor="@color/light"
+            app:separatorColor="@color/white"
+            />
+
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:id="@+id/search_loading"
+        android:layout_width="fill_parent"
+        android:layout_height="30dp"
+        android:orientation="horizontal"
+        android:layout_below="@+id/toggle"
+        android:layout_marginTop="3dp"
+        android:gravity="center">
 
         <TextView
             android:id="@+id/SearchTitle"
@@ -78,6 +103,15 @@
             android:fadeScrollbars="false"
             android:layout_weight="4"></ListView>
 
+
+        <ListView
+            android:id="@+id/SearchedRoomListView"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_below="@+id/search"
+            android:fadeScrollbars="false"
+            android:layout_weight="4"
+            android:visibility="gone"></ListView>
         <View
             android:layout_width="wrap_content"
             android:layout_height="5dp"
@@ -90,7 +124,7 @@
             android:layout_height="fill_parent"
             android:layout_below="@+id/SearchedPersonListView"
             android:layout_alignParentBottom="true"
-            android:layout_weight="7">
+            android:layout_weight="7.5">
 
             <HorizontalScrollView
                 android:id="@+id/Items"
