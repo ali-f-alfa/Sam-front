@@ -1,6 +1,5 @@
 package com.example.chathouse.Pages;
 
-import androidx.annotation.ColorInt;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
@@ -8,31 +7,21 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Color;
-import android.graphics.fonts.Font;
 import android.os.Bundle;
 import android.os.Handler;
-import android.preference.PreferenceManager;
-import android.util.TypedValue;
 import android.view.Gravity;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.HorizontalScrollView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.ProgressBar;
-import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.Toolbar;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
@@ -40,27 +29,26 @@ import com.bumptech.glide.load.resource.bitmap.CircleCrop;
 import com.bumptech.glide.request.RequestOptions;
 import com.example.chathouse.API.ChatHouseAPI;
 import com.example.chathouse.R;
-import com.example.chathouse.SettingPage;
 import com.example.chathouse.Utility.Constants;
 import com.example.chathouse.ViewModels.Acount.FollowingFollowers;
 import com.example.chathouse.ViewModels.Acount.ProfileInformation;
-import com.example.chathouse.ViewModels.Search.InputSearchViewModel;
+import com.example.chathouse.ViewModels.Acount.RoomModel;
+import com.example.chathouse.ViewModels.Acount.SearchPerson;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.Serializable;
 import java.lang.reflect.Type;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
+import java.io.InputStream;
 
 import okhttp3.HttpUrl;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -161,6 +149,7 @@ public class ProfilePage extends AppCompatActivity {
         }).build();
 
         Gson gson = new GsonBuilder()
+                .setDateFormat("yyyy-MM-dd'T'HH:mm:ss")
                 .setLenient()
                 .create();
 
@@ -245,7 +234,7 @@ public class ProfilePage extends AppCompatActivity {
             public void onFailure(Call<ProfileInformation> call, Throwable t) {
                 loading.setVisibility(View.INVISIBLE);
                 FirstName.setText(t.getMessage().toString());
-                Toast.makeText(ProfilePage.this, "Request failed", Toast.LENGTH_LONG).show();
+                Toast.makeText(ProfilePage.this, "Hi ali failed" + t.getMessage(), Toast.LENGTH_LONG).show();
             }
         });
 
@@ -527,7 +516,7 @@ public class ProfilePage extends AppCompatActivity {
         for (int j = 0; j < size; j++) {
             CardView btnTag = CreateCardViewProgrammatically(fields.get(j), j);
             LinearLayout.LayoutParams params = new LinearLayout.LayoutParams
-                    (350, 350);
+                    (350, 150);
             params.setMargins(2, 0, 10, 0);
             btnTag.setLayoutParams(params);
             row.addView(btnTag);
@@ -536,7 +525,7 @@ public class ProfilePage extends AppCompatActivity {
     }
 
     private void RandomPick(CardView button, int j) {
-        String[] colors = new String[]{"#FFC5D0", "#b5838d", "#E98980", "#FB6B90", "#D48C70", "#EBBBB0", "#B6E2D3"};
+        String[] colors = new String[]{"#FFC5D0", "#F9F1F0", "#FADCD9", "#E7D2CC", "#F7D6D0", "#FB8DA0", "#D68FB0"};
         button.setCardBackgroundColor(Color.parseColor(colors[j % 7]));
     }
 
@@ -556,14 +545,14 @@ public class ProfilePage extends AppCompatActivity {
         cardview.setRadius(20);
         cardview.setPadding(5, 5, 5, 5);
         RandomPick(cardview, id);
-        cardview.setMaxCardElevation(30);
+        cardview.setMaxCardElevation(50);
         cardview.setMaxCardElevation(6);
         cardview.setForegroundGravity(View.TEXT_ALIGNMENT_GRAVITY);
 
         TextView textview = new TextView(this);
         textview.setText(name);
         textview.setTextSize(16);
-        textview.setTextColor(Color.WHITE);
+        textview.setTextColor(Color.GRAY);
         textview.setGravity(Gravity.CENTER);
 
         cardview.addView(textview);
@@ -626,7 +615,7 @@ public class ProfilePage extends AppCompatActivity {
                         @Override
                         public void run() {
 
-                            Intent intent = new Intent(ProfilePage.this, com.example.chathouse.AcitivityPage.class);
+                            Intent intent = new Intent(ProfilePage.this, AcitivityPage.class);
                             startActivity(intent);
                             finish();
                         }

@@ -431,6 +431,8 @@
         app:itemIconTint="@color/black"
         app:itemTextColor="@color/black"
         android:layout_alignParentBottom="true"
+        app:labelVisibilityMode="labeled"
+
         android:background="@color/light"
         app:menu="@menu/bottom_navigation" />
 

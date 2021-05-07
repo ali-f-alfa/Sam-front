@@ -4,7 +4,9 @@ import com.example.chathouse.ViewModels.Acount.InputSignupViewModel;
 import com.example.chathouse.ViewModels.Acount.OutputLoginViewModel;
 import com.example.chathouse.ViewModels.Acount.OutputSignupViewModel;
 import com.example.chathouse.ViewModels.Acount.ProfileInformation;
+import com.example.chathouse.ViewModels.Acount.RoomModel;
 import com.example.chathouse.ViewModels.Acount.UpdateProfileViewModel;
+import com.example.chathouse.ViewModels.Acount.UpdateRoomViewModel;
 import com.example.chathouse.ViewModels.CreateRoomViewModel;
 import com.example.chathouse.ViewModels.GetRoomViewModel;
 import com.example.chathouse.ViewModels.Search.InputSearchViewModel;
@@ -75,9 +77,9 @@ public interface ChatHouseAPI {
     Call<Void> JoinRoom(@Query("roomid") int roomId);
 
     @DELETE("Room/RemoveUser")
-    Call<Void> RemoveUser(@Query("roomid") int roomId, @Query("username") String username);
+    Call<GetRoomViewModel> RemoveUser(@Query("roomid") int roomId, @Query("username") String username);
 
     @POST("Room/UpdateRoom")
-    Call<GetRoomViewModel> UpdateRoom(@Body GetRoomViewModel updateRoom);
+    Call<GetRoomViewModel> UpdateRoom(@Body UpdateRoomViewModel updateRoom);
 
 }

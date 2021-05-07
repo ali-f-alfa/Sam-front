@@ -548,5 +548,16 @@
             app:layout_constraintTop_toBottomOf="@id/LinearLayoutCategory"
             app:layout_constraintStart_toStartOf="parent"
             ></Button>
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_marginRight="20dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:text="Delete"
+            android:id="@+id/Delete"
+            android:textColor="@color/almostorange"
+            app:layout_constraintTop_toBottomOf="@id/LinearLayoutCategory"
+            app:layout_constraintEnd_toEndOf="parent"
+            ></Button>
     </androidx.constraintlayout.widget.ConstraintLayout>
 </ScrollView>

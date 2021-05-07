@@ -1,27 +1,30 @@
-package com.example.chathouse;
+package com.example.chathouse.Pages;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.ListView;
+import android.widget.PopupMenu;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.chathouse.API.ChatHouseAPI;
-import com.example.chathouse.Pages.HomePage;
-import com.example.chathouse.Pages.Search;
+import com.example.chathouse.R;
 import com.example.chathouse.Utility.Constants;
+import com.example.chathouse.ViewModels.Acount.SearchPerson;
 import com.example.chathouse.ViewModels.GetRoomViewModel;
-import com.example.chathouse.ViewModels.Search.InputSearchViewModel;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.List;
 
 import okhttp3.HttpUrl;
 import okhttp3.Interceptor;
@@ -29,17 +32,24 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import retrofit2.Call;
 import retrofit2.Callback;
+import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 import retrofit2.converter.scalars.ScalarsConverterFactory;
 
-public class RoomInfo extends AppCompatActivity {
+public class RoomInfo extends AppCompatActivity{
 
     private GetRoomViewModel Roominfo;
     private TextView Name;
     private TextView Description;
     private TextView Interest;
     private Button Delete;
+    private ListViewAdapter MembersAdapter;
+    private ArrayList<SearchPerson> MembersList = new ArrayList<SearchPerson>();
+    private ListView MembersListView;
+    private Boolean RightToRemove;
+    private String RmUser;
+    private ChatHouseAPI APIS;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,6 +59,7 @@ public class RoomInfo extends AppCompatActivity {
         Description = (TextView)findViewById(R.id.DescriptionRoom);
         Interest = (TextView)findViewById(R.id.RoomInterest);
         Delete = (Button)findViewById(R.id.DeleteRoom);
+        MembersListView = (ListView)findViewById(R.id.RoomMembersListView);
         Delete.setVisibility(View.GONE);
         Bundle bundle = getIntent().getExtras();
 
@@ -62,6 +73,7 @@ public class RoomInfo extends AppCompatActivity {
 
         if(Creator.equals(Username)){
             Delete.setVisibility(View.VISIBLE);
+            RightToRemove = true;
         }
 
         OkHttpClient client = new OkHttpClient.Builder().addInterceptor(new Interceptor() {
@@ -87,10 +99,11 @@ public class RoomInfo extends AppCompatActivity {
                 .build();
 
 
-        ChatHouseAPI APIS = retrofit.create(ChatHouseAPI.class);
+        APIS = retrofit.create(ChatHouseAPI.class);
 
         Call<GetRoomViewModel> GetRoom = APIS.GetRoom(RoomId);
         Call<Void> DeleteRoom = APIS.DeleteRoom(RoomId);
+
 
         GetRoom.enqueue(new Callback<GetRoomViewModel>() {
             @Override
@@ -149,21 +162,91 @@ public class RoomInfo extends AppCompatActivity {
                 });
             }
         });
+
+        MembersListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                    SearchPerson p = (SearchPerson) MembersListView.getAdapter().getItem(position);
+                if(!RightToRemove){
+                    Intent intent = new Intent(RoomInfo.this, ProfilePage.class);
+                    Bundle bundle1 = new Bundle();
+                    String Username = p.getUsername();
+                    bundle1.putString("Username", Username);
+                    intent.putExtras(bundle1);
+                    startActivity(intent);
+                }
+                else{
+                    showPopup(view, p, RoomId);
+                }
+            }
+        });
+
     }
+    public void showPopup(View v, SearchPerson position, int roomId) {
+        PopupMenu popup = new PopupMenu(this, v);
+        MenuInflater inflater = popup.getMenuInflater();
+        inflater.inflate(R.menu.popup_menu, popup.getMenu());
+        popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+            public boolean onMenuItemClick(MenuItem item) {
+                String Username = position.getUsername();
+
+                switch (item.getItemId()){
+                    case R.id.remove:
+                        Call<GetRoomViewModel> removeUser = APIS.RemoveUser(roomId, Username);
+                        removeUser.enqueue(new Callback<GetRoomViewModel>() {
+                            @Override
+                            public void onResponse(Call<GetRoomViewModel> call, Response<GetRoomViewModel> response) {
+                                if(!response.isSuccessful()){
+                                    try {
+                                        System.out.println("1" + response.errorBody().string());
+                                        System.out.println("1" + response.code());
+                                    } catch (IOException e) {
+                                        System.out.println("2" + response.errorBody().toString());
+
+                                        e.printStackTrace();
+                                    }
+
+                                    return;
+                                }
+                                MembersList.remove(position);
+                                MembersAdapter.notifyDataSetChanged();
+                            }
+
+                            @Override
+                            public void onFailure(Call<GetRoomViewModel> call, Throwable t) {
+                                Toast.makeText(RoomInfo.this, "Request failed", Toast.LENGTH_LONG).show();
+                            }
+                        });
+                    case R.id.showPro:
+                        Intent intent = new Intent(RoomInfo.this, ProfilePage.class);
+                        Bundle bundle1 = new Bundle();
+                        bundle1.putString("Username", Username);
+                        intent.putExtras(bundle1);
+                        startActivity(intent);
+                }
+                return true;
+            }
+        });
+
+        popup.show();//showing popup menu
+        popup.show();
+    }
+
+
 
     private void SetRoomInfo(GetRoomViewModel roominfo) {
         Name.setText(roominfo.getName());
         Description.setText(roominfo.getDescription());
         Interest.setText(InterestName(roominfo.getInterests()));
 
-//        for (String person : roominfo.getMembers()) {
-//            SearchPerson Person = new SearchPerson(person.getUsername(), person.getImagelink(), person.getFirstName(), person.getLastName());
-//            SearchedPersons.add(Person);
-//        }
-//
-//        adapter = new ListViewAdapter(RoomInfo.this, SearchedPersons);
-//        list.setAdapter(adapter);
-//        adapter.notifyDataSetChanged();
+        for (SearchPerson person : roominfo.getMembers()) {
+            SearchPerson Person = new SearchPerson(person.getUsername(), person.getImageLink(), person.getFirstName(), person.getLastName());
+            MembersList.add(Person);
+        }
+
+        MembersAdapter = new ListViewAdapter(RoomInfo.this, MembersList);
+        MembersListView.setAdapter(MembersAdapter);
+        MembersAdapter.notifyDataSetChanged();
     }
 
     private String InterestName(ArrayList<ArrayList<Integer>> interests) {

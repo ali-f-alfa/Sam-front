@@ -1,7 +1,6 @@
 package com.example.chathouse.Pages;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 
@@ -15,10 +14,8 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.util.TypedValue;
 import android.view.Gravity;
-import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.GridLayout;
@@ -26,7 +23,6 @@ import android.widget.HorizontalScrollView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RadioButton;
-import android.widget.RadioGroup;
 import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.EditText;
@@ -35,11 +31,9 @@ import android.widget.Toast;
 
 import com.example.chathouse.API.ChatHouseAPI;
 import com.example.chathouse.R;
-import com.example.chathouse.Room;
 import com.example.chathouse.Utility.Constants;
 import com.example.chathouse.ViewModels.CreateRoomViewModel;
 import com.example.chathouse.ViewModels.GetRoomViewModel;
-import com.example.chathouse.ViewModels.Search.InputSearchViewModel;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -50,7 +44,6 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.List;
 
 import okhttp3.HttpUrl;
 import okhttp3.Interceptor;
@@ -186,7 +179,8 @@ public class HomePage extends AppCompatActivity {
 
 
         Button dialogButton = (Button) dialog.findViewById(R.id.Create);
-//        dialogButton.setVisibility(View.GONE);
+        Button delete = (Button) dialog.findViewById(R.id.Delete);
+        delete.setVisibility(View.GONE);
         Button date = (Button) dialog.findViewById(R.id.btn_date);
         EditText dateText = (EditText) dialog.findViewById(R.id.in_date);
         Button time = (Button) dialog.findViewById(R.id.btn_time);
@@ -194,7 +188,6 @@ public class HomePage extends AppCompatActivity {
         LinearLayoutCategory = (LinearLayout)dialog.findViewById(R.id.LinearLayoutCategory);
         Now = dialog.findViewById(R.id.Now);
         Schedule = dialog.findViewById(R.id.Schedule);
-//        Schedule.setVisibility(View.GONE);
         date.setVisibility(View.GONE);
         time.setVisibility(View.GONE);
         dateText.setVisibility(View.GONE);
@@ -295,7 +288,6 @@ public class HomePage extends AppCompatActivity {
                 else{
                     Room = RoomModel(name.getText().toString(), description.getText().toString(), null, null);
                 }
-                System.out.println("Interest" + SelectedInterest);
 
                 CreateRoom = APIS.CreateRoom(Room);
                 loading.setVisibility(View.VISIBLE);
@@ -317,23 +309,22 @@ public class HomePage extends AppCompatActivity {
                             return;
                         }
                         loading.setVisibility(View.INVISIBLE);
-                        System.out.println("Room just Created Okay" + response.body());
                         GetRoomViewModel Response = response.body();
                         if(Date == null){
-                            Intent intent = new Intent(HomePage.this, com.example.chathouse.Room.class);
+                            Intent intent = new Intent(HomePage.this, com.example.chathouse.Pages.Room.class);
                             Bundle bundle = new Bundle();
                             bundle.putInt("RoomId", Response.getId());
-                            bundle.putString("Creator", Response.getCreator());
+                            bundle.putString("Creator", Response.getCreator().getUsername());
                             bundle.putString("Name", Response.getName());
                             intent.putExtras(bundle);
 //                            intent.putExtra("GetRoom", Response);
                             startActivity(intent);
                         }
                         else{
-                            Intent intent = new Intent(HomePage.this, com.example.chathouse.AcitivityPage.class);
+                            Intent intent = new Intent(HomePage.this, AcitivityPage.class);
                             Bundle bundle = new Bundle();
                             bundle.putInt("RoomId", Response.getId());
-                            bundle.putString("Creator", Response.getCreator());
+                            bundle.putString("Creator", Response.getCreator().getUsername());
                             bundle.putString("Name", Response.getName());
 //                            intent.putExtra("GetRoom", Response);
                             intent.putExtras(bundle);
@@ -414,7 +405,7 @@ public class HomePage extends AppCompatActivity {
                         @Override
                         public void run() {
 
-                            Intent intent = new Intent(HomePage.this, com.example.chathouse.AcitivityPage.class);
+                            Intent intent = new Intent(HomePage.this, AcitivityPage.class);
                             startActivity(intent);
                             finish();
                         }

@@ -12,6 +12,7 @@ import android.widget.TextView;
 
 import com.example.chathouse.R;
 import com.example.chathouse.ViewModels.Acount.FollowingFollowers;
+import com.example.chathouse.ViewModels.Acount.SearchPerson;
 
 import java.util.ArrayList;
 
@@ -73,7 +74,7 @@ public class FollowingFollowersPage extends AppCompatActivity {
                 Bundle bundle = new Bundle();
 
                 SearchPerson p = (SearchPerson) FollowingFollowersListView.getAdapter().getItem(position);
-                String Username = p.getUserName();
+                String Username = p.getUsername();
                 bundle.putString("Username", Username);
                 intent.putExtras(bundle);
                 startActivity(intent);

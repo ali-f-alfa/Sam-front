@@ -41,6 +41,7 @@ import com.bumptech.glide.request.RequestOptions;
 import com.example.chathouse.API.ChatHouseAPI;
 import com.example.chathouse.R;
 import com.example.chathouse.Utility.Constants;
+import com.example.chathouse.ViewModels.Acount.SearchPerson;
 import com.example.chathouse.ViewModels.Search.InputSearchViewModel;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.gson.Gson;
@@ -193,7 +194,7 @@ public class Search extends AppCompatActivity implements SearchView.OnQueryTextL
                 Bundle bundle = new Bundle();
 
                 SearchPerson p = (SearchPerson) list.getAdapter().getItem(position);
-                String Username = p.getUserName();
+                String Username = p.getUsername();
                 bundle.putString("Username", Username);
                 intent.putExtras(bundle);
                 startActivity(intent);
@@ -547,7 +548,7 @@ public class Search extends AppCompatActivity implements SearchView.OnQueryTextL
                         @Override
                         public void run() {
 
-                            Intent intent = new Intent(Search.this, com.example.chathouse.AcitivityPage.class);
+                            Intent intent = new Intent(Search.this, AcitivityPage.class);
                             startActivity(intent);
                             finish();
                         }
@@ -613,7 +614,7 @@ class ListViewAdapter extends BaseAdapter {
         else
             holder.name.setVisibility(View.GONE);
 
-        holder.userName.setText(SearchedPersonsList.get(position).getUserName());
+        holder.userName.setText(SearchedPersonsList.get(position).getUsername());
 
 
         if (SearchedPersonsList.get(position).getImageLink() != null) {
@@ -625,36 +626,5 @@ class ListViewAdapter extends BaseAdapter {
                     .apply(options).transform(new CircleCrop()).into(holder.Image);
         }
         return view;
-    }
-}
-
-class SearchPerson {
-    private String UserName;
-    private String ImageLink;
-    private String FirstName;
-    private String LastName;
-
-
-    public SearchPerson(String userName, String ImageLink, String firstName, String lastName) {
-        this.UserName = userName;
-        FirstName = firstName;
-        LastName = lastName;
-        this.ImageLink = ImageLink;
-    }
-
-    public String getUserName() {
-        return UserName;
-    }
-
-    public String getImageLink() {
-        return ImageLink;
-    }
-
-    public String getFirstName() {
-        return FirstName;
-    }
-
-    public String getLastName() {
-        return LastName;
     }
 }
