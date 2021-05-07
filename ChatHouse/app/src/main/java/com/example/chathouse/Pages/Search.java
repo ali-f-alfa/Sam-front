@@ -32,7 +32,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.IOException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import com.bumptech.glide.Glide;
@@ -46,6 +49,7 @@ import com.example.chathouse.ViewModels.Search.InputSearchViewModel;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.llollox.androidtoggleswitch.widgets.ToggleSwitch;
 
 import okhttp3.HttpUrl;
 import okhttp3.Interceptor;
@@ -62,13 +66,16 @@ public class Search extends AppCompatActivity implements SearchView.OnQueryTextL
 
     // Declare Variables
     ListView list;
+    ListView RoomList;
     ListViewAdapter adapter;
+    RoomListViewAdapter RoomAdapter;
     SearchView editsearch;
     ArrayList<SearchPerson> SearchedPersons = new ArrayList<SearchPerson>();
+    ArrayList<SearchRoom> SearchedRooms = new ArrayList<SearchRoom>();
     TextView SearchError;
     TextView SearchTitle;
-    Button profileBtn;
     int i = 3;
+    int r = 3;
     SharedPreferences settings;
     String Token;
     String Username;
@@ -77,13 +84,15 @@ public class Search extends AppCompatActivity implements SearchView.OnQueryTextL
     int selected_category;
     int selected_item;
     boolean endOfList;
+    boolean RoomEndOfList;
     GridLayout category_grid;
     ScrollView category_scroll;
     GridLayout item_grid;
     HorizontalScrollView item_scroll;
     BottomNavigationView menu;
     ProgressBar loading;
-
+    ToggleSwitch toggleSwitch;
+    int isRoom;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -94,9 +103,11 @@ public class Search extends AppCompatActivity implements SearchView.OnQueryTextL
         selected_category = 0;
         selected_item = 0;
         endOfList = false;
+        RoomEndOfList = false;
         SearchError = findViewById(R.id.SearchError);
         SearchTitle = findViewById(R.id.SearchTitle);
         list = (ListView) findViewById(R.id.SearchedPersonListView);
+        RoomList = (ListView) findViewById(R.id.SearchedRoomListView);
         editsearch = (SearchView) findViewById(R.id.search);
         settings = getSharedPreferences("Storage", MODE_PRIVATE);
         Token = settings.getString("Token", "n/a");
@@ -107,6 +118,10 @@ public class Search extends AppCompatActivity implements SearchView.OnQueryTextL
         item_scroll = (HorizontalScrollView) findViewById(R.id.Items);
         menu = (BottomNavigationView) findViewById(R.id.Search_menu);
         loading = (ProgressBar) findViewById(R.id.search_progressbar);
+        toggleSwitch = (ToggleSwitch) findViewById(R.id.search_switch);
+        isRoom = 0;
+
+        toggleSwitch.setCheckedPosition(0);
 
         OkHttpClient client = new OkHttpClient.Builder().addInterceptor(new Interceptor() {
             @Override
@@ -118,6 +133,7 @@ public class Search extends AppCompatActivity implements SearchView.OnQueryTextL
             }
         }).build();
         Gson gson = new GsonBuilder()
+                .setDateFormat("yyyy-MM-dd'T'HH:mm:ss")
                 .setLenient()
                 .create();
         Retrofit retrofit = new Retrofit.Builder()
@@ -129,8 +145,6 @@ public class Search extends AppCompatActivity implements SearchView.OnQueryTextL
         SearchAPI = retrofit.create(ChatHouseAPI.class);
 
         menu.setOnNavigationItemSelectedListener(navListener);
-        int a = menu.getSelectedItemId();
-        menu.setSelected(false);
 
         int childCount = category_grid.getChildCount();
         for (int i = 0; i < childCount; i++) {
@@ -142,12 +156,14 @@ public class Search extends AppCompatActivity implements SearchView.OnQueryTextL
                     mode = 1;
 
                     SearchedPersons.clear();
+                    SearchedRooms.clear();
                     SearchError.setVisibility(View.INVISIBLE);
                     TextView t = (TextView) container.getChildAt(0);
                     SearchTitle.setText("Search in " + t.getText());
 
 
                     Call<List<InputSearchViewModel>> Req = SearchAPI.Category(editsearch.getQuery().toString(), selected_category, 10, 1);
+                    Call<List<InputRoomSearchViewModel>> RoomReq = SearchAPI.RoomCategory(editsearch.getQuery().toString(), selected_category, 10, 1);
                     loading.setVisibility(View.VISIBLE);
                     Req.enqueue(new Callback<List<InputSearchViewModel>>() {
                         @Override
@@ -166,7 +182,8 @@ public class Search extends AppCompatActivity implements SearchView.OnQueryTextL
                             adapter.notifyDataSetChanged();
 
                             if (SearchedPersons.size() == 0) {
-                                SearchError.setVisibility(View.VISIBLE);
+                                if(isRoom == 0)
+                                    SearchError.setVisibility(View.VISIBLE);
                             }
                             loading.setVisibility(View.GONE);
 
@@ -174,6 +191,37 @@ public class Search extends AppCompatActivity implements SearchView.OnQueryTextL
 
                         @Override
                         public void onFailure(Call<List<InputSearchViewModel>> call, Throwable t) {
+                            Toast.makeText(Search.this, "Check your network", Toast.LENGTH_LONG).show();
+                            loading.setVisibility(View.GONE);
+
+                        }
+                    });
+                    RoomReq.enqueue(new Callback<List<InputRoomSearchViewModel>>() {
+                        @Override
+                        public void onResponse(Call<List<InputRoomSearchViewModel>> call, Response<List<InputRoomSearchViewModel>> response) {
+                            if (!response.isSuccessful()) {
+                                Toast.makeText(Search.this, "unsuccessful", Toast.LENGTH_LONG).show();
+                                loading.setVisibility(View.GONE);
+                            }
+                            for (InputRoomSearchViewModel room : response.body()) {
+                                SearchRoom R = new SearchRoom(room.getId(), room.getName(), room.getDescription(), room.getStartDate(), room.getInterests(), room.getMembersCount());
+                                SearchedRooms.add(R);
+                            }
+
+                            RoomAdapter = new RoomListViewAdapter(Search.this, SearchedRooms);
+                            RoomList.setAdapter(RoomAdapter);
+                            RoomAdapter.notifyDataSetChanged();
+
+                            if (SearchedRooms.size() == 0) {
+                                if(isRoom == 1)
+                                    SearchError.setVisibility(View.VISIBLE);
+                            }
+                            loading.setVisibility(View.GONE);
+
+                        }
+
+                        @Override
+                        public void onFailure(Call<List<InputRoomSearchViewModel>> call, Throwable t) {
                             Toast.makeText(Search.this, "Check your network", Toast.LENGTH_LONG).show();
                             loading.setVisibility(View.GONE);
 
@@ -200,9 +248,25 @@ public class Search extends AppCompatActivity implements SearchView.OnQueryTextL
                 startActivity(intent);
             }
         });
+        RoomList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
+//                Intent intent = new Intent(Search.this, com.example.chathouse.Pages.ProfilePage.class);
+//                Bundle bundle = new Bundle();
+
+                SearchRoom R = (SearchRoom) RoomList.getAdapter().getItem(position);
+                int RoomId = R.getId();
+                Toast.makeText(Search.this, "clicked on room id: " + RoomId, Toast.LENGTH_LONG).show();
+
+//                bundle.putString("Username", Username);
+//                intent.putExtras(bundle);
+//                startActivity(intent);
+            }
+        });
 
         Call<List<InputSearchViewModel>> Suggest = SearchAPI.Suggest(10, 1);
+        Call<List<InputRoomSearchViewModel>> RoomSuggest = SearchAPI.RoomCategory("", null, 10, 1);
         loading.setVisibility(View.VISIBLE);
         Suggest.enqueue(new Callback<List<InputSearchViewModel>>() {
             @Override
@@ -221,7 +285,8 @@ public class Search extends AppCompatActivity implements SearchView.OnQueryTextL
                     list.setAdapter(adapter);
 
                     if (SearchedPersons.size() == 0) {
-                        SearchError.setVisibility(View.VISIBLE);
+                        if(isRoom == 0)
+                            SearchError.setVisibility(View.VISIBLE);
                     }
                     loading.setVisibility(View.GONE);
                 }
@@ -234,7 +299,38 @@ public class Search extends AppCompatActivity implements SearchView.OnQueryTextL
 
             }
         });
+        RoomSuggest.enqueue(new Callback<List<InputRoomSearchViewModel>>() {
+            @Override
+            public void onResponse(Call<List<InputRoomSearchViewModel>> call, Response<List<InputRoomSearchViewModel>> response) {
+                if (!response.isSuccessful()) {
+                    Toast.makeText(Search.this, "request was not successful ", Toast.LENGTH_LONG).show();
+                    loading.setVisibility(View.GONE);
+                }
+                else {
+                    for (InputRoomSearchViewModel room : response.body()) {
+                        SearchRoom R = new SearchRoom(room.getId(), room.getName(), room.getDescription(), room.getStartDate(), room.getInterests(), room.getMembersCount());
+                        SearchedRooms.add(R);
+                    }
 
+                    RoomAdapter = new RoomListViewAdapter(Search.this, SearchedRooms);
+                    RoomList.setAdapter(RoomAdapter);
+                    RoomAdapter.notifyDataSetChanged();
+
+                    if (SearchedRooms.size() == 0) {
+                        if(isRoom == 1)
+                            SearchError.setVisibility(View.VISIBLE);
+                    }
+                    loading.setVisibility(View.GONE);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<InputRoomSearchViewModel>> call, Throwable t) {
+                Toast.makeText(Search.this, "Check your networkk", Toast.LENGTH_LONG).show();
+                loading.setVisibility(View.GONE);
+
+            }
+        });
 
         //pagination
         list.setOnScrollListener(new AbsListView.OnScrollListener() {
@@ -243,8 +339,6 @@ public class Search extends AppCompatActivity implements SearchView.OnQueryTextL
                 if (!endOfList) {
                     if (list.getLastVisiblePosition() == list.getAdapter().getCount() - 1 &&
                             list.getChildAt(list.getChildCount() - 1).getBottom() <= list.getHeight()) { //end of scroll
-
-                        Toast.makeText(Search.this, "loading...", Toast.LENGTH_SHORT).show();
 
 
                         Call<List<InputSearchViewModel>> Req;
@@ -256,6 +350,72 @@ public class Search extends AppCompatActivity implements SearchView.OnQueryTextL
                         else
                             Req = SearchAPI.Item(editsearch.getQuery().toString(), selected_category, selected_item, 5, i++);
 
+                        loading.setVisibility(View.VISIBLE);
+                        Req.enqueue(new Callback<List<InputSearchViewModel>>() {
+                            @Override
+                            public void onResponse(Call<List<InputSearchViewModel>> call, Response<List<InputSearchViewModel>> response) {
+                                if (!response.isSuccessful()) {
+                                    Toast.makeText(Search.this, "request was not successful ", Toast.LENGTH_LONG).show();
+                                    loading.setVisibility(View.GONE);
+                                }
+                                else {
+
+                                    if (response.body().size() == 0)
+                                        endOfList = true;
+                                    else
+                                        endOfList = false;
+
+                                    for (InputSearchViewModel person : response.body()) {
+                                        SearchPerson Person = new SearchPerson(person.getUsername(), person.getImagelink(), person.getFirstName(), person.getLastName());
+                                        SearchedPersons.add(Person);
+                                    }
+
+                                    adapter.notifyDataSetChanged();
+
+
+                                    if (SearchedPersons.size() == 0) {
+                                        if(isRoom == 0)
+                                            SearchError.setVisibility(View.VISIBLE);
+                                    }
+                                    loading.setVisibility(View.GONE);
+                                }
+                            }
+
+                            @Override
+                            public void onFailure(Call<List<InputSearchViewModel>> call, Throwable t) {
+                                Toast.makeText(Search.this, "Check your network", Toast.LENGTH_LONG).show();
+                                loading.setVisibility(View.GONE);
+                            }
+                        });
+                    }
+                }
+            }
+
+            @Override
+            public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+            }
+        });
+        RoomList.setOnScrollListener(new AbsListView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(AbsListView view, int scrollState) {
+                if (!RoomEndOfList) {
+                    if (RoomList.getLastVisiblePosition() == RoomList.getAdapter().getCount() - 1 &&
+                            RoomList.getChildAt(RoomList.getChildCount() - 1).getBottom() <= RoomList.getHeight()) { //end of scroll
+
+
+                        Call<List<InputSearchViewModel>> Req;
+                        Call<List<InputRoomSearchViewModel>> RoomReq;
+                        if (mode == 0) {
+                            Req = SearchAPI.Category(editsearch.getQuery().toString(), null, 5, i++);
+                            RoomReq = SearchAPI.RoomCategory(editsearch.getQuery().toString(), null, 5, r++);
+                        } else if (mode == 1) {
+                            Req = SearchAPI.Category(editsearch.getQuery().toString(), selected_category, 5, i++);
+                            RoomReq = SearchAPI.RoomCategory(editsearch.getQuery().toString(), selected_category, 5, r++);
+                        }
+                        else {
+                            Req = SearchAPI.Item(editsearch.getQuery().toString(), selected_category, selected_item, 5, i++);
+                            RoomReq = SearchAPI.RoomItem(editsearch.getQuery().toString(), selected_category, selected_item, 5, r++);
+                        }
                         loading.setVisibility(View.VISIBLE);
                         Req.enqueue(new Callback<List<InputSearchViewModel>>() {
                             @Override
@@ -292,6 +452,43 @@ public class Search extends AppCompatActivity implements SearchView.OnQueryTextL
                                 loading.setVisibility(View.GONE);
                             }
                         });
+
+                        RoomReq.enqueue(new Callback<List<InputRoomSearchViewModel>>() {
+                            @Override
+                            public void onResponse(Call<List<InputRoomSearchViewModel>> call, Response<List<InputRoomSearchViewModel>> response) {
+                                if (!response.isSuccessful()) {
+                                    Toast.makeText(Search.this, "request was not successful ", Toast.LENGTH_LONG).show();
+                                    loading.setVisibility(View.GONE);
+                                }
+                                else {
+
+                                    if (response.body().size() == 0)
+                                        RoomEndOfList = true;
+                                    else
+                                        RoomEndOfList = false;
+
+                                    for (InputRoomSearchViewModel room : response.body()) {
+                                        SearchRoom R = new SearchRoom(room.getId(), room.getName(), room.getDescription(), room.getStartDate(), room.getInterests(), room.getMembersCount());
+                                        SearchedRooms.add(R);
+                                    }
+
+                                    RoomAdapter.notifyDataSetChanged();
+
+
+                                    if (SearchedRooms.size() == 0) {
+                                        if(isRoom == 1)
+                                            SearchError.setVisibility(View.VISIBLE);
+                                    }
+                                    loading.setVisibility(View.GONE);
+                                }
+                            }
+
+                            @Override
+                            public void onFailure(Call<List<InputRoomSearchViewModel>> call, Throwable t) {
+                                Toast.makeText(Search.this, "Check your network", Toast.LENGTH_LONG).show();
+                                loading.setVisibility(View.GONE);
+                            }
+                        });
                     }
                 }
             }
@@ -301,6 +498,41 @@ public class Search extends AppCompatActivity implements SearchView.OnQueryTextL
             }
         });
 
+        toggleSwitch.setOnChangeListener(new ToggleSwitch.OnChangeListener(){
+            @Override
+            public void onToggleSwitchChanged(int position) {
+//                Toast.makeText(Search.this, "wtf", Toast.LENGTH_LONG).show();
+
+                isRoom = position;
+                if (isRoom == 0) {
+                    list.setVisibility(View.VISIBLE);
+                    RoomList.setVisibility(View.GONE);
+
+                    if (SearchedPersons.size() == 0)
+                        SearchError.setVisibility(View.VISIBLE);
+                    else
+                        SearchError.setVisibility(View.GONE);
+
+                    if (mode == 0)
+                        SearchTitle.setText("Search in all people");
+
+                }
+                else if(isRoom == 1){
+                    list.setVisibility(View.GONE);
+                    RoomList.setVisibility(View.VISIBLE);
+
+                    if (SearchedRooms.size() == 0)
+                        SearchError.setVisibility(View.VISIBLE);
+                    else
+                        SearchError.setVisibility(View.GONE);
+
+                    if(mode == 0)
+                        SearchTitle.setText("Search in all Rooms");
+
+                }
+
+            }
+        });
         editsearch.setOnQueryTextListener(this);
     }
 
@@ -320,13 +552,19 @@ public class Search extends AppCompatActivity implements SearchView.OnQueryTextL
         adapter.notifyDataSetChanged();
         endOfList = false;
         Call<List<InputSearchViewModel>> Req;
-        if (mode == 0)
+        Call<List<InputRoomSearchViewModel>> RoomReq;
+        if (mode == 0) {
             Req = SearchAPI.Category(newText, null, 10, 1);
-        else if (mode == 1)
+            RoomReq = SearchAPI.RoomCategory(newText, null, 10, 1);
+        }
+        else if (mode == 1){
             Req = SearchAPI.Category(editsearch.getQuery().toString(), selected_category, 10, 1);
-        else
+            RoomReq = SearchAPI.RoomCategory(editsearch.getQuery().toString(), selected_category, 10, 1);
+        }
+        else {
             Req = SearchAPI.Item(editsearch.getQuery().toString(), selected_category, selected_item, 10, 1);
-
+            RoomReq = SearchAPI.RoomItem(editsearch.getQuery().toString(), selected_category, selected_item, 10, 1);
+        }
         loading.setVisibility(View.VISIBLE);
         Req.enqueue(new Callback<List<InputSearchViewModel>>() {
             @Override
@@ -348,7 +586,8 @@ public class Search extends AppCompatActivity implements SearchView.OnQueryTextL
                     adapter.notifyDataSetChanged();
 
                     if (SearchedPersons.size() == 0) {
-                        SearchError.setVisibility(View.VISIBLE);
+                        if(isRoom == 0)
+                            SearchError.setVisibility(View.VISIBLE);
                     }
                     loading.setVisibility(View.GONE);
                 }
@@ -356,6 +595,39 @@ public class Search extends AppCompatActivity implements SearchView.OnQueryTextL
 
             @Override
             public void onFailure(Call<List<InputSearchViewModel>> call, Throwable t) {
+                Toast.makeText(Search.this, "Check your network", Toast.LENGTH_LONG).show();
+                loading.setVisibility(View.GONE);
+
+            }
+        });
+        RoomReq.enqueue(new Callback<List<InputRoomSearchViewModel>>() {
+            @Override
+            public void onResponse(Call<List<InputRoomSearchViewModel>> call, Response<List<InputRoomSearchViewModel>> response) {
+                if (!response.isSuccessful()) {
+                    Toast.makeText(Search.this, "unsuccessful ", Toast.LENGTH_LONG).show();
+                    loading.setVisibility(View.GONE);
+                }
+                else {
+                    SearchedRooms.clear();
+                    for (InputRoomSearchViewModel room : response.body()) {
+                        SearchRoom R = new SearchRoom(room.getId(), room.getName(), room.getDescription(), room.getStartDate(), room.getInterests(), room.getMembersCount());
+                        SearchedRooms.add(R);
+                    }
+
+                    RoomAdapter = new RoomListViewAdapter(Search.this, SearchedRooms);
+                    RoomList.setAdapter(RoomAdapter);
+                    RoomAdapter.notifyDataSetChanged();
+
+                    if (SearchedRooms.size() == 0) {
+                        if(isRoom == 1)
+                            SearchError.setVisibility(View.VISIBLE);
+                    }
+                    loading.setVisibility(View.GONE);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<InputRoomSearchViewModel>> call, Throwable t) {
                 Toast.makeText(Search.this, "Check your network", Toast.LENGTH_LONG).show();
                 loading.setVisibility(View.GONE);
 
@@ -423,9 +695,11 @@ public class Search extends AppCompatActivity implements SearchView.OnQueryTextL
                     mode = 2;
 
                     SearchedPersons.clear();
+                    SearchedRooms.clear();
                     SearchError.setVisibility(View.INVISIBLE);
 
                     Call<List<InputSearchViewModel>> Req = SearchAPI.Item(editsearch.getQuery().toString(), selected_category, selected_item, 10, 1);
+                    Call<List<InputRoomSearchViewModel>> RoomReq = SearchAPI.RoomItem(editsearch.getQuery().toString(), selected_category, selected_item, 10, 1);
                     loading.setVisibility(View.VISIBLE);
                     Req.enqueue(new Callback<List<InputSearchViewModel>>() {
                         @Override
@@ -445,7 +719,8 @@ public class Search extends AppCompatActivity implements SearchView.OnQueryTextL
                                 adapter.notifyDataSetChanged();
 
                                 if (SearchedPersons.size() == 0) {
-                                    SearchError.setVisibility(View.VISIBLE);
+                                    if(isRoom == 0)
+                                        SearchError.setVisibility(View.VISIBLE);
                                 }
                                 loading.setVisibility(View.GONE);
                             }
@@ -453,6 +728,37 @@ public class Search extends AppCompatActivity implements SearchView.OnQueryTextL
 
                         @Override
                         public void onFailure(Call<List<InputSearchViewModel>> call, Throwable t) {
+                            Toast.makeText(Search.this, "Check your network", Toast.LENGTH_LONG).show();
+                            loading.setVisibility(View.GONE);
+                        }
+                    });
+                    RoomReq.enqueue(new Callback<List<InputRoomSearchViewModel>>() {
+                        @Override
+                        public void onResponse(Call<List<InputRoomSearchViewModel>> call, Response<List<InputRoomSearchViewModel>> response) {
+                            if (!response.isSuccessful()) {
+                                Toast.makeText(Search.this, "unsuccessful", Toast.LENGTH_LONG).show();
+                                loading.setVisibility(View.GONE);
+                            }
+                            else {
+                                for (InputRoomSearchViewModel room : response.body()) {
+                                    SearchRoom R = new SearchRoom(room.getId(), room.getName(), room.getDescription(), room.getStartDate(), room.getInterests(), room.getMembersCount());
+                                    SearchedRooms.add(R);
+                                }
+
+                                RoomAdapter = new RoomListViewAdapter(Search.this, SearchedRooms);
+                                RoomList.setAdapter(RoomAdapter);
+                                RoomAdapter.notifyDataSetChanged();
+
+                                if (SearchedRooms.size() == 0) {
+                                    if(isRoom == 1)
+                                        SearchError.setVisibility(View.VISIBLE);
+                                }
+                                loading.setVisibility(View.GONE);
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(Call<List<InputRoomSearchViewModel>> call, Throwable t) {
                             Toast.makeText(Search.this, "Check your network", Toast.LENGTH_LONG).show();
                             loading.setVisibility(View.GONE);
                         }
@@ -627,4 +933,211 @@ class ListViewAdapter extends BaseAdapter {
         }
         return view;
     }
+}
+
+class SearchPerson {
+    private String UserName;
+    private String ImageLink;
+    private String FirstName;
+    private String LastName;
+
+
+    public SearchPerson(String userName, String ImageLink, String firstName, String lastName) {
+        this.UserName = userName;
+        FirstName = firstName;
+        LastName = lastName;
+        this.ImageLink = ImageLink;
+    }
+
+    public String getUserName() {
+        return UserName;
+    }
+
+    public String getImageLink() {
+        return ImageLink;
+    }
+
+    public String getFirstName() {
+        return FirstName;
+    }
+
+    public String getLastName() {
+        return LastName;
+    }
+}
+
+
+//########################################################################
+
+
+class RoomListViewAdapter extends BaseAdapter {
+
+    Context mContext;
+    LayoutInflater inflater;
+    private List<SearchRoom> SearchedRoomsList = null;
+    private ArrayList<SearchRoom> arraylist;
+
+    public RoomListViewAdapter(Context context, List<SearchRoom> SearchedPersonsList) {
+        mContext = context;
+        this.SearchedRoomsList = SearchedPersonsList;
+        inflater = LayoutInflater.from(mContext);
+        this.arraylist = new ArrayList<SearchRoom>();
+        this.arraylist.addAll(SearchedRoomsList);
+
+    }
+
+    public class ViewHolder {
+        TextView Name;
+        TextView MembersCount;
+        TextView Interest;
+        TextView StartTime;
+
+    }
+
+    @Override
+    public int getCount() {
+        return SearchedRoomsList.size();
+    }
+
+    @Override
+    public SearchRoom getItem(int position) {
+        return SearchedRoomsList.get(position);
+    }
+
+    @Override
+    public long getItemId(int position) {
+        return position;
+    }
+
+    public View getView(final int position, View view, ViewGroup parent) {
+        final ViewHolder holder;
+        holder = new ViewHolder();
+        view = inflater.inflate(R.layout.list_view_room_searched_items, null);
+
+        holder.Name = (TextView) view.findViewById(R.id.room_Name);
+        holder.MembersCount = (TextView) view.findViewById(R.id.room_membersCount);
+        holder.Interest = (TextView) view.findViewById(R.id.room_interest);
+        holder.StartTime = (TextView) view.findViewById(R.id.room_startTime);
+
+        view.setTag(holder);
+
+        // Set the results into TextViews
+        if (SearchedRoomsList.get(position).getName() != null )
+            holder.Name.setText(SearchedRoomsList.get(position).getName());
+        else
+            holder.Name.setVisibility(View.GONE);
+
+        holder.MembersCount.setText(String.valueOf(SearchedRoomsList.get(position).getMembersCount()) + " members");
+
+        holder.Interest.setText(InterestName(SearchedRoomsList.get(position).getInterests()));
+
+        SimpleDateFormat formatter = new SimpleDateFormat("HH:mm  dd MMMM yyyy");
+
+        holder.StartTime.setText(formatter.format(SearchedRoomsList.get(position).getStartDate()));// todo show start time
+
+
+        return view;
+    }
+
+    public String InterestName(ArrayList<ArrayList<Integer>> interests) {
+        String temp = "";
+        for (int i = 0; i < 14; i++) {
+            ArrayList<Integer> tt = interests.get(i);
+            if(tt.isEmpty()){
+                continue;
+            }
+            int ttt = (int) (Math.log(tt.get(0)) / Math.log(2));
+
+            switch (i) {
+                case 0:
+                    temp = com.example.chathouse.ViewModels.Acount.Interests.Wellness.getArrayString().get(ttt);
+                    break;
+                case 1:
+                    temp = com.example.chathouse.ViewModels.Acount.Interests.Identity.getArrayString().get(ttt);
+                    break;
+                case 2:
+                    temp = com.example.chathouse.ViewModels.Acount.Interests.Places.getArrayString().get(ttt);
+                    break;
+                case 3:
+                    temp = com.example.chathouse.ViewModels.Acount.Interests.WorldAffairs.getArrayString().get(ttt);
+                    break;
+                case 4:
+                    temp = com.example.chathouse.ViewModels.Acount.Interests.Tech.getArrayString().get(ttt);
+                    break;
+                case 5:
+                    temp = com.example.chathouse.ViewModels.Acount.Interests.HangingOut.getArrayString().get(ttt);
+                    break;
+                case 6:
+                    temp = com.example.chathouse.ViewModels.Acount.Interests.KnowLedge.getArrayString().get(ttt);
+                    break;
+                case 7:
+                    temp = com.example.chathouse.ViewModels.Acount.Interests.Hustle.getArrayString().get(ttt);
+                    break;
+                case 8:
+                    temp = com.example.chathouse.ViewModels.Acount.Interests.Sports.getArrayString().get(ttt);
+                    break;
+                case 9:
+                    temp = com.example.chathouse.ViewModels.Acount.Interests.Arts.getArrayString().get(ttt);
+                    break;
+                case 10:
+                    temp = com.example.chathouse.ViewModels.Acount.Interests.Life.getArrayString().get(ttt);
+                    break;
+                case 11:
+                    temp = com.example.chathouse.ViewModels.Acount.Interests.Languages.getArrayString().get(ttt);
+                    break;
+                case 12:
+                    temp = com.example.chathouse.ViewModels.Acount.Interests.Entertainment.getArrayString().get(ttt);
+                    break;
+                case 13:
+                    temp = com.example.chathouse.ViewModels.Acount.Interests.Faith.getArrayString().get(ttt);
+                    break;
+            }
+
+        }
+        return temp;
+    }
+
+}
+
+class SearchRoom {
+    private int Id;
+    private String Name;
+    private String Description;
+    private Date StartDate;
+    private ArrayList<ArrayList<Integer>> Interests;
+    private int MembersCount;
+
+    public SearchRoom(int id, String name, String description, Date startDate, ArrayList<ArrayList<Integer>> interests, int membersCount) {
+        this.Id = id;
+        this.Name = name;
+        this.Description = description;
+        this.StartDate = startDate;
+        this.Interests = interests;
+        this.MembersCount = membersCount;
+    }
+
+    public int getId() {
+        return Id;
+    }
+
+    public String getName() {
+        return Name;
+    }
+
+    public String getDescription() {
+        return Description;
+    }
+
+    public Date getStartDate() {
+        return StartDate;
+    }
+
+    public ArrayList<ArrayList<Integer>> getInterests() {
+        return Interests;
+    }
+
+    public int getMembersCount() {
+        return MembersCount;
+    }
+
 }
