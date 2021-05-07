@@ -45,6 +45,7 @@ import com.example.chathouse.API.ChatHouseAPI;
 import com.example.chathouse.R;
 import com.example.chathouse.Utility.Constants;
 import com.example.chathouse.ViewModels.Acount.SearchPerson;
+import com.example.chathouse.ViewModels.Search.InputRoomSearchViewModel;
 import com.example.chathouse.ViewModels.Search.InputSearchViewModel;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.gson.Gson;
@@ -934,38 +935,6 @@ class ListViewAdapter extends BaseAdapter {
         return view;
     }
 }
-
-class SearchPerson {
-    private String UserName;
-    private String ImageLink;
-    private String FirstName;
-    private String LastName;
-
-
-    public SearchPerson(String userName, String ImageLink, String firstName, String lastName) {
-        this.UserName = userName;
-        FirstName = firstName;
-        LastName = lastName;
-        this.ImageLink = ImageLink;
-    }
-
-    public String getUserName() {
-        return UserName;
-    }
-
-    public String getImageLink() {
-        return ImageLink;
-    }
-
-    public String getFirstName() {
-        return FirstName;
-    }
-
-    public String getLastName() {
-        return LastName;
-    }
-}
-
 
 //########################################################################
 
