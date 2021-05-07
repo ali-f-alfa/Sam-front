@@ -29,19 +29,19 @@
                 android:id="@+id/room_Name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:paddingStart="8dp"
-                android:paddingLeft="8dp"
+                android:paddingStart="15dp"
+                android:paddingLeft="15dp"
                 android:paddingEnd="16dp"
                 android:paddingRight="16dp"
                 android:textColor="@color/Verypink"
-                android:textSize="19sp" />
+                android:textSize="19sp"/>
 
             <TextView
                 android:id="@+id/room_membersCount"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:paddingStart="8dp"
-                android:paddingLeft="8dp"
+                android:paddingStart="15dp"
+                android:paddingLeft="15dp"
                 android:paddingEnd="16dp"
                 android:paddingRight="16dp"
                 android:textColor="@color/Verypink"
@@ -65,7 +65,8 @@
                 android:paddingEnd="16dp"
                 android:paddingRight="16dp"
                 android:textColor="@color/Verypink"
-                android:textSize="17sp" />
+                android:textSize="17sp"
+                android:gravity="center"/>
 
             <TextView
                 android:id="@+id/room_startTime"
@@ -76,7 +77,8 @@
                 android:paddingEnd="16dp"
                 android:paddingRight="16dp"
                 android:textColor="@color/Verypink"
-                android:textSize="17sp" />
+                android:textSize="17sp"
+                android:gravity="center"/>
         </LinearLayout>
         </LinearLayout>
     </androidx.cardview.widget.CardView>

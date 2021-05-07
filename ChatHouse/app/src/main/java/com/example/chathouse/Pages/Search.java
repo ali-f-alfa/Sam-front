@@ -32,6 +32,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.IOException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -1013,15 +1015,76 @@ class RoomListViewAdapter extends BaseAdapter {
         else
             holder.Name.setVisibility(View.GONE);
 
-        holder.MembersCount.setText(String.valueOf(SearchedRoomsList.get(position).getMembersCount()));
+        holder.MembersCount.setText(String.valueOf(SearchedRoomsList.get(position).getMembersCount()) + " members");
 
-        holder.Interest.setText(SearchedRoomsList.get(position).getInterests().toString());// todo interests showing
+        holder.Interest.setText(InterestName(SearchedRoomsList.get(position).getInterests()));
 
-        holder.StartTime.setText(SearchedRoomsList.get(position).getStartDate().toString());// todo show start time
+        SimpleDateFormat formatter = new SimpleDateFormat("HH:mm  dd MMMM yyyy");
+
+        holder.StartTime.setText(formatter.format(SearchedRoomsList.get(position).getStartDate()));// todo show start time
 
 
         return view;
     }
+
+    public String InterestName(ArrayList<ArrayList<Integer>> interests) {
+        String temp = "";
+        for (int i = 0; i < 14; i++) {
+            ArrayList<Integer> tt = interests.get(i);
+            if(tt.isEmpty()){
+                continue;
+            }
+            int ttt = (int) (Math.log(tt.get(0)) / Math.log(2));
+
+            switch (i) {
+                case 0:
+                    temp = com.example.chathouse.ViewModels.Acount.Interests.Wellness.getArrayString().get(ttt);
+                    break;
+                case 1:
+                    temp = com.example.chathouse.ViewModels.Acount.Interests.Identity.getArrayString().get(ttt);
+                    break;
+                case 2:
+                    temp = com.example.chathouse.ViewModels.Acount.Interests.Places.getArrayString().get(ttt);
+                    break;
+                case 3:
+                    temp = com.example.chathouse.ViewModels.Acount.Interests.WorldAffairs.getArrayString().get(ttt);
+                    break;
+                case 4:
+                    temp = com.example.chathouse.ViewModels.Acount.Interests.Tech.getArrayString().get(ttt);
+                    break;
+                case 5:
+                    temp = com.example.chathouse.ViewModels.Acount.Interests.HangingOut.getArrayString().get(ttt);
+                    break;
+                case 6:
+                    temp = com.example.chathouse.ViewModels.Acount.Interests.KnowLedge.getArrayString().get(ttt);
+                    break;
+                case 7:
+                    temp = com.example.chathouse.ViewModels.Acount.Interests.Hustle.getArrayString().get(ttt);
+                    break;
+                case 8:
+                    temp = com.example.chathouse.ViewModels.Acount.Interests.Sports.getArrayString().get(ttt);
+                    break;
+                case 9:
+                    temp = com.example.chathouse.ViewModels.Acount.Interests.Arts.getArrayString().get(ttt);
+                    break;
+                case 10:
+                    temp = com.example.chathouse.ViewModels.Acount.Interests.Life.getArrayString().get(ttt);
+                    break;
+                case 11:
+                    temp = com.example.chathouse.ViewModels.Acount.Interests.Languages.getArrayString().get(ttt);
+                    break;
+                case 12:
+                    temp = com.example.chathouse.ViewModels.Acount.Interests.Entertainment.getArrayString().get(ttt);
+                    break;
+                case 13:
+                    temp = com.example.chathouse.ViewModels.Acount.Interests.Faith.getArrayString().get(ttt);
+                    break;
+            }
+
+        }
+        return temp;
+    }
+
 }
 
 class SearchRoom {
