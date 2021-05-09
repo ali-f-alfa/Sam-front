@@ -217,12 +217,14 @@ public class RoomInfo extends AppCompatActivity{
                                 Toast.makeText(RoomInfo.this, "Request failed", Toast.LENGTH_LONG).show();
                             }
                         });
+                        break;
                     case R.id.showPro:
                         Intent intent = new Intent(RoomInfo.this, ProfilePage.class);
                         Bundle bundle1 = new Bundle();
                         bundle1.putString("Username", Username);
                         intent.putExtras(bundle1);
                         startActivity(intent);
+                        break;
                 }
                 return true;
             }

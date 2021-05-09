@@ -2,12 +2,12 @@
     <!-- Base application theme. -->
     <style name="Theme.ChatHouse" parent="Theme.MaterialComponents.Light.NoActionBar">
         <!-- Primary brand color. -->
-        <item name="colorPrimary">@color/white</item>
+        <item name="colorPrimary">@color/gray</item>
         <item name="colorPrimaryVariant">@color/light</item>
         <item name="colorOnPrimary">@color/Pink</item>
         <!-- Secondary brand color. -->
         <item name="colorSecondary">@color/Verypink</item>
-        <item name="colorSecondaryVariant">@color/white</item>
+        <item name="colorSecondaryVariant">@color/almostorange</item>
         <item name="colorOnSecondary">@color/almostgreen</item>
         <!-- Status bar color. -->
         <item name="android:statusBarColor" tools:targetApi="l">?attr/colorPrimaryVariant</item>
