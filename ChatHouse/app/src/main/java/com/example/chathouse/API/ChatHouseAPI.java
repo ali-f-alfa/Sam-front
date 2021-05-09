@@ -81,7 +81,7 @@ public interface ChatHouseAPI {
     Call<Void> LeaveRoom(@Query("roomid") int roomId);
 
     @POST("Room/JoinRoom")
-    Call<Void> JoinRoom(@Query("roomid") int roomId);
+    Call<ProfileInformation> JoinRoom(@Query("roomid") int roomId);
 
     @DELETE("Room/RemoveUser")
     Call<GetRoomViewModel> RemoveUser(@Query("roomid") int roomId, @Query("username") String username);

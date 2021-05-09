@@ -240,9 +240,45 @@ public class AcitivityPage extends AppCompatActivity {
                 else{
                     // Show them count down
                     AlertDialog.Builder alert = new AlertDialog.Builder(view.getContext());
-                    alert.setTitle("Remaining Time");
-                    // alert.setMessage("Message");
-                    new CountDownTimer(p.getStartDate().getTime() - objDate.getTime(), 1000) {
+                    alert.setMessage("Remaining time to start: ")
+                            .setPositiveButton("Okay", new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int id) {
+                                    // FIRE ZE MISSILES!
+
+                                }
+                            })
+                            .setNegativeButton("Leave", new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int id) {
+                                    // User cancelled the dialog
+                                    Call<Void> LeaveRoom = APIS.LeaveRoom(p.getRoomId());
+                                    LeaveRoom.enqueue(new Callback<Void>() {
+                                        @Override
+                                        public void onResponse(Call<Void> call, retrofit2.Response<Void> response) {
+                                            if(!response.isSuccessful()){
+                                                try {
+                                                    System.out.println("1" + response.errorBody().string());
+                                                    System.out.println("1" + response.code());
+                                                    System.out.println(response.errorBody().string());
+                                                } catch (IOException e) {
+                                                    System.out.println("2" + response.errorBody().toString());
+                                                    e.printStackTrace();
+                                                }
+                                                return;
+                                            }
+                                            System.out.println("Deleted");
+                                            RoomsModelListArrayIn.remove(position);
+                                            RoomsAdapterIn.notifyDataSetChanged();
+                                        }
+
+                                        @Override
+                                        public void onFailure(Call<Void> call, Throwable t) {
+                                            Toast.makeText(AcitivityPage.this, "Request failed" , Toast.LENGTH_LONG).show();
+                                        }
+                                    });
+                                }
+                            });
+                    //p.getStartDate().getTime() - objDate.getTime()
+                    new CountDownTimer(10000, 1000) {
 
                         public void onTick(long millisUntilFinished) {
                             Toast.makeText(AcitivityPage.this, "seconds remaining: " + millisUntilFinished / 1000, Toast.LENGTH_LONG).show();
@@ -254,12 +290,6 @@ public class AcitivityPage extends AppCompatActivity {
 
                     }.start();
 
-
-                    alert.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int whichButton) {
-                            //Your action here
-                        }
-                    });
 
 
                     alert.show();
