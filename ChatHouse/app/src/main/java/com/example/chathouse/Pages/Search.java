@@ -289,8 +289,14 @@ public class Search extends AppCompatActivity implements SearchView.OnQueryTextL
                         Response = response.body();
                         System.out.println(Response.getInRooms());
                         ArrayList<RoomModel> inRooms = Response.getInRooms();
+                        ArrayList<RoomModel> roomsCreated = Response.getCreatedRooms();
                         Boolean included = false;
                         for(RoomModel x: inRooms){
+                            if(x.getRoomId() == RoomId){
+                                included = true;
+                            }
+                        }
+                        for(RoomModel x: roomsCreated){
                             if(x.getRoomId() == RoomId){
                                 included = true;
                             }
