@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".Pages.AcitivityPage"
+    android:background="@drawable/b22"
+    android:orientation="vertical"
+    android:padding="2dp"
+    android:layout_marginTop="5dp">
+   <LinearLayout
+       android:layout_width="fill_parent"
+       android:layout_height="fill_parent"
+       android:layout_above="@+id/Activity_menu"
+       android:orientation="vertical">
+       <TextView
+           android:layout_width="wrap_content"
+           android:layout_height="wrap_content"
+           android:text="Activities"
+           android:fontFamily="serif"
+           android:textColor="@color/Verypink"
+           android:textStyle="bold"
+           android:textSize="20dp"
+           android:layout_gravity="center">
+
+       </TextView>
+       <View
+           android:layout_width="wrap_content"
+           android:layout_height="5dp"
+           android:layout_marginTop="5dp"
+           android:background="@color/white"
+           android:tooltipText="Interests" />
+       <TextView
+           android:layout_width="wrap_content"
+           android:layout_height="wrap_content"
+           android:text="Created Rooms"
+           android:fontFamily="serif"
+           android:textColor="@color/gray"
+           android:textStyle="italic"
+           android:textSize="16dp"
+           android:layout_gravity="center">
+
+       </TextView>
+
+       <ListView
+           android:id="@+id/RoomsInactivity"
+           android:layout_width="fill_parent"
+           android:layout_height="fill_parent"
+           android:fadeScrollbars="false"
+           android:layout_weight="6"></ListView>
+       <View
+           android:layout_width="wrap_content"
+           android:layout_height="5dp"
+           android:layout_marginTop="5dp"
+           android:background="@color/white"
+           android:tooltipText="Interests" />
+       <TextView
+           android:layout_width="wrap_content"
+           android:layout_height="wrap_content"
+           android:text="In Rooms"
+           android:fontFamily="serif"
+           android:textColor="@color/gray"
+           android:textStyle="italic"
+           android:textSize="16dp"
+           android:layout_gravity="center">
+
+       </TextView>
+
+       <LinearLayout
+           android:layout_width="fill_parent"
+           android:layout_height="fill_parent"
+           android:layout_below="@+id/RoomsInactivity"
+           android:layout_alignParentBottom="true"
+           android:layout_weight="4"
+           >
+           <ListView
+               android:id="@+id/RoomsInactivityIn"
+               android:layout_width="fill_parent"
+               android:layout_height="fill_parent"
+               android:fadeScrollbars="false"
+               android:layout_weight="4"></ListView>
+       </LinearLayout>
+
+
+   </LinearLayout>
+
+
+    <ProgressBar
+        style="?android:attr/progressBarStyleLarge"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/progressBar"
+        android:progressDrawable="@drawable/loading"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="300dp"
+        />
+
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/Activity_menu"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:labelVisibilityMode="labeled"
+        app:itemIconTint="@color/black"
+        app:itemTextColor="@color/black"
+        android:layout_alignParentBottom="true"
+        android:background="@color/light"
+        app:menu="@menu/bottom_navigation"/>
+
+</RelativeLayout>

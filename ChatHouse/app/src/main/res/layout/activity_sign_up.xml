@@ -15,7 +15,7 @@
         android:layout_height="60dp"
         android:layout_marginTop="20dp"
         android:ems="10"
-        android:fontFamily="cursive"
+        android:fontFamily="serif"
         android:gravity="center"
         android:text="GoNuts"
         android:textColor="@color/Verypink"

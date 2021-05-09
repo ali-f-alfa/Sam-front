@@ -1,13 +1,16 @@
 package com.example.chathouse.Pages;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.os.Handler;
 import android.util.TypedValue;
 import android.view.Gravity;
@@ -44,6 +47,10 @@ import com.bumptech.glide.request.RequestOptions;
 import com.example.chathouse.API.ChatHouseAPI;
 import com.example.chathouse.R;
 import com.example.chathouse.Utility.Constants;
+import com.example.chathouse.ViewModels.Acount.ProfileInformation;
+import com.example.chathouse.ViewModels.Acount.RoomModel;
+import com.example.chathouse.ViewModels.Acount.SearchPerson;
+import com.example.chathouse.ViewModels.GetRoomViewModel;
 import com.example.chathouse.ViewModels.Search.InputRoomSearchViewModel;
 import com.example.chathouse.ViewModels.Search.InputSearchViewModel;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -93,6 +100,7 @@ public class Search extends AppCompatActivity implements SearchView.OnQueryTextL
     ProgressBar loading;
     ToggleSwitch toggleSwitch;
     int isRoom;
+    ProfileInformation Response;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -242,7 +250,7 @@ public class Search extends AppCompatActivity implements SearchView.OnQueryTextL
                 Bundle bundle = new Bundle();
 
                 SearchPerson p = (SearchPerson) list.getAdapter().getItem(position);
-                String Username = p.getUserName();
+                String Username = p.getUsername();
                 bundle.putString("Username", Username);
                 intent.putExtras(bundle);
                 startActivity(intent);
@@ -252,16 +260,156 @@ public class Search extends AppCompatActivity implements SearchView.OnQueryTextL
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
-//                Intent intent = new Intent(Search.this, com.example.chathouse.Pages.ProfilePage.class);
-//                Bundle bundle = new Bundle();
-
                 SearchRoom R = (SearchRoom) RoomList.getAdapter().getItem(position);
                 int RoomId = R.getId();
-                Toast.makeText(Search.this, "clicked on room id: " + RoomId, Toast.LENGTH_LONG).show();
+                Date objDate = new Date();
+                Date date = R.getStartDate();
+                String Name = R.getName();
+                Call<ProfileInformation> GetProfile = SearchAPI.GetProfile(Username);
 
-//                bundle.putString("Username", Username);
-//                intent.putExtras(bundle);
-//                startActivity(intent);
+                GetProfile.enqueue(new Callback<ProfileInformation>() {
+                    @Override
+                    public void onResponse(Call<ProfileInformation> call, Response<ProfileInformation> response) {
+                        if (!response.isSuccessful()) {
+                            try {
+                                loading.setVisibility(View.INVISIBLE);
+                                System.out.println("1" + response.errorBody().string());
+                                System.out.println("1" + response.code());
+                            } catch (IOException e) {
+                                loading.setVisibility(View.INVISIBLE);
+                                System.out.println("2" + response.errorBody().toString());
+
+                                e.printStackTrace();
+                            }
+
+                            return;
+                        }
+
+                        // Set the values from back
+                        Response = response.body();
+                        System.out.println(Response.getInRooms());
+                        ArrayList<RoomModel> inRooms = Response.getInRooms();
+                        Boolean included = false;
+                        for(RoomModel x: inRooms){
+                            if(x.getRoomId() == RoomId){
+                                included = true;
+                            }
+                        }
+                        if(included){
+                            if(date == null || date.compareTo(objDate) < 0){
+                                Intent intent = new Intent(Search.this, com.example.chathouse.Pages.Room.class);
+                                Bundle bundle = new Bundle();
+
+                                bundle.putInt("RoomId", RoomId);
+                                bundle.putString("Name", Name);
+//                            bundle.putString("Creator", p.getCreator().getUsername());
+                                intent.putExtras(bundle);
+                                startActivity(intent);
+                            }
+                            else{
+                                // Show them count down
+                                AlertDialog.Builder alert = new AlertDialog.Builder(view.getContext());
+                                alert.setTitle("Remaining Time");
+                                // alert.setMessage("Message");
+                                new CountDownTimer(date.getTime() - objDate.getTime(), 1000) {
+
+                                    public void onTick(long millisUntilFinished) {
+                                        Toast.makeText(Search.this, "seconds remaining: " + millisUntilFinished / 1000, Toast.LENGTH_LONG).show();
+                                        //here you can have your logic to set text to edittext
+                                    }
+
+                                    public void onFinish() {
+                                    }
+
+                                }.start();
+
+
+                                alert.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int whichButton) {
+                                        //Your action here
+                                    }
+                                });
+
+
+                                alert.show();
+                            }
+                        }
+                        else{
+                            Call<ProfileInformation> JoinRoom = SearchAPI.JoinRoom(RoomId);
+                            JoinRoom.enqueue(new Callback<ProfileInformation>() {
+                                @Override
+                                public void onResponse(Call<ProfileInformation> call, Response<ProfileInformation> response) {
+                                    if(!response.isSuccessful()){
+                                        try {
+                                            System.out.println("1" + response.errorBody().string());
+                                            System.out.println("1" + response.code());
+                                        } catch (IOException e) {
+                                            System.out.println("2" + response.errorBody().toString());
+
+                                            e.printStackTrace();
+                                        }
+
+                                        return;
+                                    }
+                                    ProfileInformation p = response.body();
+                                    if(date == null || date.compareTo(objDate) < 0){
+                                        Intent intent = new Intent(Search.this, com.example.chathouse.Pages.Room.class);
+                                        Bundle bundle = new Bundle();
+
+                                        bundle.putInt("RoomId", RoomId);
+                                        bundle.putString("Name", Name);
+//                            bundle.putString("Creator", p.getCreator().getUsername());
+                                        intent.putExtras(bundle);
+                                        startActivity(intent);
+                                    }
+                                    else{
+                                        // Show them count down
+                                        AlertDialog.Builder alert = new AlertDialog.Builder(view.getContext());
+                                        alert.setTitle("Remaining Time");
+                                        // alert.setMessage("Message");
+                                        new CountDownTimer(date.getTime() - objDate.getTime(), 1000) {
+
+                                            public void onTick(long millisUntilFinished) {
+                                                Toast.makeText(Search.this, "seconds remaining: " + millisUntilFinished / 1000, Toast.LENGTH_LONG).show();
+                                                //here you can have your logic to set text to edittext
+                                            }
+
+                                            public void onFinish() {
+                                            }
+
+                                        }.start();
+
+
+                                        alert.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                                            public void onClick(DialogInterface dialog, int whichButton) {
+                                                //Your action here
+                                            }
+                                        });
+
+
+                                        alert.show();
+                                    }
+
+                                }
+
+                                @Override
+                                public void onFailure(Call<ProfileInformation> call, Throwable t) {
+                                    Toast.makeText(Search.this, "Request Failed" + RoomId, Toast.LENGTH_LONG).show();
+                                }
+                            });
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<ProfileInformation> call, Throwable t) {
+                        loading.setVisibility(View.INVISIBLE);
+                        Toast.makeText(Search.this, "Request failed" + t.getMessage(), Toast.LENGTH_LONG).show();
+                    }
+                });
+
+
+
+
             }
         });
 
@@ -848,6 +996,18 @@ public class Search extends AppCompatActivity implements SearchView.OnQueryTextL
                         }
                     });
                     break;
+
+                case R.id.nav_Activity:
+                    new Handler().post(new Runnable() {
+                        @Override
+                        public void run() {
+
+                            Intent intent = new Intent(Search.this, AcitivityPage.class);
+                            startActivity(intent);
+                            finish();
+                        }
+                    });
+                    break;
             }
             return false;
         }
@@ -908,7 +1068,7 @@ class ListViewAdapter extends BaseAdapter {
         else
             holder.name.setVisibility(View.GONE);
 
-        holder.userName.setText(SearchedPersonsList.get(position).getUserName());
+        holder.userName.setText(SearchedPersonsList.get(position).getUsername());
 
 
         if (SearchedPersonsList.get(position).getImageLink() != null) {
@@ -922,38 +1082,6 @@ class ListViewAdapter extends BaseAdapter {
         return view;
     }
 }
-
-class SearchPerson {
-    private String UserName;
-    private String ImageLink;
-    private String FirstName;
-    private String LastName;
-
-
-    public SearchPerson(String userName, String ImageLink, String firstName, String lastName) {
-        this.UserName = userName;
-        FirstName = firstName;
-        LastName = lastName;
-        this.ImageLink = ImageLink;
-    }
-
-    public String getUserName() {
-        return UserName;
-    }
-
-    public String getImageLink() {
-        return ImageLink;
-    }
-
-    public String getFirstName() {
-        return FirstName;
-    }
-
-    public String getLastName() {
-        return LastName;
-    }
-}
-
 
 //########################################################################
 

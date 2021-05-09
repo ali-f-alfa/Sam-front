@@ -8,8 +8,6 @@ public class FollowingFollowers implements Serializable {
     private String firstName;
     private String lastName;
     private String imageLink;
-    private ArrayList<Room> CreatedRooms;
-    private ArrayList<Room> InRooms;
 
     public String getUsername() {
         return username;

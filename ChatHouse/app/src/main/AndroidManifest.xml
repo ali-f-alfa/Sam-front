@@ -17,8 +17,11 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.ChatHouse"
         android:usesCleartextTraffic="true">
-        <activity android:name=".SettingPage"></activity>
-        <activity android:name=".Pages.HomePage"></activity>
+        <activity android:name=".Pages.AcitivityPage"></activity>
+        <activity android:name=".Pages.RoomInfo" />
+        <activity android:name=".Pages.Room" />
+        <activity android:name=".Pages.SettingPage" />
+        <activity android:name=".Pages.HomePage" />
         <activity android:name=".Pages.FollowingFollowersPage" />
         <activity android:name=".Pages.EditProfile" />
         <activity android:name=".Pages.Search" />
