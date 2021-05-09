@@ -30,7 +30,7 @@
                 android:gravity="center">
 
                 <TextView
-                    android:id="@+id/room_Name"
+                    android:id="@+id/room_Name_interests"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:paddingStart="15dp"
@@ -38,19 +38,18 @@
                     android:paddingEnd="16dp"
                     android:paddingRight="16dp"
                     android:textColor="@color/Verypink"
-                    android:textSize="19sp"
-                    android:gravity="center"
+                    android:textSize="21sp"
+                    android:textStyle="bold"
                     android:layout_weight="1"/>
 
                 <TextView
-                    android:id="@+id/room_membersCount"
+                    android:id="@+id/room_description_interests"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:paddingStart="15dp"
                     android:paddingLeft="15dp"
                     android:paddingEnd="16dp"
                     android:paddingRight="16dp"
-                    android:gravity="center"
                     android:textColor="@color/Verypink"
                     android:textSize="17sp"
                     android:layout_weight="1"/>
@@ -67,10 +66,9 @@
                 android:gravity="center">
 
                 <TextView
-                    android:id="@+id/room_interest"
+                    android:id="@+id/room_interest_interests"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:gravity="center"
                     android:paddingStart="8dp"
                     android:paddingLeft="8dp"
                     android:paddingEnd="16dp"
@@ -80,10 +78,9 @@
                     android:layout_weight="1"/>
 
                 <TextView
-                    android:id="@+id/room_startTime"
+                    android:id="@+id/room_membersCount_interests"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:gravity="center"
                     android:paddingStart="8dp"
                     android:paddingLeft="8dp"
                     android:paddingEnd="16dp"
