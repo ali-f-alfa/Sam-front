@@ -116,6 +116,10 @@ public class Room extends AppCompatActivity {
                         }
                         System.out.println("Deleted");
                         finish();
+
+                        Intent intent = new Intent(Room.this, AcitivityPage.class);
+
+                        startActivity(intent);
                     }
 
                     @Override
