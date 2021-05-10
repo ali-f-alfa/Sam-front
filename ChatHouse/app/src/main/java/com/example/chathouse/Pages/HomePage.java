@@ -1,6 +1,7 @@
 package com.example.chathouse.Pages;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 
@@ -8,10 +9,12 @@ import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.app.TimePickerDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.os.Handler;
 import android.util.TypedValue;
 import android.view.Gravity;
@@ -20,6 +23,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
+import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.DatePicker;
@@ -38,6 +42,7 @@ import android.widget.Toast;
 import com.example.chathouse.API.ChatHouseAPI;
 import com.example.chathouse.R;
 import com.example.chathouse.Utility.Constants;
+import com.example.chathouse.ViewModels.Acount.ProfileInformation;
 import com.example.chathouse.ViewModels.Acount.SearchPerson;
 import com.example.chathouse.ViewModels.CreateRoomViewModel;
 import com.example.chathouse.ViewModels.GetRoomViewModel;
@@ -162,6 +167,71 @@ public class HomePage extends AppCompatActivity {
         });
 
         /////////////////////////////
+
+        SuggestedRoomsByInterestsList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
+                InputRoomSearchViewModel R = (InputRoomSearchViewModel) SuggestedRoomsByInterestsList.getAdapter().getItem(position);
+                Call<ProfileInformation> JoinRoom = APIS.JoinRoom(R.getId());
+                JoinRoom.enqueue(new Callback<ProfileInformation>() {
+                    @Override
+                    public void onResponse(Call<ProfileInformation> call, Response<ProfileInformation> response) {
+                        if (!response.isSuccessful()) {
+                            Toast.makeText(HomePage.this, "join request was not successful ", Toast.LENGTH_SHORT).show();
+
+                            return;
+                        }
+                        Toast.makeText(HomePage.this, "successfully joined the room", Toast.LENGTH_SHORT).show();
+
+                        Intent intent = new Intent(HomePage.this, com.example.chathouse.Pages.Room.class);
+                        Bundle bundle = new Bundle();
+
+                        bundle.putInt("RoomId", R.getId());
+                        bundle.putString("Name", R.getName());
+                        intent.putExtras(bundle);
+                        startActivity(intent);
+                    }
+
+                    @Override
+                    public void onFailure(Call<ProfileInformation> call, Throwable t) {
+                        Toast.makeText(HomePage.this, "request failed", Toast.LENGTH_SHORT).show();
+                    }
+                });
+            }
+        });
+        SuggestedRoomsByFollowingsList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                InputRoomSuggestSearchViewModel R = (InputRoomSuggestSearchViewModel) SuggestedRoomsByFollowingsList.getAdapter().getItem(position);
+                Call<ProfileInformation> JoinRoom = APIS.JoinRoom(R.getId());
+                JoinRoom.enqueue(new Callback<ProfileInformation>() {
+                    @Override
+                    public void onResponse(Call<ProfileInformation> call, Response<ProfileInformation> response) {
+                        if (!response.isSuccessful()) {
+                            Toast.makeText(HomePage.this, "join request was not successful ", Toast.LENGTH_SHORT).show();
+
+                            return;
+                        }
+                        Toast.makeText(HomePage.this, "successfully joined the room", Toast.LENGTH_SHORT).show();
+
+                        Intent intent = new Intent(HomePage.this, com.example.chathouse.Pages.Room.class);
+                        Bundle bundle = new Bundle();
+
+                        bundle.putInt("RoomId", R.getId());
+                        bundle.putString("Name", R.getName());
+                        intent.putExtras(bundle);
+                        startActivity(intent);
+                    }
+
+                    @Override
+                    public void onFailure(Call<ProfileInformation> call, Throwable t) {
+                        Toast.makeText(HomePage.this, "request failed", Toast.LENGTH_SHORT).show();
+                    }
+                });
+
+            }
+        });
 
         Call<List<InputRoomSearchViewModel>> RoomSuggestInterests = APIS.RoomSuggestByInterests(10, 1);
         loading.setVisibility(View.VISIBLE);
@@ -896,7 +966,7 @@ class SuggestedRoomsByFollowingsListViewAdapter extends BaseAdapter {
 
         holder.MembersCount.setText(String.valueOf(SearchedRoomsList.get(position).getMembersCount()) + " members");
 
-        holder.SuggestedBy.setText(CreateSuggestedByString(SearchedRoomsList.get(position).getSuggestBy())+ "  follows this room");
+        holder.SuggestedBy.setText(CreateSuggestedByString(SearchedRoomsList.get(position).getSuggestBy()) + "  follows this room");
 
         holder.Description.setText(SearchedRoomsList.get(position).getDescription());
 
@@ -905,11 +975,11 @@ class SuggestedRoomsByFollowingsListViewAdapter extends BaseAdapter {
         return view;
     }
 
-    public String CreateSuggestedByString(ArrayList<InputSearchViewModel> users){
+    public String CreateSuggestedByString(ArrayList<InputSearchViewModel> users) {
         String result = "";
-        for(int x = 0 ; x < users.size(); x++){
+        for (int x = 0; x < users.size(); x++) {
             if (x != users.size() - 1)
-                result += users.get(x).getUsername() + "and ";
+                result += users.get(x).getUsername() + " and ";
             else
                 result += users.get(x).getUsername();
         }

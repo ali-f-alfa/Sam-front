@@ -88,11 +88,10 @@ public class SettingPage extends AppCompatActivity {
                         edit.apply();
                         new Handler().post(new Runnable() {
                             @Override
-                            public void run() {
+                            public void run () {
                                 Intent intent = new Intent(SettingPage.this, Login.class);
-
+                                finishAffinity();
                                 startActivity(intent);
-                                finish();
                             }
                         });
                     }
