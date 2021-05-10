@@ -97,6 +97,8 @@ public class AcitivityPage extends AppCompatActivity {
     private x RoomsAdapterIn;
     private ArrayList<RoomModel> RoomsModelListArrayIn = new ArrayList<RoomModel>();
 
+    private boolean selected;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         Date objDate = new Date();
@@ -112,6 +114,7 @@ public class AcitivityPage extends AppCompatActivity {
 
         menu.setOnNavigationItemSelectedListener(navListener);
         int a = menu.getSelectedItemId();
+        selected = false;
 
         String Token = settings.getString("Token", "n/a");
 
@@ -209,8 +212,8 @@ public class AcitivityPage extends AppCompatActivity {
 
                     int idx = p.getRoomId();
                     bundle.putInt("RoomId", idx);
-                    bundle.putString("Name", p.getName());
-                    bundle.putString("Creator", p.getCreator().getUsername());
+//                    bundle.putString("Name", p.getName());
+//                    bundle.putString("Creator", p.getCreator().getUsername());
                     System.out.println(p.getCreator());
                     intent.putExtras(bundle);
                     startActivity(intent);
@@ -240,8 +243,10 @@ public class AcitivityPage extends AppCompatActivity {
                 else{
                     // Show them count down
                     AlertDialog.Builder alert = new AlertDialog.Builder(view.getContext());
-                    alert.setMessage("Remaining time to start: ")
-                            .setPositiveButton("Okay", new DialogInterface.OnClickListener() {
+                    SimpleDateFormat formatter = new SimpleDateFormat("HH:mm  dd MMMM yyyy");
+                    alert.setMessage("Room start time is: \n" + formatter.format(p.getStartDate()));
+
+                    alert.setPositiveButton("Okay", new DialogInterface.OnClickListener() {
                                 public void onClick(DialogInterface dialog, int id) {
                                     // FIRE ZE MISSILES!
 
@@ -277,20 +282,6 @@ public class AcitivityPage extends AppCompatActivity {
                                     });
                                 }
                             });
-                    //p.getStartDate().getTime() - objDate.getTime()
-                    new CountDownTimer(10000, 1000) {
-
-                        public void onTick(long millisUntilFinished) {
-                            Toast.makeText(AcitivityPage.this, "seconds remaining: " + millisUntilFinished / 1000, Toast.LENGTH_LONG).show();
-                            //here you can have your logic to set text to edittext
-                        }
-
-                        public void onFinish() {
-                        }
-
-                    }.start();
-
-
 
                     alert.show();
                 }
@@ -305,6 +296,7 @@ public class AcitivityPage extends AppCompatActivity {
     public void Open(View view, RoomModel p) {
 
         final Dialog dialog = new Dialog(this);
+
         dialog.setContentView(R.layout.dialog_room_creation);
         category_grid_modal = (GridLayout) dialog.findViewById(R.id.category_grid_modal);
         category_scroll_modal = (ScrollView) dialog.findViewById(R.id.Category_modal);
@@ -322,6 +314,7 @@ public class AcitivityPage extends AppCompatActivity {
         EditText dateText = (EditText) dialog.findViewById(R.id.in_date);
         Button time = (Button) dialog.findViewById(R.id.btn_time);
         EditText timeText = (EditText) dialog.findViewById(R.id.in_time);
+        TextView finalDate = (TextView)dialog.findViewById(R.id.timeEditmodal);
 
         Button delete = (Button) dialog.findViewById(R.id.Delete);
 
@@ -331,8 +324,14 @@ public class AcitivityPage extends AppCompatActivity {
 
         interestName.setText(InterestName(p.getInterests()));
 
+        SimpleDateFormat formatter = new SimpleDateFormat("HH:mm  dd MMMM yyyy");
+        finalDate.setText(formatter.format(p.getStartDate()));
+
         name.setText(p.getName());
         description.setText(p.getDescription());
+
+//        dateText.setText(p.getStartDate().getYear() + '-' + p.getStartDate().getMonth() + '-' + p.getStartDate().getDay());
+//        timeText.setText(p.getStartDate().getHours() + '-' + p.getStartDate().getMinutes());
 
 
         int childCount = category_grid_modal.getChildCount();
@@ -347,9 +346,6 @@ public class AcitivityPage extends AppCompatActivity {
             });
         }
 
-
-
-
         Now.setOnClickListener(new RadioButton.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -358,6 +354,7 @@ public class AcitivityPage extends AppCompatActivity {
                 time.setVisibility(View.GONE);
                 dateText.setVisibility(View.GONE);
                 timeText.setVisibility(View.GONE);
+                selected = true;
             }
 
         });
@@ -369,6 +366,7 @@ public class AcitivityPage extends AppCompatActivity {
                 time.setVisibility(View.VISIBLE);
                 dateText.setVisibility(View.VISIBLE);
                 timeText.setVisibility(View.VISIBLE);
+                selected = true;
             }
 
         });
@@ -430,6 +428,7 @@ public class AcitivityPage extends AppCompatActivity {
             public void onClick(View v) {
                 if(datex != null){
                     datex = dateText.getText().toString() + "T" + timeText.getText().toString() + "Z";
+                    finalDate.setText(dateText.getText().toString() + " " + timeText.getText().toString());
                     dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm'Z'");
                     try {
                         RealDate = dateFormat.parse(datex);
@@ -440,7 +439,13 @@ public class AcitivityPage extends AppCompatActivity {
                     }
                 }
                 else{
-                    Room = UpdateRoom(name.getText().toString(), description.getText().toString(), null, null, p.getRoomId(), SelectedInterest);
+                    Date now = new Date();
+                    if(selected){
+                        Room = UpdateRoom(name.getText().toString(), description.getText().toString(), now, null, p.getRoomId(), SelectedInterest);
+                    }
+                    else{
+                        Room = UpdateRoom(name.getText().toString(), description.getText().toString(), null, null, p.getRoomId(), SelectedInterest);
+                    }
                 }
                 System.out.println("Interest" + SelectedInterest);
 
@@ -466,11 +471,14 @@ public class AcitivityPage extends AppCompatActivity {
                         loading.setVisibility(View.INVISIBLE);
                         System.out.println("Room just Updated Okay" + response.body());
                         GetRoomViewModel Response = response.body();
-                        if(datex == null){
+                        finish();
 
-                            new Handler().post(new Runnable() {
-                                @Override
-                                public void run() {
+                        Date objDate = new Date();
+                        if(p.getStartDate().compareTo(objDate) <= 0){
+
+//                            new Handler().post(new Runnable() {
+//                                @Override
+//                                public void run() {
                                     Intent intent = new Intent(AcitivityPage.this, com.example.chathouse.Pages.Room.class);
                                     Bundle bundle = new Bundle();
                                     bundle.putInt("RoomId", Response.getId());
@@ -478,24 +486,18 @@ public class AcitivityPage extends AppCompatActivity {
                                     bundle.putString("Name", Response.getName());
                                     intent.putExtras(bundle);
                                     startActivity(intent);
-                                    finish();
-                                }
-                            });
+//                                    finish();
+//                                }
+//                            });
                         }
                         else{
-                            new Handler().post(new Runnable() {
-                                @Override
-                                public void run() {
-                                    Intent intent = new Intent(AcitivityPage.this, AcitivityPage.class);
-                                    Bundle bundle = new Bundle();
-                                    bundle.putInt("RoomId", Response.getId());
-                                    bundle.putString("Creator", Response.getCreator().getUsername());
-                                    bundle.putString("Name", Response.getName());
-                                    intent.putExtras(bundle);
-                                    startActivity(intent);
-                                    finish();
-                                }
-                            });
+//                            new Handler().post(new Runnable() {
+//                                @Override
+//                                public void run() {
+                            startActivity(getIntent());
+//                                    finish();
+//                                }
+//                            });
 
                         }
                     }

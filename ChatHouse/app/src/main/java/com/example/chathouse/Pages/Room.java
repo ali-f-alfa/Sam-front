@@ -33,6 +33,8 @@ public class Room extends AppCompatActivity {
     private Button Leave;
     private TextView RoomName;
     private GetRoomViewModel RoomInfo;
+    private String Creator;
+    private String Name;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,14 +49,10 @@ public class Room extends AppCompatActivity {
         String Token = settings.getString("Token", "n/a");
         String Username = settings.getString("Username", "n/a");
 
-        String Creator = bundle.getString("Creator", "n/a");
-        String Name = bundle.getString("Name", "n/a");
         int RoomId = bundle.getInt("RoomId");
 
 
-        if(Creator.equals(Username)){
-            Leave.setVisibility(View.GONE);
-        }
+
 
         OkHttpClient client = new OkHttpClient.Builder().addInterceptor(new Interceptor() {
             @Override
@@ -68,6 +66,7 @@ public class Room extends AppCompatActivity {
 
         Gson gson = new GsonBuilder()
                 .setLenient()
+                .setDateFormat("yyyy-MM-dd'T'HH:mm:ss")
                 .create();
 
         Retrofit retrofit = new Retrofit.Builder()
@@ -82,9 +81,38 @@ public class Room extends AppCompatActivity {
 
         Call<Void> LeaveRoom = APIS.LeaveRoom(RoomId);
         Call<GetRoomViewModel> GetRoom = APIS.GetRoom(RoomId);
+        GetRoom.enqueue(new Callback<GetRoomViewModel>() {
+            @Override
+            public void onResponse(Call<GetRoomViewModel> call, retrofit2.Response<GetRoomViewModel> response) {
+                if(!response.isSuccessful()){
+                    try {
+                        System.out.println("1" + response.errorBody().string());
+                        System.out.println("1" + response.code());
+                        System.out.println(response.errorBody().string());
+                    } catch (IOException e) {
+                        System.out.println("2" + response.errorBody().toString());
+                        e.printStackTrace();
+                    }
+                    return;
+                }
+                GetRoomViewModel Response = response.body();
+                Creator = Response.getCreator().getUsername();
+                Name = Response.getName();
+                RoomName.setText(Name);
 
+                if(Creator.equals(Username)){
+                    Leave.setVisibility(View.GONE);
+                }
+                System.out.println("Works");
 
-        RoomName.setText(Name);
+            }
+
+            @Override
+            public void onFailure(Call<GetRoomViewModel> call, Throwable t) {
+                Toast.makeText(Room.this, t.getMessage(), Toast.LENGTH_LONG).show();
+            }
+        });
+
         RoomName.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -116,6 +144,10 @@ public class Room extends AppCompatActivity {
                         }
                         System.out.println("Deleted");
                         finish();
+
+                        Intent intent = new Intent(Room.this, AcitivityPage.class);
+
+                        startActivity(intent);
                     }
 
                     @Override

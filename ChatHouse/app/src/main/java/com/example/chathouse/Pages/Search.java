@@ -289,10 +289,19 @@ public class Search extends AppCompatActivity implements SearchView.OnQueryTextL
                         Response = response.body();
                         System.out.println(Response.getInRooms());
                         ArrayList<RoomModel> inRooms = Response.getInRooms();
+                        ArrayList<RoomModel> roomsCreated = Response.getCreatedRooms();
                         Boolean included = false;
+                        Boolean isCreator = false;
                         for(RoomModel x: inRooms){
                             if(x.getRoomId() == RoomId){
                                 included = true;
+                                isCreator = false;
+                            }
+                        }
+                        for(RoomModel x: roomsCreated){
+                            if(x.getRoomId() == RoomId){
+                                included = true;
+                                isCreator = false;
                             }
                         }
                         if(included){
@@ -301,37 +310,41 @@ public class Search extends AppCompatActivity implements SearchView.OnQueryTextL
                                 Bundle bundle = new Bundle();
 
                                 bundle.putInt("RoomId", RoomId);
-                                bundle.putString("Name", Name);
+//                                bundle.putString("Name", Name);
 //                            bundle.putString("Creator", p.getCreator().getUsername());
                                 intent.putExtras(bundle);
                                 startActivity(intent);
                             }
                             else{
-                                // Show them count down
-                                AlertDialog.Builder alert = new AlertDialog.Builder(view.getContext());
-                                alert.setTitle("Remaining Time");
-                                // alert.setMessage("Message");
-                                new CountDownTimer(date.getTime() - objDate.getTime(), 1000) {
+                                if (isCreator) {
+                                    AlertDialog.Builder alert = new AlertDialog.Builder(view.getContext());
+                                    alert.setTitle("your Room");
 
-                                    public void onTick(long millisUntilFinished) {
-                                        Toast.makeText(Search.this, "seconds remaining: " + millisUntilFinished / 1000, Toast.LENGTH_LONG).show();
-                                        //here you can have your logic to set text to edittext
-                                    }
-
-                                    public void onFinish() {
-                                    }
-
-                                }.start();
+                                    alert.setMessage("you can edit your room in activity page");
+//
 
 
-                                alert.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-                                    public void onClick(DialogInterface dialog, int whichButton) {
-                                        //Your action here
-                                    }
-                                });
+                                    alert.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                                        public void onClick(DialogInterface dialog, int whichButton) {
+                                            //Your action here
+                                        }
+                                    });
+                                    alert.show();
+                                }
+                                else{
+                                    AlertDialog.Builder alert = new AlertDialog.Builder(view.getContext());
+
+                                    SimpleDateFormat formatter = new SimpleDateFormat("HH:mm  dd MMMM yyyy");
+                                    alert.setMessage("Room start time is: \n" + formatter.format(date));
 
 
-                                alert.show();
+                                    alert.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                                        public void onClick(DialogInterface dialog, int whichButton) {
+                                            //Your action here
+                                        }
+                                    });
+                                    alert.show();
+                                }
                             }
                         }
                         else{
@@ -353,6 +366,7 @@ public class Search extends AppCompatActivity implements SearchView.OnQueryTextL
                                     }
                                     ProfileInformation p = response.body();
                                     if(date == null || date.compareTo(objDate) < 0){
+                                        Toast.makeText(Search.this, "successfully joined the room", Toast.LENGTH_SHORT).show();
                                         Intent intent = new Intent(Search.this, com.example.chathouse.Pages.Room.class);
                                         Bundle bundle = new Bundle();
 
@@ -361,23 +375,15 @@ public class Search extends AppCompatActivity implements SearchView.OnQueryTextL
 //                            bundle.putString("Creator", p.getCreator().getUsername());
                                         intent.putExtras(bundle);
                                         startActivity(intent);
+
                                     }
                                     else{
                                         // Show them count down
                                         AlertDialog.Builder alert = new AlertDialog.Builder(view.getContext());
-                                        alert.setTitle("Remaining Time");
-                                        // alert.setMessage("Message");
-                                        new CountDownTimer(date.getTime() - objDate.getTime(), 1000) {
+                                        alert.setTitle("successfully joined");
 
-                                            public void onTick(long millisUntilFinished) {
-                                                Toast.makeText(Search.this, "seconds remaining: " + millisUntilFinished / 1000, Toast.LENGTH_LONG).show();
-                                                //here you can have your logic to set text to edittext
-                                            }
-
-                                            public void onFinish() {
-                                            }
-
-                                        }.start();
+                                        SimpleDateFormat formatter = new SimpleDateFormat("HH:mm  dd MMMM yyyy");
+                                        alert.setMessage("Room start time is: \n" + formatter.format(date));
 
 
                                         alert.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
@@ -385,8 +391,6 @@ public class Search extends AppCompatActivity implements SearchView.OnQueryTextL
                                                 //Your action here
                                             }
                                         });
-
-
                                         alert.show();
                                     }
 
