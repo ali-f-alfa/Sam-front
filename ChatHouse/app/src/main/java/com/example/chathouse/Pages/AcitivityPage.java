@@ -212,8 +212,8 @@ public class AcitivityPage extends AppCompatActivity {
 
                     int idx = p.getRoomId();
                     bundle.putInt("RoomId", idx);
-                    bundle.putString("Name", p.getName());
-                    bundle.putString("Creator", p.getCreator().getUsername());
+//                    bundle.putString("Name", p.getName());
+//                    bundle.putString("Creator", p.getCreator().getUsername());
                     System.out.println(p.getCreator());
                     intent.putExtras(bundle);
                     startActivity(intent);

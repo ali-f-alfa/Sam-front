@@ -310,7 +310,7 @@ public class Search extends AppCompatActivity implements SearchView.OnQueryTextL
                                 Bundle bundle = new Bundle();
 
                                 bundle.putInt("RoomId", RoomId);
-                                bundle.putString("Name", Name);
+//                                bundle.putString("Name", Name);
 //                            bundle.putString("Creator", p.getCreator().getUsername());
                                 intent.putExtras(bundle);
                                 startActivity(intent);
