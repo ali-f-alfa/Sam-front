@@ -47,9 +47,10 @@ public class RoomInfo extends AppCompatActivity{
     private ListViewAdapter MembersAdapter;
     private ArrayList<SearchPerson> MembersList = new ArrayList<SearchPerson>();
     private ListView MembersListView;
-    private Boolean RightToRemove;
+    private Boolean RightToRemove = false;
     private String RmUser;
     private ChatHouseAPI APIS;
+    private String Creator;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,13 +69,9 @@ public class RoomInfo extends AppCompatActivity{
         String Token = settings.getString("Token", "n/a");
         String Username = settings.getString("Username", "n/a");
 
-        String Creator = bundle.getString("Creator", "n/a");
         int RoomId = bundle.getInt("RoomId");
 
-        if(Creator.equals(Username)){
-            Delete.setVisibility(View.VISIBLE);
-            RightToRemove = true;
-        }
+
 
         OkHttpClient client = new OkHttpClient.Builder().addInterceptor(new Interceptor() {
             @Override
@@ -121,6 +118,11 @@ public class RoomInfo extends AppCompatActivity{
                 }
                 Roominfo = response.body();
                 SetRoomInfo(Roominfo);
+                Creator = Roominfo.getCreator().getUsername();
+                if(Creator.equals(Username)){
+                    Delete.setVisibility(View.VISIBLE);
+                    RightToRemove = true;
+                }
                 System.out.println("Works");
 
             }
@@ -170,8 +172,8 @@ public class RoomInfo extends AppCompatActivity{
                 if(!RightToRemove){
                     Intent intent = new Intent(RoomInfo.this, ProfilePage.class);
                     Bundle bundle1 = new Bundle();
-                    String Username = p.getUsername();
-                    bundle1.putString("Username", Username);
+                    String username = p.getUsername();
+                    bundle1.putString("Username", username);
                     intent.putExtras(bundle1);
                     startActivity(intent);
                 }

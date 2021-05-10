@@ -243,8 +243,10 @@ public class AcitivityPage extends AppCompatActivity {
                 else{
                     // Show them count down
                     AlertDialog.Builder alert = new AlertDialog.Builder(view.getContext());
-                    alert.setMessage("Remaining time to start: ")
-                            .setPositiveButton("Okay", new DialogInterface.OnClickListener() {
+                    SimpleDateFormat formatter = new SimpleDateFormat("HH:mm  dd MMMM yyyy");
+                    alert.setMessage("Room start time is: \n" + formatter.format(p.getStartDate()));
+
+                    alert.setPositiveButton("Okay", new DialogInterface.OnClickListener() {
                                 public void onClick(DialogInterface dialog, int id) {
                                     // FIRE ZE MISSILES!
 
@@ -280,20 +282,6 @@ public class AcitivityPage extends AppCompatActivity {
                                     });
                                 }
                             });
-                    //p.getStartDate().getTime() - objDate.getTime()
-                    new CountDownTimer(10000, 1000) {
-
-                        public void onTick(long millisUntilFinished) {
-                            Toast.makeText(AcitivityPage.this, "seconds remaining: " + millisUntilFinished / 1000, Toast.LENGTH_LONG).show();
-                            //here you can have your logic to set text to edittext
-                        }
-
-                        public void onFinish() {
-                        }
-
-                    }.start();
-
-
 
                     alert.show();
                 }
@@ -335,7 +323,9 @@ public class AcitivityPage extends AppCompatActivity {
         Schedule = dialog.findViewById(R.id.Schedule);
 
         interestName.setText(InterestName(p.getInterests()));
-//        finalDate.setText(p.getStartDate().toString());
+
+        SimpleDateFormat formatter = new SimpleDateFormat("HH:mm  dd MMMM yyyy");
+        finalDate.setText(formatter.format(p.getStartDate()));
 
         name.setText(p.getName());
         description.setText(p.getDescription());

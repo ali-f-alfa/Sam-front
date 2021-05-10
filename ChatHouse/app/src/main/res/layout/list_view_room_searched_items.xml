@@ -18,7 +18,8 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:background="@color/light">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -38,9 +39,10 @@
                     android:paddingEnd="16dp"
                     android:paddingRight="16dp"
                     android:textColor="@color/Verypink"
-                    android:textSize="19sp"
-                    android:gravity="center"
-                    android:layout_weight="1"/>
+                    android:textSize="21sp"
+                    android:textStyle="bold"
+                    android:layout_weight="1"
+                    android:text="Name"/>
 
                 <TextView
                     android:id="@+id/room_membersCount"
@@ -50,7 +52,6 @@
                     android:paddingLeft="15dp"
                     android:paddingEnd="16dp"
                     android:paddingRight="16dp"
-                    android:gravity="center"
                     android:textColor="@color/Verypink"
                     android:textSize="17sp"
                     android:layout_weight="1"/>
@@ -70,7 +71,6 @@
                     android:id="@+id/room_interest"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:gravity="center"
                     android:paddingStart="8dp"
                     android:paddingLeft="8dp"
                     android:paddingEnd="16dp"
@@ -83,7 +83,6 @@
                     android:id="@+id/room_startTime"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:gravity="center"
                     android:paddingStart="8dp"
                     android:paddingLeft="8dp"
                     android:paddingEnd="16dp"

@@ -35,8 +35,9 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="15dp"
                 android:fontFamily="serif"
+                android:gravity="center"
+                android:layout_marginBottom="5dp"
                 android:text="You may interested in this Rooms"
                 android:textColor="@color/Verypink"
                 android:textSize="16dp" />
@@ -63,7 +64,6 @@
             <View
                 android:layout_width="wrap_content"
                 android:layout_height="5dp"
-                android:layout_marginTop="5dp"
                 android:background="@color/white"
                 android:tooltipText="Interests" />
 
@@ -75,11 +75,12 @@
             android:orientation="vertical">
 
             <TextView
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="15dp"
+                android:layout_marginBottom="5dp"
+                android:gravity="center"
                 android:fontFamily="serif"
-                android:text="Your friends are members of this Rooms"
+                android:text="Your friends Rooms"
                 android:textColor="@color/Verypink"
                 android:textSize="16dp" />
             <ListView
