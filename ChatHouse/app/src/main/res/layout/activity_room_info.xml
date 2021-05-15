@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    tools:context=".Pages.RoomInfo"
+    android:background="@drawable/b22"
+    android:orientation="vertical">
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:layout_gravity="center_horizontal"
+        android:textSize="20dp"
+        android:textStyle="italic"
+        android:text="Room Name"
+        android:id="@+id/RoomNameInfoPage"
+        >
+
+    </TextView>
+    <View
+        android:layout_width="wrap_content"
+        android:layout_height="5dp"
+
+        android:layout_marginTop="5dp"
+        android:background="@color/white"
+        android:tooltipText="Interests" />
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="10dp"
+        android:textSize="20dp"
+        android:textStyle="italic"
+        android:text="Room Description"
+        android:id="@+id/DescriptionRoom"
+        >
+    </TextView>
+    <View
+        android:layout_width="wrap_content"
+        android:layout_height="5dp"
+        android:layout_marginTop="5dp"
+        android:background="@color/white"
+        android:tooltipText="Interests" />
+    <com.google.android.material.card.MaterialCardView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        app:layout_constraintTop_toBottomOf="@id/DescriptionRoom"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:id="@+id/RoomInterestCardView"
+        android:layout_marginTop="5dp"
+        app:cardBackgroundColor="@color/almostgreen"
+        app:cardCornerRadius="50dp"
+        app:cardElevation="6dp"
+>
+
+        <TextView
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_marginVertical="8dp"
+            android:id="@+id/RoomInterest"
+            android:gravity="center"
+            android:textColor="@color/white"
+            android:text="Wellness"
+            android:textSize="18dp"
+            android:textStyle="italic" />
+    </com.google.android.material.card.MaterialCardView>
+    <View
+        android:layout_width="wrap_content"
+        android:layout_height="5dp"
+        android:layout_marginTop="5dp"
+        android:background="@color/white"
+        android:tooltipText="Interests" />
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Members"
+        android:layout_marginTop="10dp"
+        android:fontFamily="serif"
+        android:id="@+id/RoomMemberText"
+        android:layout_gravity="center_horizontal"
+        app:layout_constraintTop_toBottomOf="@id/RoomInterestCardView">
+
+    </TextView>
+    <View
+        android:layout_width="wrap_content"
+        android:layout_height="2dp"
+        android:layout_marginTop="5dp"
+        android:background="@color/gray"
+        android:tooltipText="Interests" />
+
+    <ListView
+        android:id="@+id/RoomMembersListView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:fadeScrollbars="false"
+        android:layout_weight="4"
+        android:layout_above="@+id/DeleteRoom"
+        ></ListView>
+
+    <Button
+        android:layout_width="match_parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        android:id="@+id/DeleteRoom"
+        android:layout_height="50dp"
+        android:text="Delete Room"
+        android:fontFamily="serif"
+        android:backgroundTint="@color/almostgreen"
+        android:textStyle="bold"
+        android:textColor="@color/white"
+        android:gravity="center">
+
+    </Button>
+
+</LinearLayout>

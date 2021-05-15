@@ -1,0 +1,572 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:nestedScrollingEnabled="false"
+    >
+    <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="380dp"
+        android:layout_height="match_parent"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        >
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Room information"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:textSize="20dp"
+            android:textColor="@color/almostorange"
+            android:textStyle="bold"
+            android:layout_marginLeft="20dp"
+            android:layout_marginTop="10dp"
+            android:id="@+id/Title">
+
+        </TextView>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_marginTop="30dp"
+            android:layout_height="50dp"
+            android:gravity="center_vertical"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@id/Title"
+            android:text="Name: "
+            android:textSize="18dp"
+            android:layout_marginLeft="20dp"
+            android:textColor="@color/gray"
+            android:id="@+id/NameRoom">
+
+        </TextView>
+        <EditText
+            android:id="@+id/editNameRoom"
+            android:layout_marginTop="30dp"
+            app:layout_constraintStart_toEndOf="@+id/NameRoom"
+            app:layout_constraintTop_toTopOf="@id/Title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_marginLeft="20dp"
+            android:layout_height="50dp"
+            android:gravity="center_vertical"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/NameRoom"
+            android:text="Description: "
+            android:textSize="18dp"
+            android:textColor="@color/gray"
+            android:id="@+id/DesRoom">
+
+        </TextView>
+        <EditText
+            android:id="@+id/editDesRoom"
+            app:layout_constraintStart_toEndOf="@+id/DesRoom"
+            app:layout_constraintTop_toBottomOf="@+id/NameRoom"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_marginLeft="20dp"
+            android:layout_height="50dp"
+            android:gravity="center_vertical"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/DesRoom"
+            android:text="Time: "
+            android:textSize="18dp"
+            android:textColor="@color/gray"
+            android:id="@+id/TimeText">
+
+        </TextView>
+        <TextView
+            android:id="@+id/timeEditmodal"
+            android:gravity="center_vertical"
+            android:textSize="18dp"
+            app:layout_constraintStart_toEndOf="@+id/TimeText"
+            android:layout_marginLeft="10dp"
+            app:layout_constraintTop_toBottomOf="@+id/DesRoom"
+            android:layout_width="wrap_content"
+            android:layout_height="50dp"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_marginLeft="20dp"
+            android:layout_height="50dp"
+            android:gravity="center_vertical"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/in_time"
+            android:text="Interest: "
+            android:textSize="18dp"
+            android:textColor="@color/gray"
+            android:id="@+id/InterestText">
+
+        </TextView>
+        <TextView
+            android:id="@+id/interestEditmodal"
+            android:gravity="center_vertical"
+            android:textSize="18dp"
+            app:layout_constraintStart_toEndOf="@+id/InterestText"
+            android:layout_marginLeft="10dp"
+            app:layout_constraintTop_toBottomOf="@+id/btn_time"
+            android:layout_width="wrap_content"
+            android:layout_height="50dp"/>
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="wrap_content"
+            android:layout_height="200dp"
+            android:id="@+id/LinearLayoutCategory"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/InterestText"
+            android:layout_marginTop="5dp">
+            <RelativeLayout
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:layout_below="@+id/SearchedPersonListView"
+                android:layout_alignParentBottom="true"
+                android:layout_weight="7">
+
+                <HorizontalScrollView
+                    android:id="@+id/Items_modal"
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"
+                    android:fadeScrollbars="false">
+
+                    <GridLayout
+                        android:id="@+id/item_grid_modal"
+                        android:layout_width="fill_parent"
+                        android:layout_height="fill_parent"
+                        android:alignmentMode="alignMargins"
+                        android:columnCount="5"
+                        android:rowCount="3"></GridLayout>
+
+                </HorizontalScrollView>
+
+                <ScrollView
+                    android:id="@+id/Category_modal"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:nestedScrollingEnabled="true"
+                    android:fadeScrollbars="false">
+
+                    <GridLayout
+                        android:id="@+id/category_grid_modal"
+                        android:layout_width="fill_parent"
+                        android:layout_height="fill_parent"
+                        android:alignmentMode="alignMargins"
+                        android:columnCount="2"
+                        android:columnOrderPreserved="false"
+                        android:rowCount="7">
+
+                        <androidx.cardview.widget.CardView
+                            android:id="@+id/Wellness"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_rowWeight="1"
+                            android:layout_columnWeight="1"
+                            android:layout_margin="12dp"
+                            app:cardCornerRadius="50dp"
+                            android:backgroundTint="@color/almostorange"
+                            app:cardElevation="6dp">
+
+                            <TextView
+                                android:layout_width="fill_parent"
+                                android:layout_height="fill_parent"
+                                android:layout_marginVertical="8dp"
+                                android:gravity="center"
+                                android:text="Wellness"
+                                android:textColor="@color/white"
+                                android:textSize="20sp"
+                                android:textStyle="bold" />
+
+                        </androidx.cardview.widget.CardView>
+
+                        <androidx.cardview.widget.CardView
+                            android:id="@+id/Identity"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_rowWeight="1"
+                            android:layout_columnWeight="1"
+                            android:layout_margin="12dp"
+                            app:cardCornerRadius="50dp"
+                            android:backgroundTint="@color/almostorange"
+                            app:cardElevation="6dp">
+
+                            <TextView
+                                android:layout_width="fill_parent"
+                                android:layout_height="fill_parent"
+                                android:layout_marginVertical="8dp"
+                                android:gravity="center"
+                                android:text="Identity"
+                                android:textColor="@color/white"
+                                android:textSize="20sp"
+                                android:textStyle="bold" />
+
+                        </androidx.cardview.widget.CardView>
+
+                        <androidx.cardview.widget.CardView
+                            android:id="@+id/Places"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_rowWeight="1"
+                            android:layout_columnWeight="1"
+                            android:layout_margin="12dp"
+                            app:cardCornerRadius="50dp"
+                            android:backgroundTint="@color/almostorange"
+                            app:cardElevation="6dp">
+
+                            <TextView
+                                android:layout_width="fill_parent"
+                                android:layout_height="fill_parent"
+                                android:layout_marginVertical="8dp"
+                                android:gravity="center"
+                                android:text="Places"
+                                android:textColor="@color/white"
+                                android:textSize="20sp"
+                                android:textStyle="bold" />
+
+                        </androidx.cardview.widget.CardView>
+
+                        <androidx.cardview.widget.CardView
+                            android:id="@+id/WorldAffaris"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_rowWeight="1"
+                            android:layout_columnWeight="1"
+                            android:layout_margin="12dp"
+                            app:cardCornerRadius="50dp"
+                            android:backgroundTint="@color/almostorange"
+                            app:cardElevation="6dp">
+
+                            <TextView
+                                android:layout_width="fill_parent"
+                                android:layout_height="fill_parent"
+                                android:layout_marginVertical="8dp"
+                                android:gravity="center"
+                                android:text="World affairs"
+                                android:textSize="20sp"
+                                android:textColor="@color/white"
+                                android:textStyle="bold" />
+
+                        </androidx.cardview.widget.CardView>
+
+                        <androidx.cardview.widget.CardView
+                            android:id="@+id/Tech"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_rowWeight="1"
+                            android:layout_columnWeight="1"
+                            android:layout_margin="12dp"
+                            app:cardCornerRadius="50dp"
+                            android:backgroundTint="@color/almostorange"
+                            app:cardElevation="6dp">
+
+                            <TextView
+                                android:layout_width="fill_parent"
+                                android:layout_height="fill_parent"
+                                android:layout_marginVertical="8dp"
+                                android:gravity="center"
+                                android:text="Tech"
+                                android:textColor="@color/white"
+                                android:textSize="20sp"
+                                android:textStyle="bold" />
+
+                        </androidx.cardview.widget.CardView>
+
+                        <androidx.cardview.widget.CardView
+                            android:id="@+id/HangingOut"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_rowWeight="1"
+                            android:layout_columnWeight="1"
+                            android:layout_margin="12dp"
+                            android:backgroundTint="@color/almostorange"
+                            app:cardCornerRadius="50dp"
+                            app:cardElevation="6dp">
+
+                            <TextView
+                                android:layout_width="fill_parent"
+                                android:layout_height="fill_parent"
+                                android:layout_marginVertical="8dp"
+                                android:textColor="@color/white"
+                                android:gravity="center"
+                                android:text="HangingOut"
+                                android:textSize="20sp"
+                                android:textStyle="bold" />
+
+                        </androidx.cardview.widget.CardView>
+
+                        <androidx.cardview.widget.CardView
+                            android:id="@+id/Knowledge"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_rowWeight="1"
+                            android:layout_columnWeight="1"
+                            android:layout_margin="12dp"
+                            app:cardCornerRadius="50dp"
+                            android:backgroundTint="@color/almostorange"
+                            app:cardElevation="6dp">
+
+                            <TextView
+                                android:layout_width="fill_parent"
+                                android:layout_height="fill_parent"
+                                android:layout_marginVertical="8dp"
+                                android:gravity="center"
+                                android:text="KnowLedge"
+                                android:textSize="20sp"
+                                android:textColor="@color/white"
+                                android:textStyle="bold" />
+
+                        </androidx.cardview.widget.CardView>
+
+                        <androidx.cardview.widget.CardView
+                            android:id="@+id/Hustle"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_rowWeight="1"
+                            android:layout_columnWeight="1"
+                            android:layout_margin="12dp"
+                            app:cardCornerRadius="50dp"
+                            android:backgroundTint="@color/almostorange"
+                            app:cardElevation="6dp">
+
+                            <TextView
+                                android:layout_width="fill_parent"
+                                android:layout_height="fill_parent"
+                                android:layout_marginVertical="8dp"
+                                android:gravity="center"
+                                android:textColor="@color/white"
+                                android:text="Hustle"
+                                android:textSize="20sp"
+                                android:textStyle="bold" />
+
+                        </androidx.cardview.widget.CardView>
+
+                        <androidx.cardview.widget.CardView
+                            android:id="@+id/Sports"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_rowWeight="1"
+                            android:layout_columnWeight="1"
+                            android:backgroundTint="@color/almostorange"
+                            android:layout_margin="12dp"
+                            app:cardCornerRadius="50dp"
+                            app:cardElevation="6dp">
+
+                            <TextView
+                                android:layout_width="fill_parent"
+                                android:layout_height="fill_parent"
+                                android:layout_marginVertical="8dp"
+                                android:gravity="center"
+                                android:text="Sports"
+                                android:textColor="@color/white"
+                                android:textSize="20sp"
+                                android:textStyle="bold" />
+
+                        </androidx.cardview.widget.CardView>
+
+                        <androidx.cardview.widget.CardView
+                            android:id="@+id/Arts"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_rowWeight="1"
+                            android:backgroundTint="@color/almostorange"
+                            android:layout_columnWeight="1"
+                            android:layout_margin="12dp"
+                            app:cardCornerRadius="50dp"
+                            app:cardElevation="6dp">
+
+                            <TextView
+                                android:layout_width="fill_parent"
+                                android:layout_height="fill_parent"
+                                android:layout_marginVertical="8dp"
+                                android:gravity="center"
+                                android:textColor="@color/white"
+                                android:text="Arts"
+                                android:textSize="20sp"
+                                android:textStyle="bold" />
+
+                        </androidx.cardview.widget.CardView>
+
+                        <androidx.cardview.widget.CardView
+                            android:id="@+id/Life"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_rowWeight="1"
+                            android:backgroundTint="@color/almostorange"
+                            android:layout_columnWeight="1"
+                            android:layout_margin="12dp"
+                            app:cardCornerRadius="50dp"
+                            app:cardElevation="6dp">
+
+                            <TextView
+                                android:layout_width="fill_parent"
+                                android:layout_height="fill_parent"
+                                android:layout_marginVertical="8dp"
+                                android:textColor="@color/white"
+                                android:gravity="center"
+                                android:text="Life"
+                                android:textSize="20sp"
+                                android:textStyle="bold" />
+
+                        </androidx.cardview.widget.CardView>
+
+                        <androidx.cardview.widget.CardView
+                            android:id="@+id/Languages"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_rowWeight="1"
+                            android:backgroundTint="@color/almostorange"
+                            android:layout_columnWeight="1"
+                            android:layout_margin="12dp"
+                            app:cardCornerRadius="50dp"
+                            app:cardElevation="6dp">
+
+                            <TextView
+                                android:layout_width="fill_parent"
+                                android:layout_height="fill_parent"
+                                android:layout_marginVertical="8dp"
+                                android:gravity="center"
+                                android:text="Languages"
+                                android:textColor="@color/white"
+                                android:textSize="20sp"
+                                android:textStyle="bold" />
+
+                        </androidx.cardview.widget.CardView>
+
+                        <androidx.cardview.widget.CardView
+                            android:id="@+id/Entertainment"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_rowWeight="1"
+                            android:layout_columnWeight="1"
+                            android:backgroundTint="@color/almostorange"
+                            android:layout_margin="12dp"
+                            app:cardCornerRadius="50dp"
+                            app:cardElevation="6dp">
+
+                            <TextView
+                                android:layout_width="fill_parent"
+                                android:layout_height="fill_parent"
+                                android:layout_marginVertical="8dp"
+                                android:gravity="center"
+                                android:text="Entertainment"
+                                android:textColor="@color/white"
+                                android:textSize="20sp"
+                                android:textStyle="bold" />
+
+                        </androidx.cardview.widget.CardView>
+
+                        <androidx.cardview.widget.CardView
+                            android:id="@+id/Faith"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_rowWeight="1"
+                            android:backgroundTint="@color/almostorange"
+                            android:layout_columnWeight="1"
+                            android:layout_margin="12dp"
+                            app:cardCornerRadius="50dp"
+                            app:cardElevation="6dp">
+
+                            <TextView
+                                android:layout_width="fill_parent"
+                                android:layout_height="fill_parent"
+                                android:layout_marginVertical="8dp"
+                                android:gravity="center"
+                                android:text="Faith"
+                                android:textColor="@color/white"
+                                android:textSize="20sp"
+                                android:textStyle="bold" />
+
+                        </androidx.cardview.widget.CardView>
+
+                    </GridLayout>
+                </ScrollView>
+
+            </RelativeLayout>
+
+        </LinearLayout>
+        <RadioGroup xmlns:android="http://schemas.android.com/apk/res/android"
+            android:id="@+id/Time"
+            android:layout_marginLeft="20dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/TimeText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+            <RadioButton android:id="@+id/Now"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Now"
+                android:onClick="onRadioButtonClicked"/>
+            <RadioButton android:id="@+id/Schedule"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Schedule"
+                android:onClick="onRadioButtonClicked"/>
+        </RadioGroup>
+        <EditText
+            android:layout_width="200dp"
+            android:layout_marginLeft="20dp"
+            android:layout_height="wrap_content"
+            android:id="@+id/in_date"
+            android:text="Date"
+
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/Time"
+            />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Select date"
+            android:id="@+id/btn_date"
+            android:layout_marginLeft="10dp"
+            android:textColor="@color/almostorange"
+            app:layout_constraintStart_toEndOf="@+id/in_date"
+            app:layout_constraintTop_toBottomOf="@+id/Time" />
+
+        <EditText
+            android:layout_width="200dp"
+            android:layout_marginLeft="20dp"
+            android:layout_height="wrap_content"
+            android:id="@+id/in_time"
+            android:text="Date"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/in_date" />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="SELECT TIME"
+            android:layout_marginLeft="10dp"
+            android:id="@+id/btn_time"
+            android:textColor="@color/almostorange"
+            app:layout_constraintStart_toEndOf="@id/in_time"
+            app:layout_constraintTop_toBottomOf="@+id/in_date"
+            />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_marginLeft="20dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:text="Create"
+            android:id="@+id/Create"
+            android:textColor="@color/almostorange"
+            app:layout_constraintTop_toBottomOf="@id/LinearLayoutCategory"
+            app:layout_constraintStart_toStartOf="parent"
+            ></Button>
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_marginRight="20dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:text="Delete"
+            android:id="@+id/Delete"
+            android:textColor="@color/almostorange"
+            app:layout_constraintTop_toBottomOf="@id/LinearLayoutCategory"
+            app:layout_constraintEnd_toEndOf="parent"
+            ></Button>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</ScrollView>

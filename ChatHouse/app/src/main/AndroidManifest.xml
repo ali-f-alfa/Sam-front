@@ -1,6 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.chathouse">
+    package="com.example.chathouse"
+    android:requestLegacyExternalStorage="true">
+
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.CAMERA" />
 
     <application
         android:allowBackup="true"
@@ -8,8 +15,21 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.ChatHouse">
-        <activity android:name=".MainActivity">
+        android:theme="@style/Theme.ChatHouse"
+        android:usesCleartextTraffic="true">
+        <activity android:name=".Pages.AcitivityPage"></activity>
+        <activity android:name=".Pages.RoomInfo" />
+        <activity android:name=".Pages.Room" />
+        <activity android:name=".Pages.SettingPage" />
+        <activity android:name=".Pages.HomePage" />
+        <activity android:name=".Pages.FollowingFollowersPage" />
+        <activity android:name=".Pages.EditProfile" />
+        <activity android:name=".Pages.Search" />
+        <activity android:name=".Pages.EditProfile" />
+        <activity android:name=".Pages.ProfilePage" />
+        <activity android:name=".Pages.SignUp" />
+        <activity android:name=".Pages.Login" />
+        <activity android:name=".Pages.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
