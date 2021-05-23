@@ -497,13 +497,11 @@
             <RadioButton android:id="@+id/Now"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Now"
-                android:onClick="onRadioButtonClicked"/>
+                android:text="Now"/>
             <RadioButton android:id="@+id/Schedule"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Schedule"
-                android:onClick="onRadioButtonClicked"/>
+                android:text="Schedule"/>
         </RadioGroup>
         <EditText
             android:layout_width="200dp"
