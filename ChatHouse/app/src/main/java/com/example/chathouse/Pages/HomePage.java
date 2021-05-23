@@ -75,6 +75,7 @@ import retrofit2.converter.scalars.ScalarsConverterFactory;
 public class HomePage extends AppCompatActivity {
 
     private Button StartRoom;
+
     private ProgressBar loading;
     private Call<GetRoomViewModel> CreateRoom;
     private ChatHouseAPI APIS;

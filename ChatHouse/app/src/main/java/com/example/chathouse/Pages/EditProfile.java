@@ -55,7 +55,6 @@ import com.example.chathouse.ViewModels.Acount.ProfileInformation;
 import com.example.chathouse.ViewModels.Acount.UpdateProfileViewModel;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.theartofdev.edmodo.cropper.CropImage;
 
 import java.io.File;
 import java.io.IOException;

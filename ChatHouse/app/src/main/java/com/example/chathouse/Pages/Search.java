@@ -129,6 +129,10 @@ public class Search extends AppCompatActivity implements SearchView.OnQueryTextL
         toggleSwitch = (ToggleSwitch) findViewById(R.id.search_switch);
         isRoom = 0;
 
+
+
+
+
         toggleSwitch.setCheckedPosition(0);
 
         OkHttpClient client = new OkHttpClient.Builder().addInterceptor(new Interceptor() {
