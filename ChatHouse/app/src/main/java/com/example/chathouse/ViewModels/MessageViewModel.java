@@ -7,8 +7,30 @@ public class MessageViewModel {
     private Object message;
     private int roomId;
     private boolean isMe;
-    private int parentId;
-    private MessageType messageType;
+    private MessageType messageType = MessageType.Text;
+    public int parentId;
+
+
+    public void setUserModel(SearchPerson userModel) {
+        this.userModel = userModel;
+    }
+
+    public void setMessage(Object message) {
+        this.message = message;
+    }
+
+    public void setRoomId(int roomId) {
+        this.roomId = roomId;
+    }
+
+    public void setMe(boolean me) {
+        isMe = me;
+    }
+
+
+    public void setMessageType(MessageType messageType) {
+        this.messageType = messageType;
+    }
 }
 
 enum MessageType

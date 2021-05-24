@@ -28,17 +28,54 @@
         android:clickable="true">
 
     </TextView>
-    <fragment
+    <RelativeLayout
+        android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@+id/RoomName"
         android:layout_above="@+id/LeaveRoom"
-        android:name="com.example.chathouse.Pages.Chat"
         android:id="@+id/chatFragment"
         android:layout_marginTop="5dp"
       >
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:layout_alignParentTop="true"
+            android:layout_above="@+id/Message"
+            android:id="@+id/MessagesPart">
 
-    </fragment>
+        </LinearLayout>
+
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:hint="Enter message"
+            android:id="@+id/Message"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentStart="true"
+            android:layout_toStartOf="@+id/SendButton"
+            android:layout_marginRight="10dp"
+            android:clickable="true"
+            android:layout_marginLeft="10dp"
+            >
+
+        </EditText>
+
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+            android:text="Send"
+            android:textStyle="normal"
+            android:fontFamily="serif"
+            android:textSize="20dp"
+            android:id="@+id/SendButton"
+            android:layout_alignParentBottom="true"
+            android:textColor="@color/Verypink"
+            android:layout_alignParentEnd="true"
+            android:layout_marginRight="20dp"></TextView>
+    </RelativeLayout>
     <Button
         android:layout_width="match_parent"
         android:layout_height="50dp"
