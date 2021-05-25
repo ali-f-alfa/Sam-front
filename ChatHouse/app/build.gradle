@@ -62,8 +62,8 @@ dependencies {
 
     api fileTree(include: ['*.jar'], dir: 'libs')
     testImplementation('junit:junit:4.12')
-//    implementation files('libs/signalr-client-sdk-android.jar')
-//    implementation files('libs/signalr-client-sdk.jar')
+    implementation files('libs/signalr-client-sdk-android.jar')
+    implementation files('libs/signalr-client-sdk.jar')
     implementation 'com.microsoft.signalr:signalr:3.0.0'
     implementation group: 'org.slf4j', name: 'slf4j-android', version: '1.7.7'
 

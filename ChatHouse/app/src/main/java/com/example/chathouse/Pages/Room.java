@@ -1,15 +1,11 @@
 package com.example.chathouse.Pages;
 
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentActivity;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -21,35 +17,19 @@ import com.example.chathouse.R;
 import com.example.chathouse.Utility.Constants;
 import com.example.chathouse.ViewModels.Acount.ProfileInformation;
 import com.example.chathouse.ViewModels.Acount.SearchPerson;
-import com.example.chathouse.ViewModels.GetRoomViewModel;
-import com.example.chathouse.ViewModels.JoinHubViewModel;
-import com.example.chathouse.ViewModels.MessageViewModel;
-import com.example.chathouse.ViewModels.Search.MessageModel;
+import com.example.chathouse.ViewModels.Chat.LoadAllMessagesViewModel;
+import com.example.chathouse.ViewModels.Chat.ReceiveRoomNotification;
+import com.example.chathouse.ViewModels.Room.GetRoomViewModel;
+import com.example.chathouse.ViewModels.Chat.JoinRoomViewModel;
+import com.example.chathouse.ViewModels.Chat.MessageViewModel;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.google.gson.reflect.TypeToken;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.io.IOException;
-import java.lang.reflect.Type;
 import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.ExecutionException;
 
 import io.reactivex.Single;
-import microsoft.aspnet.signalr.client.Action;
-import microsoft.aspnet.signalr.client.Credentials;
-import microsoft.aspnet.signalr.client.Platform;
-import microsoft.aspnet.signalr.client.SignalRFuture;
-import microsoft.aspnet.signalr.client.http.android.AndroidPlatformComponent;
 import microsoft.aspnet.signalr.client.hubs.HubProxy;
-import microsoft.aspnet.signalr.client.hubs.SubscriptionHandler1;
-import microsoft.aspnet.signalr.client.hubs.SubscriptionHandler2;
-import microsoft.aspnet.signalr.client.transport.ClientTransport;
-import microsoft.aspnet.signalr.client.transport.ServerSentEventsTransport;
 import okhttp3.HttpUrl;
 import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
@@ -61,7 +41,6 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 import retrofit2.converter.scalars.ScalarsConverterFactory;
 
-import com.microsoft.signalr.Action1;
 import com.microsoft.signalr.HubConnection;
 import com.microsoft.signalr.HubConnectionBuilder;
 
@@ -73,14 +52,15 @@ public class Room extends FragmentActivity {
     private String Name;
     HubConnection hubConnection; //Do the signalR definitions
     HubProxy hubProxy;
-    Handler mHandler=new Handler(); //listener
-    com.example.chathouse.ViewModels.JoinHubViewModel JoinHubViewModel = new JoinHubViewModel();
+    Handler mHandler = new Handler(); //listener
+    JoinRoomViewModel JoinHub = new JoinRoomViewModel();
     int RoomId;
     String Token;
     MessageViewModel Message = new MessageViewModel();
     private TextView Send;
     private EditText MessageText;
     SearchPerson me;
+    ArrayList<LoadAllMessagesViewModel> LoadMessages = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -151,9 +131,10 @@ public class Room extends FragmentActivity {
                 // Set the values from back
                 ProfileInformation Response = response.body();
 
-                JoinHubViewModel.setRoomId(RoomId);
+                JoinHub.setRoomId(RoomId);
                 SearchPerson person = new SearchPerson(Username, Response.getImageLink(), Response.getFirstName(), Response.getLastName());
-                JoinHubViewModel.setUser(person);
+                JoinHub.setUser(person);
+                System.out.println(JoinHub.getRoomId() + JoinHub.getUser().getUsername());
                 Join();
 
             }
@@ -247,40 +228,44 @@ public class Room extends FragmentActivity {
         Send.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Message.setMessage(MessageText.getText());
-                Message.setMe(true);
-                Message.setRoomId(RoomId);
+                if(!MessageText.getText().toString().equals("")){
+                    Message.setMessage(MessageText.getText());
+                    Message.setMe(true);
+                    Message.setRoomId(RoomId);
 
-                Profile.enqueue(new Callback<ProfileInformation>() {
-                    @Override
-                    public void onResponse(Call<ProfileInformation> call, Response<ProfileInformation> response) {
-                        if (!response.isSuccessful()) {
-                            try {
-                                System.out.println("1" + response.errorBody().string());
-                                System.out.println("1" + response.code());
-                            } catch (IOException e) {
-                                System.out.println("2" + response.errorBody().toString());
+                    Profile.enqueue(new Callback<ProfileInformation>() {
+                        @Override
+                        public void onResponse(Call<ProfileInformation> call, Response<ProfileInformation> response) {
+                            if (!response.isSuccessful()) {
+                                try {
+                                    System.out.println("1" + response.errorBody().string());
+                                    System.out.println("1" + response.code());
+                                } catch (IOException e) {
+                                    System.out.println("2" + response.errorBody().toString());
 
-                                e.printStackTrace();
+                                    e.printStackTrace();
+                                }
+
+                                return;
                             }
 
-                            return;
+                            // Set the values from back
+                            ProfileInformation Response = response.body();
+                            me = new SearchPerson(Response.getUsername(), Response.getImageLink(), Response.getFirstName(), Response.getLastName());
+
                         }
 
-                        // Set the values from back
-                        ProfileInformation Response = response.body();
-                        me = new SearchPerson(Response.getUsername(), Response.getImageLink(), Response.getFirstName(), Response.getLastName());
+                        @Override
+                        public void onFailure(Call<ProfileInformation> call, Throwable t) {
+                            Toast.makeText(Room.this, "Hi ali failed" + t.getMessage(), Toast.LENGTH_LONG).show();
+                        }
+                    });
 
-                    }
+                    Message.setUserModel(me);
+                    MessageText.setText("");
+                    SendMessage(Message);
+                }
 
-                    @Override
-                    public void onFailure(Call<ProfileInformation> call, Throwable t) {
-                        Toast.makeText(Room.this, "Hi ali failed" + t.getMessage(), Toast.LENGTH_LONG).show();
-                    }
-                });
-
-                Message.setUserModel(me);
-                SendMessage(Message);
             }
         });
     }
@@ -292,12 +277,13 @@ public class Room extends FragmentActivity {
         })).build();
 
         hubConnection.start();
+
     }
 
 
     public void Leave() {
         try{
-            hubConnection.invoke("LeaveRoom", JoinHubViewModel);
+            hubConnection.invoke("LeaveRoom", JoinHub);
         }
         catch (Exception ex){
             System.out.println(ex.getMessage());
@@ -306,8 +292,9 @@ public class Room extends FragmentActivity {
 
     public void Join(){
         try{
-            hubConnection.invoke("JoinRoom", JoinHubViewModel);
-            System.out.println("Joined");
+            hubConnection.invoke("JoinRoom", JoinHub).doOnComplete(() -> {
+                System.out.println("Joined");
+            });
 
         }
         catch (Exception ex){
@@ -317,8 +304,7 @@ public class Room extends FragmentActivity {
 
     public void SendMessage(MessageViewModel message){
         try{
-            hubConnection.invoke("SendMessageToRoom", Message);
-            System.out.println("Sended");
+            hubConnection.invoke("SendMessageToRoom", message).doOnComplete(() -> {System.out.println("Sended");});
         }
         catch (Exception ex){
             System.out.println(ex.getMessage());
@@ -335,28 +321,73 @@ public class Room extends FragmentActivity {
     }
 
     private void DefineMethods(){
-        hubConnection.on("ReceiveRoomMessage", (messageModel) ->
+        hubConnection.<MessageViewModel>on("ReceiveRoomMessage", (messageModel) ->
                 {
-//        int RoomId = messageModel.RoomId;
-//        int messageType = (int)messageModel.MessageType;
-//        string message = messageModel.Message.ToString();
-//        string senderFirstName = messageModel.UserModel.FirstName;
-//        string senderLastName = messageModel.UserModel.LastName;
-//        string senderUsername = messageModel.UserModel.Username;
-//        string senderImageLink = messageModel.UserModel.ImageLink;
-//        bool IsMe = messageModel.IsMe;
-//        if (IsMe)
-//        {
-//        }
-//        else
-//        {
-//        }
-                    System.out.println("Notification");
-            }, MessageModel.class);
+                    String text = "";
+        int RoomId = messageModel.getRoomId();
+//        int messageType = messageModel.getMessageType();
+        String message = ((String)messageModel.getMessage());
+        String senderLastName = messageModel.getUserModel().getLastName();
+        String senderUsername = messageModel.getUserModel().getUsername();
+        String senderFirstName = messageModel.getUserModel().getFirstName();
+        String senderImageLink = messageModel.getUserModel().getImageLink();
+        Boolean IsMe = messageModel.isMe();
+        if (IsMe)
+        {
+            text += "Your Message To  Room number #" + RoomId + ":";
+        }
+        else
+        {
+            text += "New Message From " + senderFirstName + " " + senderLastName + " To  Room number #" + RoomId + ":";
+        }
+
+                    Toast.makeText(Room.this, text + message, Toast.LENGTH_LONG).show();
+            }, MessageViewModel.class);
+
+        hubConnection.on("ReceiveRoomNotification", (ReceiveRoomNotification) ->
+        {
+       if (ReceiveRoomNotification.getNotification() == com.example.chathouse.ViewModels.Chat.ReceiveRoomNotification.RoomNotification.Join) {
+           if (ReceiveRoomNotification.getMe()) {
+               Toast.makeText(Room.this, "You joined room number " + ReceiveRoomNotification.getRoomId(), Toast.LENGTH_LONG).show();
+           } else {
+               Toast.makeText(Room.this, ReceiveRoomNotification.getUserModel().getUsername() + " Joined room number " + ReceiveRoomNotification.getRoomId(), Toast.LENGTH_LONG).show();
+           }
+       }
+                else
+                {
+                    if (ReceiveRoomNotification.getMe())
+                    {
+                        Toast.makeText(Room.this, "You left room number "  + ReceiveRoomNotification.getRoomId(), Toast.LENGTH_LONG).show();
+                    }
+                    else
+                    {
+                        Toast.makeText(Room.this, ReceiveRoomNotification.getUserModel().getUsername() + " Left room number " + ReceiveRoomNotification.getRoomId(), Toast.LENGTH_LONG).show();
+                    }
+                }
+        }, ReceiveRoomNotification.class);
+        hubConnection.on("ReceiveRoomAllMessages", (messageModel) ->
+        {
+//            for (LoadAllMessagesViewModel x: messageModel
+//                 ) {
+//
+//            }
+//            {
+//                String sender = "";
+//                if (x.) sender = "You";
+//                else sender = x.Sender.Username;
+//                if (x.ContetntType == MessageViewModel.MessageType.Text)
+//                {
+//                }
+//                else if (x.ContetntType == MessageViewModel.MessageType.JoinNotification)
+//                {
+//                }
+//                else if (x.ContetntType == MessageViewModel.MessageType.LeftNotification)
+//                {
+//                }
+//            }
+            System.out.println("Notification");
+        }, LoadAllMessagesViewModel.class);
     }
 
-    private void MessageNotifActioin(com.example.chathouse.ViewModels.Search.MessageModel message){
-
-    }
 
 }

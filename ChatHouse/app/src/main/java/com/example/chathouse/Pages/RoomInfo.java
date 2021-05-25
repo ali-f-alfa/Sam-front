@@ -19,7 +19,7 @@ import com.example.chathouse.API.ChatHouseAPI;
 import com.example.chathouse.R;
 import com.example.chathouse.Utility.Constants;
 import com.example.chathouse.ViewModels.Acount.SearchPerson;
-import com.example.chathouse.ViewModels.GetRoomViewModel;
+import com.example.chathouse.ViewModels.Room.GetRoomViewModel;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
