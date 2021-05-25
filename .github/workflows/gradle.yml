@@ -24,6 +24,6 @@ jobs:
     - name: Grant execute permission for gradlew
       run: chmod +x ./ChatHouse/gradlew
     - name: Run Tests
-      run: ./ChatHouse/gradlew test
+      run: ./ChatHouse/gradlew ./ChatHouse/test
     - name: Build with Gradle
       run: ./ChatHouse/gradlew build
