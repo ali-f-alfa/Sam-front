@@ -26,7 +26,7 @@ jobs:
       run: chmod +x gradlew
     - name: Build with Gradle
       working-directory: ./ChatHouse
-      run: gradlew build
+      run: ./ChatHouse/gradlew build
     - name: Run Tests
       working-directory: ./ChatHouse
-      run: gradlew test
+      run: ./ChatHouse/gradlew test
