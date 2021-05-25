@@ -22,11 +22,11 @@ jobs:
         java-version: '11'
         distribution: 'adopt'
     - name: Grant execute permission for gradlew
+      working-directory: ./ChatHouse
       run: chmod +x gradlew
-      working-directory: ./ChatHouse
-    - name: Run Tests
-      run: gradlew test
-      working-directory: ./ChatHouse
     - name: Build with Gradle
-      run: gradlew build
       working-directory: ./ChatHouse
+      run: gradlew build
+    - name: Run Tests
+      working-directory: ./ChatHouse
+      run: gradlew test
