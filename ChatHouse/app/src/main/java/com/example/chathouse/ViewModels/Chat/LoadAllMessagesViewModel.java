@@ -8,7 +8,7 @@ public class LoadAllMessagesViewModel {
     public int id ;
     public int parentId ;
     public String content ;
-    public MessageViewModel.MessageType contetntType ;
+    public int contetntType ;
     public Date SentDate ;
     public SearchPerson Sender ;
     public Boolean isMe ;
@@ -26,7 +26,7 @@ public class LoadAllMessagesViewModel {
         return content;
     }
 
-    public MessageViewModel.MessageType getContetntType() {
+    public int getContetntType() {
         return contetntType;
     }
 
