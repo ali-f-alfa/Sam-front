@@ -3,12 +3,12 @@ package com.example.chathouse.ViewModels.Chat;
 import com.example.chathouse.ViewModels.Acount.SearchPerson;
 
 public class ReceiveRoomNotification {
-    public RoomNotification notification;
+    public int notification;
     public SearchPerson userModel;
     public int roomId;
     public Boolean isMe;
 
-    public RoomNotification getNotification() {
+    public int getNotification() {
         return notification;
     }
 
@@ -24,11 +24,6 @@ public class ReceiveRoomNotification {
         return isMe;
     }
 
-    public enum RoomNotification
-    {
-        Join,
-        Left
-    }
 }
 
 

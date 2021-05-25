@@ -68,10 +68,10 @@ public class Room extends FragmentActivity {
         setContentView(R.layout.activity_room);
         Bundle bundle = getIntent().getExtras();
 
-        Leave = (Button)findViewById(R.id.LeaveRoom);
-        RoomName = (TextView)findViewById(R.id.RoomName);
-        Send = (TextView)findViewById(R.id.SendButton);
-        MessageText = (EditText)findViewById(R.id.Message);
+        Leave = (Button) findViewById(R.id.LeaveRoom);
+        RoomName = (TextView) findViewById(R.id.RoomName);
+        Send = (TextView) findViewById(R.id.SendButton);
+        MessageText = (EditText) findViewById(R.id.Message);
 
 
         SharedPreferences settings = getSharedPreferences("Storage", MODE_PRIVATE);
@@ -151,7 +151,7 @@ public class Room extends FragmentActivity {
         GetRoom.enqueue(new Callback<GetRoomViewModel>() {
             @Override
             public void onResponse(Call<GetRoomViewModel> call, retrofit2.Response<GetRoomViewModel> response) {
-                if(!response.isSuccessful()){
+                if (!response.isSuccessful()) {
                     try {
                         System.out.println("1" + response.errorBody().string());
                         System.out.println("1" + response.code());
@@ -167,7 +167,7 @@ public class Room extends FragmentActivity {
                 Name = Response.getName();
                 RoomName.setText(Name);
 
-                if(Creator.equals(Username)){
+                if (Creator.equals(Username)) {
                     Leave.setVisibility(View.GONE);
                 }
                 System.out.println("Works");
@@ -198,7 +198,7 @@ public class Room extends FragmentActivity {
                 LeaveRoom.enqueue(new Callback<Void>() {
                     @Override
                     public void onResponse(Call<Void> call, retrofit2.Response<Void> response) {
-                        if(!response.isSuccessful()){
+                        if (!response.isSuccessful()) {
                             try {
                                 System.out.println("1" + response.errorBody().string());
                                 System.out.println("1" + response.code());
@@ -219,7 +219,7 @@ public class Room extends FragmentActivity {
 
                     @Override
                     public void onFailure(Call<Void> call, Throwable t) {
-                        Toast.makeText(Room.this, "Request failed" , Toast.LENGTH_LONG).show();
+                        Toast.makeText(Room.this, "Request failed", Toast.LENGTH_LONG).show();
                     }
                 });
             }
@@ -228,7 +228,7 @@ public class Room extends FragmentActivity {
         Send.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(!MessageText.getText().toString().equals("")){
+                if (!MessageText.getText().toString().equals("")) {
                     Message.setMessage(MessageText.getText());
                     Message.setMe(true);
                     Message.setRoomId(RoomId);
@@ -282,89 +282,84 @@ public class Room extends FragmentActivity {
 
 
     public void Leave() {
-        try{
+        try {
             hubConnection.invoke("LeaveRoom", JoinHub);
-        }
-        catch (Exception ex){
+        } catch (Exception ex) {
             System.out.println(ex.getMessage());
         }
     }
 
-    public void Join(){
-        try{
-            hubConnection.invoke("JoinRoom", JoinHub).doOnComplete(() -> {
-                System.out.println("Joined");
-            });
+    public void Join() {
+        try {
+            hubConnection.invoke("JoinRoom", JoinHub);
 
-        }
-        catch (Exception ex){
+
+        } catch (Exception ex) {
             System.out.println(ex.getMessage());
         }
     }
 
-    public void SendMessage(MessageViewModel message){
-        try{
-            hubConnection.invoke("SendMessageToRoom", message).doOnComplete(() -> {System.out.println("Sended");});
-        }
-        catch (Exception ex){
+    public void SendMessage(MessageViewModel message) {
+        try {
+            hubConnection.invoke("SendMessageToRoom", message);
+        } catch (Exception ex) {
             System.out.println(ex.getMessage());
         }
     }
 
-    private void LoadAllMessages(String username, int rromId){
-        try{
+    private void LoadAllMessages(String username, int rromId) {
+        try {
             hubConnection.invoke("LoadRoomMessages", rromId, username);
-        }
-        catch (Exception ex){
+        } catch (Exception ex) {
             System.out.println(ex.getMessage());
         }
     }
 
-    private void DefineMethods(){
-        hubConnection.<MessageViewModel>on("ReceiveRoomMessage", (messageModel) ->
-                {
-                    String text = "";
-        int RoomId = messageModel.getRoomId();
-//        int messageType = messageModel.getMessageType();
-        String message = ((String)messageModel.getMessage());
-        String senderLastName = messageModel.getUserModel().getLastName();
-        String senderUsername = messageModel.getUserModel().getUsername();
-        String senderFirstName = messageModel.getUserModel().getFirstName();
-        String senderImageLink = messageModel.getUserModel().getImageLink();
-        Boolean IsMe = messageModel.isMe();
-        if (IsMe)
+    private void DefineMethods() {
+        hubConnection.on("ReceiveRoomMessage", (messageModel) ->
         {
-            text += "Your Message To  Room number #" + RoomId + ":";
-        }
-        else
-        {
-            text += "New Message From " + senderFirstName + " " + senderLastName + " To  Room number #" + RoomId + ":";
-        }
+            String text = "";
+            int RoomId = messageModel.getRoomId();
+            int messageType = messageModel.getMessageType();
+            String message = ((String) messageModel.getMessage());
+            String senderLastName = messageModel.getUserModel().getLastName();
+            String senderUsername = messageModel.getUserModel().getUsername();
+            String senderFirstName = messageModel.getUserModel().getFirstName();
+            String senderImageLink = messageModel.getUserModel().getImageLink();
+            Boolean IsMe = messageModel.isMe();
+            if (IsMe) {
+                text += "Your Message To  Room number #" + RoomId + ":";
+            } else {
+                text += "New Message From " + senderFirstName + " " + senderLastName + " To  Room number #" + RoomId + ":";
+            }
 
-                    Toast.makeText(Room.this, text + message, Toast.LENGTH_LONG).show();
-            }, MessageViewModel.class);
+//            Toast.makeText(Room.this, text + message, Toast.LENGTH_LONG).show();
+            System.out.println(text + message);
+        }, MessageViewModel.class);
 
         hubConnection.on("ReceiveRoomNotification", (ReceiveRoomNotification) ->
         {
-       if (ReceiveRoomNotification.getNotification() == com.example.chathouse.ViewModels.Chat.ReceiveRoomNotification.RoomNotification.Join) {
-           if (ReceiveRoomNotification.getMe()) {
-               Toast.makeText(Room.this, "You joined room number " + ReceiveRoomNotification.getRoomId(), Toast.LENGTH_LONG).show();
-           } else {
-               Toast.makeText(Room.this, ReceiveRoomNotification.getUserModel().getUsername() + " Joined room number " + ReceiveRoomNotification.getRoomId(), Toast.LENGTH_LONG).show();
-           }
-       }
-                else
-                {
-                    if (ReceiveRoomNotification.getMe())
-                    {
-                        Toast.makeText(Room.this, "You left room number "  + ReceiveRoomNotification.getRoomId(), Toast.LENGTH_LONG).show();
-                    }
-                    else
-                    {
-                        Toast.makeText(Room.this, ReceiveRoomNotification.getUserModel().getUsername() + " Left room number " + ReceiveRoomNotification.getRoomId(), Toast.LENGTH_LONG).show();
-                    }
+            if (ReceiveRoomNotification.getNotification() == 0) {
+                if (ReceiveRoomNotification.getMe()) {
+//                   Toast.makeText(Room.this, "You joined room number " + ReceiveRoomNotification.getRoomId(), Toast.LENGTH_LONG).show();
+                    System.out.println("You joined room number " + ReceiveRoomNotification.getRoomId());
+
+
+                } else {
+//               Toast.makeText(Room.this, ReceiveRoomNotification.getUserModel().getUsername() + " Joined room number " + ReceiveRoomNotification.getRoomId(), Toast.LENGTH_LONG).show();
+                    System.out.println(ReceiveRoomNotification.getUserModel().getUsername() + " Joined room number " + ReceiveRoomNotification.getRoomId());
                 }
+            } else {
+                if (ReceiveRoomNotification.getMe()) {
+//                        Toast.makeText(Room.this, "You left room number "  + ReceiveRoomNotification.getRoomId(), Toast.LENGTH_LONG).show();
+                    System.out.println("You left room number " + ReceiveRoomNotification.getRoomId());
+                } else {
+//                        Toast.makeText(Room.this, ReceiveRoomNotification.getUserModel().getUsername() + " Left room number " + ReceiveRoomNotification.getRoomId(), Toast.LENGTH_LONG).show();
+                    System.out.println(ReceiveRoomNotification.getUserModel().getUsername() + " Left room number " + ReceiveRoomNotification.getRoomId());
+                }
+            }
         }, ReceiveRoomNotification.class);
+
         hubConnection.on("ReceiveRoomAllMessages", (messageModel) ->
         {
 //            for (LoadAllMessagesViewModel x: messageModel

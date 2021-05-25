@@ -7,7 +7,7 @@ public class MessageViewModel {
     private Object message;
     private int roomId;
     private boolean isMe;
-    private MessageType messageType = MessageType.Text;
+    private int messageType = 0;
     public int parentId;
 
 
@@ -28,7 +28,7 @@ public class MessageViewModel {
     }
 
 
-    public void setMessageType(MessageType messageType) {
+    public void setMessageType(int messageType) {
         this.messageType = messageType;
     }
 
@@ -48,7 +48,7 @@ public class MessageViewModel {
         return isMe;
     }
 
-    public MessageType getMessageType() {
+    public int getMessageType() {
         return messageType;
     }
 
@@ -56,24 +56,6 @@ public class MessageViewModel {
         return parentId;
     }
 
-    public enum MessageType
-    {
-        Text ("Text", 0),
-        File ("File", 1),
-        JoinNotification ("JoinNotification", 2),
-        LeftNotification ("LeftNotification", 4);
 
-        private String stringValue;
-        private int intValue;
-        private MessageType(String toString, int value) {
-            stringValue = toString;
-            intValue = value;
-        }
-
-        @Override
-        public String toString() {
-            return stringValue;
-        }
-    }
 }
 
