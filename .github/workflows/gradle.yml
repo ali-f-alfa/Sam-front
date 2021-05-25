@@ -26,4 +26,4 @@ jobs:
     - name: Build with Gradle
       run: ./ChatHouse/gradlew build
     - name: Run Tests
-      run: ./ChatHouse/gradlew test
+      run: ./gradlew test
