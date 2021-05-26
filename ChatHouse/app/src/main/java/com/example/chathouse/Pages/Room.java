@@ -6,7 +6,6 @@ import androidx.fragment.app.FragmentActivity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.opengl.Visibility;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -14,12 +13,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
+import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
-import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -66,6 +66,7 @@ import com.microsoft.signalr.HubConnectionBuilder;
 
 public class Room extends FragmentActivity {
     private TextView RoomName;
+    private ImageButton Leave;
     private GetRoomViewModel RoomInfo;
     private String Creator;
     private String Name;
@@ -98,6 +99,7 @@ public class Room extends FragmentActivity {
         MessageText = (EditText) findViewById(R.id.Message);
         chatBoxListView = (ListView) findViewById(R.id.chatBox);
         downBtn = (ImageButton) findViewById(R.id.chat_downBtn);
+        Leave = (ImageButton) findViewById(R.id.LeaveRoom);
 
         SharedPreferences settings = getSharedPreferences("Storage", MODE_PRIVATE);
         Token = settings.getString("Token", "n/a");
@@ -163,7 +165,7 @@ public class Room extends FragmentActivity {
         ChatHouseAPI APIS = retrofit.create(ChatHouseAPI.class);
 
         Call<ProfileInformation> GetProfile = APIS.GetProfile(Username);
-
+        Call<Void> LeaveRoom = APIS.LeaveRoom(RoomId);
         GetProfile.enqueue(new Callback<ProfileInformation>() {
             @Override
             public void onResponse(Call<ProfileInformation> call, Response<ProfileInformation> response) {
@@ -256,6 +258,40 @@ public class Room extends FragmentActivity {
 
             }
         });
+
+        Leave.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                LeaveRoom.enqueue(new Callback<Void>() {
+                    @Override
+                    public void onResponse(Call<Void> call, retrofit2.Response<Void> response) {
+                        if (!response.isSuccessful()) {
+                            try {
+                                System.out.println("1" + response.errorBody().string());
+                                System.out.println("1" + response.code());
+                                System.out.println(response.errorBody().string());
+                            } catch (IOException e) {
+                                System.out.println("2" + response.errorBody().toString());
+                                e.printStackTrace();
+                            }
+                            return;
+                        }
+                        System.out.println("Deleted");
+                        finish();
+                        Leave();
+                        Intent intent = new Intent(Room.this, AcitivityPage.class);
+
+                        startActivity(intent);
+                    }
+
+                    @Override
+                    public void onFailure(Call<Void> call, Throwable t) {
+                        Toast.makeText(Room.this, "Request failed", Toast.LENGTH_LONG).show();
+                    }
+                });
+            }
+        });
+
     }
 
     private void Connect() {
@@ -266,6 +302,14 @@ public class Room extends FragmentActivity {
 
         hubConnection.start();
 
+    }
+
+    public void Leave() {
+        try {
+            hubConnection.invoke("LeaveRoom", JoinHub);
+        } catch (Exception ex) {
+            System.out.println(ex.getMessage());
+        }
     }
 
     public void Join() {
@@ -303,6 +347,7 @@ public class Room extends FragmentActivity {
             x.setLastName(messageModel.getUserModel().getLastName());
             x.setMessage(messageModel.getMessage().toString());
             x.setImageLink(messageModel.getUserModel().getImageLink());
+            x.setUserName(messageModel.getUserModel().getUsername());
             x.setTime(new Date());
             if (messageModel.isMe() == true)
                 x.setMode(1);
@@ -339,6 +384,8 @@ public class Room extends FragmentActivity {
         hubConnection.on("ReceiveRoomNotification", (ReceiveRoomNotification) ->
         {
             ChatBoxModel x = new ChatBoxModel();
+            x.setUserName(ReceiveRoomNotification.getUserModel().getUsername());
+
             x.setMode(0);
 
             if (ReceiveRoomNotification.getNotification() == 0) {
@@ -374,20 +421,22 @@ public class Room extends FragmentActivity {
                 LoadAllMessagesViewModel x = gson.fromJson(s2, LoadAllMessagesViewModel.class);
                 ChatBoxModel chat = new ChatBoxModel();
                 int contentType = x.contetntType;
-                if (contentType == 0) {
-                    chat.setFirstName(x.getSender().getFirstName());
-                    chat.setLastName(x.getSender().getLastName());
-                    chat.setImageLink(x.getSender().getImageLink());
-                    chat.setTime(x.sentDate);
-                    if (x.getMe() == true)
-                        chat.setMode(1);
-                    else if (x.getMe() == false)
-                        chat.setMode(-1);
-                    chat.setMessage(x.getContent());
-                } else if (contentType == 2) {
-                    chat.setMode(0);
-                    if (x.getMe()) {
-                        chat.setMessage("You joined this room");
+               if(contentType == 0){
+                   chat.setFirstName(x.getSender().getFirstName());
+                   chat.setLastName(x.getSender().getLastName());
+                   chat.setImageLink(x.getSender().getImageLink());
+                   chat.setUserName(x.getSender().getUsername());
+                   chat.setTime(x.sentDate);
+                   if (x.getMe() == true)
+                       chat.setMode(1);
+                   else if (x.getMe() == false)
+                       chat.setMode(-1);
+                   chat.setMessage(x.getContent());
+               }
+               else if(contentType == 2){
+                   chat.setMode(0);
+                   if (x.getMe()) {
+                       chat.setMessage("You joined this room");
 
                     } else {
                         chat.setMessage(x.getSender().getUsername() + " join this room");
@@ -478,13 +527,24 @@ class ChatBoxAdaptor extends BaseAdapter {
             Glide.with(mContext).load(chat.getImageLink())
                     .apply(options).transform(new CircleCrop()).into(holder.Image);
 
+            holder.Image.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(mContext, ProfilePage.class);
+                    Bundle bundle1 = new Bundle();
+                    bundle1.putString("Username", chat.getUserName());
+                    intent.putExtras(bundle1);
+                    mContext.startActivity(intent);
+                }
+            });
+
+
 
         } else if (ChatsList.get(position).getMode() == 1) {
             view = inflater.inflate(R.layout.chat_right, null);
 
             holder.message = (TextView) view.findViewById(R.id.chat_message_right);
             holder.time = (TextView) view.findViewById(R.id.chat_time_right);
-            holder.Image = (ImageView) view.findViewById(R.id.chat_image_right);
             view.setTag(holder);
 
             holder.message.setText(chat.getMessage());
@@ -492,11 +552,6 @@ class ChatBoxAdaptor extends BaseAdapter {
             SimpleDateFormat formatter = new SimpleDateFormat("hh:mm aa");
             holder.time.setText(formatter.format(chat.getTime()));
 
-            RequestOptions options = new RequestOptions()
-                    .placeholder(R.mipmap.default_user_profile)
-                    .centerCrop();
-            Glide.with(mContext).load(chat.getImageLink())
-                    .apply(options).transform(new CircleCrop()).into(holder.Image);
 
         } else if (ChatsList.get(position).getMode() == 0) {
             view = inflater.inflate(R.layout.chat_middle, null);
@@ -507,6 +562,7 @@ class ChatBoxAdaptor extends BaseAdapter {
             holder.message.setText(chat.getMessage());
 
         }
+
 
         return view;
     }
