@@ -44,6 +44,9 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 import retrofit2.converter.scalars.ScalarsConverterFactory;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonParser;
 import com.microsoft.signalr.HubConnection;
 import com.microsoft.signalr.HubConnectionBuilder;
 
@@ -65,6 +68,7 @@ public class Room extends FragmentActivity {
     SearchPerson me;
     ArrayList<LoadAllMessagesViewModel> LoadMessages = new ArrayList<>();
     ProfileInformation Response;
+    Gson gson;
 
     @RequiresApi(api = Build.VERSION_CODES.R)
     @Override
@@ -100,7 +104,7 @@ public class Room extends FragmentActivity {
             }
         }).build();
 
-        Gson gson = new GsonBuilder()
+        gson = new GsonBuilder()
                 .setLenient()
                 .setDateFormat("yyyy-MM-dd'T'HH:mm:ss")
                 .create();
@@ -285,9 +289,9 @@ public class Room extends FragmentActivity {
         }
     }
 
-    private void LoadAllMessages(String username, int rromId) {
+    private void LoadAllMessages(String username, int roomId) {
         try {
-            hubConnection.invoke("LoadRoomMessages", rromId, username);
+            hubConnection.invoke("LoadRoomMessages", roomId, username);
         } catch (Exception ex) {
             System.out.println(ex.getMessage());
         }
@@ -341,27 +345,27 @@ public class Room extends FragmentActivity {
 
         hubConnection.on("ReceiveRoomAllMessages", (messageModel) ->
         {
-
             for (Object X: messageModel)
             {
 
-                System.out.println(X);
+                String s2 = gson.toJson(X);
+                LoadAllMessagesViewModel x = gson.fromJson(s2, LoadAllMessagesViewModel .class);
 
-//                String sender = "";
-//                if (x.isMe) sender = "You";
-//                else sender = x.sender.getUsername();
-//                if (x.contetntType == 0)
-//                {
-//                    System.out.println(sender + " : " + x.content + "\t" + x.sentDate.toString());
-//                }
-//                else if (x.contetntType == 2)
-//                {
-//                    System.out.println(sender + " Joined room number " + x.roomId);
-//                }
-//                else if (x.contetntType == 3)
-//                {
-//                    System.out.println(sender + " Left room number " + x.roomId);
-//                }
+                String sender = "";
+                if (x.isMe) sender = "You";
+                else sender = x.sender.getUsername();
+                if (x.contetntType == 0)
+                {
+                    System.out.println(sender + " : " + x.content + "\t" + x.sentDate.toString());
+                }
+                else if (x.contetntType == 2)
+                {
+                    System.out.println(sender + " Joined room number " + x.roomId);
+                }
+                else if (x.contetntType == 3)
+                {
+                    System.out.println(sender + " Left room number " + x.roomId);
+                }
             }
             System.out.println("Notification");
         }, (Class<List<LoadAllMessagesViewModel>>)(Object)List.class);
