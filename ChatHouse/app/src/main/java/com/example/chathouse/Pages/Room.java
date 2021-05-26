@@ -6,17 +6,20 @@ import androidx.fragment.app.FragmentActivity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.opengl.Visibility;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AbsListView;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -34,6 +37,8 @@ import com.example.chathouse.ViewModels.Room.ChatBoxModel;
 import com.example.chathouse.ViewModels.Room.GetRoomViewModel;
 import com.example.chathouse.ViewModels.Chat.JoinRoomViewModel;
 import com.example.chathouse.ViewModels.Chat.MessageViewModel;
+import com.example.chathouse.ViewModels.Search.InputRoomSearchViewModel;
+import com.example.chathouse.ViewModels.Search.InputSearchViewModel;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
@@ -78,6 +83,7 @@ public class Room extends FragmentActivity {
     public ChatBoxAdaptor ChatAdaptor;
     public ArrayList<ChatBoxModel> Chats = new ArrayList<ChatBoxModel>();
     public ListView chatBoxListView;
+    public ImageButton downBtn;
 
 
     @RequiresApi(api = Build.VERSION_CODES.R)
@@ -91,6 +97,7 @@ public class Room extends FragmentActivity {
         Send = (TextView) findViewById(R.id.SendButton);
         MessageText = (EditText) findViewById(R.id.Message);
         chatBoxListView = (ListView) findViewById(R.id.chatBox);
+        downBtn = (ImageButton) findViewById(R.id.chat_downBtn);
 
         SharedPreferences settings = getSharedPreferences("Storage", MODE_PRIVATE);
         Token = settings.getString("Token", "n/a");
@@ -98,26 +105,33 @@ public class Room extends FragmentActivity {
 
         RoomId = bundle.getInt("RoomId");
 
-        ChatBoxModel x = new ChatBoxModel();
-        x.setFirstName("ali");
-        x.setLastName("farahat");
-        x.setMessage("meeeeeeeessfsdjaflkasdjflkjasdlfk\nfjsldkjflkajslfkdsadf\nfd\nfdff");
-        x.setTime(new Date());
-        x.setMode(-1);
-        Chats.add(x);
-
-        ChatBoxModel y = new ChatBoxModel();
-        y.setFirstName("ali");
-        y.setLastName("farahat");
-        y.setMessage("meeeeeeeessfsdjaflkasdjflkjasdlfk\nfjsldkjflkajslfkdsadf\nfd\nfdff");
-        y.setTime(new Date());
-        y.setMode(1);
-        Chats.add(y);
 
         ChatAdaptor = new ChatBoxAdaptor(Room.this, Chats);
         chatBoxListView.setAdapter(ChatAdaptor);
         ChatAdaptor.notifyDataSetChanged();
 
+        chatBoxListView.setOnScrollListener(new AbsListView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(AbsListView view, int scrollState) {
+
+            }
+
+            @Override
+            public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+                if ((chatBoxListView.getAdapter().getCount() - 1) - chatBoxListView.getLastVisiblePosition() > 10) {
+                    downBtn.setVisibility(View.VISIBLE);
+                } else {
+                    downBtn.setVisibility(View.GONE);
+                }
+            }
+        });
+
+        downBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                chatBoxListView.smoothScrollToPosition(Chats.size() - 1);
+            }
+        });
 
         // Hub Join
         Connect();
@@ -301,7 +315,7 @@ public class Room extends FragmentActivity {
 
                     Chats.add(x);
                     ChatAdaptor.notifyDataSetChanged();
-
+                    chatBoxListView.smoothScrollToPosition(Chats.size() - 1);
                 }
             });
 
@@ -347,6 +361,7 @@ public class Room extends FragmentActivity {
                 public void run() {
                     Chats.add(x);
                     ChatAdaptor.notifyDataSetChanged();
+                    chatBoxListView.smoothScrollToPosition(Chats.size() - 1);
                 }
             });
         }, ReceiveRoomNotification.class);
@@ -359,35 +374,33 @@ public class Room extends FragmentActivity {
                 LoadAllMessagesViewModel x = gson.fromJson(s2, LoadAllMessagesViewModel.class);
                 ChatBoxModel chat = new ChatBoxModel();
                 int contentType = x.contetntType;
-               if(contentType == 0){
-                   chat.setFirstName(x.getSender().getFirstName());
-                   chat.setLastName(x.getSender().getLastName());
-                   chat.setImageLink(x.getSender().getImageLink());
-                   chat.setTime(x.sentDate);
-                   if (x.getMe() == true)
-                       chat.setMode(1);
-                   else if (x.getMe() == false)
-                       chat.setMode(-1);
-                   chat.setMessage(x.getContent());
-               }
-               else if(contentType == 2){
-                   chat.setMode(0);
-                   if (x.getMe()) {
-                       chat.setMessage("You joined this room");
+                if (contentType == 0) {
+                    chat.setFirstName(x.getSender().getFirstName());
+                    chat.setLastName(x.getSender().getLastName());
+                    chat.setImageLink(x.getSender().getImageLink());
+                    chat.setTime(x.sentDate);
+                    if (x.getMe() == true)
+                        chat.setMode(1);
+                    else if (x.getMe() == false)
+                        chat.setMode(-1);
+                    chat.setMessage(x.getContent());
+                } else if (contentType == 2) {
+                    chat.setMode(0);
+                    if (x.getMe()) {
+                        chat.setMessage("You joined this room");
 
-                   } else {
-                       chat.setMessage(x.getSender().getUsername() + " join this room");
-                   }
-               }
-               else if(contentType == 3){
-                   chat.setMode(0);
-                   if (x.getMe()) {
-                       chat.setMessage("You left this room");
+                    } else {
+                        chat.setMessage(x.getSender().getUsername() + " join this room");
+                    }
+                } else if (contentType == 3) {
+                    chat.setMode(0);
+                    if (x.getMe()) {
+                        chat.setMessage("You left this room");
 
-                   } else {
-                       chat.setMessage(x.getSender().getUsername() + " left this room");
-                   }
-               }
+                    } else {
+                        chat.setMessage(x.getSender().getUsername() + " left this room");
+                    }
+                }
                 runOnUiThread(new Runnable() {
 
                     @Override
@@ -395,7 +408,7 @@ public class Room extends FragmentActivity {
 
                         Chats.add(chat);
                         ChatAdaptor.notifyDataSetChanged();
-
+                        chatBoxListView.smoothScrollToPosition(Chats.size() - 1);
                     }
                 });
             }
