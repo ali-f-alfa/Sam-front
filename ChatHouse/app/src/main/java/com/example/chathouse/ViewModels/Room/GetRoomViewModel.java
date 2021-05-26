@@ -1,4 +1,4 @@
-package com.example.chathouse.ViewModels;
+package com.example.chathouse.ViewModels.Room;
 
 import androidx.annotation.Nullable;
 

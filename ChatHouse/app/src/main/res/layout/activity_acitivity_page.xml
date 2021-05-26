@@ -48,7 +48,7 @@
            android:layout_width="fill_parent"
            android:layout_height="fill_parent"
            android:fadeScrollbars="false"
-           android:layout_weight="6"></ListView>
+           android:layout_weight="4"></ListView>
        <View
            android:layout_width="wrap_content"
            android:layout_height="5dp"

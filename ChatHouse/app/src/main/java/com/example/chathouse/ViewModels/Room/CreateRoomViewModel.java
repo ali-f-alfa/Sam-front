@@ -1,4 +1,4 @@
-package com.example.chathouse.ViewModels;
+package com.example.chathouse.ViewModels.Room;
 
 import java.util.ArrayList;
 import java.util.Date;

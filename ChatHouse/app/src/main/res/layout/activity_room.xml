@@ -28,27 +28,89 @@
         android:clickable="true">
 
     </TextView>
-<!--    <fragment-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="match_parent"-->
-<!--        android:layout_below="@+id/RoomName"-->
-<!--        android:layout_above="@+id/LeaveRoom"-->
-<!--      >-->
-
-<!--    </fragment>-->
-    <Button
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:gravity="center"
+    <ImageButton
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_alignParentEnd="true"
+        android:foregroundGravity="center_vertical"
         android:id="@+id/LeaveRoom"
-        android:layout_alignParentBottom="true"
-        android:text="Leave"
-        android:fontFamily="serif"
-        android:backgroundTint="@color/light"
-        android:textStyle="bold"
-        android:textColor="@color/Verypink">
+        android:src="@drawable/ic_baseline_exit_to_app_24"
+        android:backgroundTint="#00E7D2CC"
+>
 
-    </Button>
+    </ImageButton>
+
+    <RelativeLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/RoomName"
+        android:id="@+id/chatFragment"
+        android:layout_marginTop="5dp">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:layout_alignParentTop="true"
+            android:layout_above="@+id/Message"
+            android:id="@+id/MessagesPart">
+
+            <ListView
+                android:id="@+id/chatBox"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:divider="@null"
+                android:dividerHeight="0dp"
+                >
+
+            </ListView>
+        </LinearLayout>
+
+        <ImageButton
+            android:id="@+id/chat_downBtn"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_alignParentEnd="true"
+            android:layout_above="@id/SendButton"
+            android:layout_marginRight="30dp"
+            android:layout_marginBottom="30dp"
+            android:background="#00FFFFFF"
+            android:src="@drawable/ic_baseline_keyboard_arrow_down_24"
+            android:visibility="gone">
+        </ImageButton>
+        <EditText
+            android:layout_width="match_parent"
+            android:minHeight="50dp"
+            android:maxLines="6"
+            android:layout_height="wrap_content"
+            android:hint="Enter message"
+            android:id="@+id/Message"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentStart="true"
+            android:layout_toStartOf="@+id/SendButton"
+            android:layout_marginRight="10dp"
+            android:clickable="true"
+            android:layout_marginLeft="10dp"
+
+            >
+
+        </EditText>
+
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+            android:text="Send"
+            android:textStyle="normal"
+            android:fontFamily="serif"
+            android:textSize="20dp"
+            android:id="@+id/SendButton"
+            android:layout_alignParentBottom="true"
+            android:textColor="@color/Verypink"
+            android:layout_alignParentEnd="true"
+            android:layout_marginRight="20dp"></TextView>
+    </RelativeLayout>
+
 
 <!--    <View-->
 <!--        android:layout_width="match_parent"-->

@@ -1,9 +1,13 @@
 package com.example.chathouse.Pages;
 
+import androidx.annotation.RequiresApi;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -18,14 +22,25 @@ import android.widget.Toast;
 import com.example.chathouse.API.ChatHouseAPI;
 import com.example.chathouse.R;
 import com.example.chathouse.Utility.Constants;
+import com.example.chathouse.ViewModels.Acount.ProfileInformation;
 import com.example.chathouse.ViewModels.Acount.SearchPerson;
-import com.example.chathouse.ViewModels.GetRoomViewModel;
+import com.example.chathouse.ViewModels.Chat.JoinRoomViewModel;
+import com.example.chathouse.ViewModels.Chat.LoadAllMessagesViewModel;
+import com.example.chathouse.ViewModels.Chat.MessageViewModel;
+import com.example.chathouse.ViewModels.Chat.ReceiveRoomNotification;
+import com.example.chathouse.ViewModels.Room.ChatBoxModel;
+import com.example.chathouse.ViewModels.Room.GetRoomViewModel;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.microsoft.signalr.HubConnection;
+import com.microsoft.signalr.HubConnectionBuilder;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
+import io.reactivex.Single;
 import okhttp3.HttpUrl;
 import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
@@ -37,7 +52,7 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 import retrofit2.converter.scalars.ScalarsConverterFactory;
 
-public class RoomInfo extends AppCompatActivity{
+public class RoomInfo extends AppCompatActivity {
 
     private GetRoomViewModel Roominfo;
     private TextView Name;
@@ -51,26 +66,35 @@ public class RoomInfo extends AppCompatActivity{
     private String RmUser;
     private ChatHouseAPI APIS;
     private String Creator;
+    HubConnection hubConnection; //Do the signalR definitions
+    JoinRoomViewModel JoinHub = new JoinRoomViewModel();
+    String Token;
+    ProfileInformation Response;
+    Gson gson;
+//    public ChatBoxAdaptor ChatAdaptor;
+//    public ArrayList<ChatBoxModel> Chats = new ArrayList<ChatBoxModel>();
+//    public ListView chatBoxListView;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_room_info);
-        Name = (TextView)findViewById(R.id.RoomNameInfoPage);
-        Description = (TextView)findViewById(R.id.DescriptionRoom);
-        Interest = (TextView)findViewById(R.id.RoomInterest);
-        Delete = (Button)findViewById(R.id.DeleteRoom);
-        MembersListView = (ListView)findViewById(R.id.RoomMembersListView);
-        Delete.setVisibility(View.GONE);
+        Name = (TextView) findViewById(R.id.RoomNameInfoPage);
+        Description = (TextView) findViewById(R.id.DescriptionRoom);
+        Interest = (TextView) findViewById(R.id.RoomInterest);
+        Delete = (Button) findViewById(R.id.DeleteRoom);
+        MembersListView = (ListView) findViewById(R.id.RoomMembersListView);
         Bundle bundle = getIntent().getExtras();
-
+//        chatBoxListView = (ListView) findViewById(R.id.chatBox);
+//        ChatAdaptor = new ChatBoxAdaptor(RoomInfo.this, Chats);
+//        chatBoxListView.setAdapter(ChatAdaptor);
 
         SharedPreferences settings = getSharedPreferences("Storage", MODE_PRIVATE);
-        String Token = settings.getString("Token", "n/a");
+        Token = settings.getString("Token", "n/a");
         String Username = settings.getString("Username", "n/a");
 
         int RoomId = bundle.getInt("RoomId");
-
 
 
         OkHttpClient client = new OkHttpClient.Builder().addInterceptor(new Interceptor() {
@@ -83,7 +107,7 @@ public class RoomInfo extends AppCompatActivity{
             }
         }).build();
 
-        Gson gson = new GsonBuilder()
+        gson = new GsonBuilder()
                 .setDateFormat("yyyy-MM-dd'T'HH:mm:ss")
                 .setLenient()
                 .create();
@@ -100,12 +124,46 @@ public class RoomInfo extends AppCompatActivity{
 
         Call<GetRoomViewModel> GetRoom = APIS.GetRoom(RoomId);
         Call<Void> DeleteRoom = APIS.DeleteRoom(RoomId);
+        Call<Void> LeaveRoom = APIS.LeaveRoom(RoomId);
+
+        Call<ProfileInformation> GetProfile = APIS.GetProfile(Username);
+
+        GetProfile.enqueue(new Callback<ProfileInformation>() {
+            @Override
+            public void onResponse(Call<ProfileInformation> call, Response<ProfileInformation> response) {
+                if (!response.isSuccessful()) {
+                    try {
+                        System.out.println("1" + response.errorBody().string());
+                        System.out.println("1" + response.code());
+                    } catch (IOException e) {
+                        System.out.println("2" + response.errorBody().toString());
+
+                        e.printStackTrace();
+                    }
+
+                    return;
+                }
+
+                // Set the values from back
+                Response = response.body();
+
+                JoinHub.setRoomId(RoomId);
+                SearchPerson person = new SearchPerson(Username, Response.getImageLink(), Response.getFirstName(), Response.getLastName());
+                JoinHub.setUser(person);
+
+            }
+
+            @Override
+            public void onFailure(Call<ProfileInformation> call, Throwable t) {
+                Toast.makeText(RoomInfo.this, "Hi ali failed" + t.getMessage(), Toast.LENGTH_LONG).show();
+            }
+        });
 
 
         GetRoom.enqueue(new Callback<GetRoomViewModel>() {
             @Override
             public void onResponse(Call<GetRoomViewModel> call, retrofit2.Response<GetRoomViewModel> response) {
-                if(!response.isSuccessful()){
+                if (!response.isSuccessful()) {
                     try {
                         System.out.println("1" + response.errorBody().string());
                         System.out.println("1" + response.code());
@@ -119,12 +177,11 @@ public class RoomInfo extends AppCompatActivity{
                 Roominfo = response.body();
                 SetRoomInfo(Roominfo);
                 Creator = Roominfo.getCreator().getUsername();
-                if(Creator.equals(Username)){
-                    Delete.setVisibility(View.VISIBLE);
+                if (Creator.equals(Username)) {
                     RightToRemove = true;
+                } else {
+                    Delete.setText("Leave room");
                 }
-                System.out.println("Works");
-
             }
 
             @Override
@@ -136,54 +193,93 @@ public class RoomInfo extends AppCompatActivity{
         Delete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                DeleteRoom.enqueue(new Callback<Void>() {
-                    @Override
-                    public void onResponse(Call<Void> call, retrofit2.Response<Void> response) {
-                        if(!response.isSuccessful()){
-                            try {
-                                System.out.println("1" + response.errorBody().string());
-                                System.out.println("1" + response.code());
-                                System.out.println(response.errorBody().string());
-                            } catch (IOException e) {
-                                System.out.println("2" + response.errorBody().toString());
-                                e.printStackTrace();
+                if (Username.equals(Creator)) {
+                    new AlertDialog.Builder(RoomInfo.this).setIcon(android.R.drawable.ic_dialog_alert)
+                            .setTitle("Deleting room").setMessage("Are you sure you want to delete this room?")
+                            .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    DeleteRoom.enqueue(new Callback<Void>() {
+                                        @Override
+                                        public void onResponse(Call<Void> call, retrofit2.Response<Void> response) {
+                                            if (!response.isSuccessful()) {
+                                                try {
+                                                    System.out.println("1" + response.errorBody().string());
+                                                    System.out.println("1" + response.code());
+                                                    System.out.println(response.errorBody().string());
+                                                } catch (IOException e) {
+                                                    System.out.println("2" + response.errorBody().toString());
+                                                    e.printStackTrace();
+                                                }
+                                                return;
+                                            }
+                                            System.out.println("Deleted");
+                                            finish();
+                                            Intent intent = new Intent(RoomInfo.this, HomePage.class);
+
+                                            startActivity(intent);
+                                        }
+
+                                        @Override
+                                        public void onFailure(Call<Void> call, Throwable t) {
+                                            Toast.makeText(RoomInfo.this, "Request failed", Toast.LENGTH_LONG).show();
+                                        }
+                                    });
+                                    finish();
+                                    Toast.makeText(RoomInfo.this, "Room deleted", Toast.LENGTH_SHORT).show();
+                                }
+                            }).setNegativeButton("No", null).show();
+                } else {
+                    LeaveRoom.enqueue(new Callback<Void>() {
+                        @RequiresApi(api = Build.VERSION_CODES.R)
+                        @Override
+                        public void onResponse(Call<Void> call, retrofit2.Response<Void> response) {
+                            if (!response.isSuccessful()) {
+                                try {
+                                    System.out.println("1" + response.errorBody().string());
+                                    System.out.println("1" + response.code());
+                                    System.out.println(response.errorBody().string());
+                                } catch (IOException e) {
+                                    System.out.println("2" + response.errorBody().toString());
+                                    e.printStackTrace();
+                                }
+                                return;
                             }
-                            return;
+                            System.out.println("Deleted");
+                            finish();
+                            Intent intent = new Intent(RoomInfo.this, AcitivityPage.class);
+                            startActivity(intent);
                         }
-                        System.out.println("Deleted");
-                        finish();
-                        Intent intent = new Intent(RoomInfo.this, HomePage.class);
 
-                        startActivity(intent);
-                    }
+                        @Override
+                        public void onFailure(Call<Void> call, Throwable t) {
+                            Toast.makeText(RoomInfo.this, "Request failed", Toast.LENGTH_LONG).show();
+                        }
+                    });
+                }
 
-                    @Override
-                    public void onFailure(Call<Void> call, Throwable t) {
-                        Toast.makeText(RoomInfo.this, "Request failed", Toast.LENGTH_LONG).show();
-                    }
-                });
             }
         });
 
         MembersListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                    SearchPerson p = (SearchPerson) MembersListView.getAdapter().getItem(position);
-                if(!RightToRemove){
+                SearchPerson p = (SearchPerson) MembersListView.getAdapter().getItem(position);
+                if (!RightToRemove) {
                     Intent intent = new Intent(RoomInfo.this, ProfilePage.class);
                     Bundle bundle1 = new Bundle();
                     String username = p.getUsername();
                     bundle1.putString("Username", username);
                     intent.putExtras(bundle1);
                     startActivity(intent);
-                }
-                else{
+                } else {
                     showPopup(view, p, RoomId);
                 }
             }
         });
 
     }
+
     public void showPopup(View v, SearchPerson position, int roomId) {
         PopupMenu popup = new PopupMenu(this, v);
         MenuInflater inflater = popup.getMenuInflater();
@@ -192,33 +288,44 @@ public class RoomInfo extends AppCompatActivity{
             public boolean onMenuItemClick(MenuItem item) {
                 String Username = position.getUsername();
 
-                switch (item.getItemId()){
+                switch (item.getItemId()) {
                     case R.id.remove:
                         Call<GetRoomViewModel> removeUser = APIS.RemoveUser(roomId, Username);
-                        removeUser.enqueue(new Callback<GetRoomViewModel>() {
-                            @Override
-                            public void onResponse(Call<GetRoomViewModel> call, Response<GetRoomViewModel> response) {
-                                if(!response.isSuccessful()){
-                                    try {
-                                        System.out.println("1" + response.errorBody().string());
-                                        System.out.println("1" + response.code());
-                                    } catch (IOException e) {
-                                        System.out.println("2" + response.errorBody().toString());
+                        new AlertDialog.Builder(RoomInfo.this).setIcon(android.R.drawable.ic_dialog_alert)
+                                .setTitle("Removing member").setMessage("Are you sure you want to remove this member?")
+                                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        removeUser.enqueue(new Callback<GetRoomViewModel>() {
+                                            @Override
+                                            public void onResponse(Call<GetRoomViewModel> call, Response<GetRoomViewModel> response) {
+                                                if (!response.isSuccessful()) {
+                                                    try {
+                                                        System.out.println("1" + response.errorBody().string());
+                                                        System.out.println("1" + response.code());
+                                                    } catch (IOException e) {
+                                                        System.out.println("2" + response.errorBody().toString());
 
-                                        e.printStackTrace();
+                                                        e.printStackTrace();
+                                                    }
+
+                                                    return;
+                                                }
+                                                MembersList.remove(position);
+                                                MembersAdapter.notifyDataSetChanged();
+                                            }
+
+                                            @Override
+                                            public void onFailure(Call<GetRoomViewModel> call, Throwable t) {
+                                                Toast.makeText(RoomInfo.this, "Request failed", Toast.LENGTH_LONG).show();
+                                            }
+                                        });
+                                        finish();
+                                        Toast.makeText(RoomInfo.this, "Member removed", Toast.LENGTH_SHORT).show();
                                     }
+                                }).setNegativeButton("No", null).show();
 
-                                    return;
-                                }
-                                MembersList.remove(position);
-                                MembersAdapter.notifyDataSetChanged();
-                            }
 
-                            @Override
-                            public void onFailure(Call<GetRoomViewModel> call, Throwable t) {
-                                Toast.makeText(RoomInfo.this, "Request failed", Toast.LENGTH_LONG).show();
-                            }
-                        });
                         break;
                     case R.id.showPro:
                         Intent intent = new Intent(RoomInfo.this, ProfilePage.class);
@@ -233,10 +340,8 @@ public class RoomInfo extends AppCompatActivity{
         });
 
         popup.show();//showing popup menu
-        popup.show();
+
     }
-
-
 
     private void SetRoomInfo(GetRoomViewModel roominfo) {
         Name.setText(roominfo.getName());
@@ -257,7 +362,7 @@ public class RoomInfo extends AppCompatActivity{
         String temp = "";
         for (int i = 0; i < 14; i++) {
             ArrayList<Integer> tt = interests.get(i);
-            if(tt.isEmpty()){
+            if (tt.isEmpty()) {
                 continue;
             }
             int ttt = (int) (Math.log(tt.get(0)) / Math.log(2));
@@ -310,4 +415,10 @@ public class RoomInfo extends AppCompatActivity{
         }
         return temp;
     }
+
+
+
+
+
+
 }

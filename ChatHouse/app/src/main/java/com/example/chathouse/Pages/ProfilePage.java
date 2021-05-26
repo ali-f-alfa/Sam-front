@@ -210,7 +210,7 @@ public class ProfilePage extends AppCompatActivity {
                     ArrayList<String> followerCheck = gson.fromJson(jsonEr, typeEr);
                     for(String X:followerCheck){
                         if(X.equals(Response.getUsername())){
-                            Followsyou.setVisibility(View.VISIBLE);
+                            Followsyou.setVisibility(View.GONE);
                         }
                     }
 

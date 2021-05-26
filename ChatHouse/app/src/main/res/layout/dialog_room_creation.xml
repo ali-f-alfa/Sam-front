@@ -9,7 +9,7 @@
     >
     <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="380dp"
-        android:layout_height="match_parent"
+        android:layout_height="400dp"
         xmlns:app="http://schemas.android.com/apk/res-auto"
         >
         <TextView
@@ -522,8 +522,10 @@
             android:text="Select date"
             android:id="@+id/btn_date"
             android:layout_marginLeft="10dp"
-            android:textColor="@color/almostorange"
+            android:textColor="@color/gray"
+            android:backgroundTint="@color/white"
             app:layout_constraintStart_toEndOf="@+id/in_date"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/Time" />
 
         <EditText
@@ -541,7 +543,9 @@
             android:text="SELECT TIME"
             android:layout_marginLeft="10dp"
             android:id="@+id/btn_time"
-            android:textColor="@color/almostorange"
+            android:textColor="@color/gray"
+            android:backgroundTint="@color/white"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/in_time"
             app:layout_constraintTop_toBottomOf="@+id/in_date"
             />
@@ -553,7 +557,8 @@
             android:layout_marginTop="10dp"
             android:text="Create"
             android:id="@+id/Create"
-            android:textColor="@color/almostorange"
+            android:textColor="@color/gray"
+            android:backgroundTint="@color/white"
             app:layout_constraintTop_toBottomOf="@id/LinearLayoutCategory"
             app:layout_constraintStart_toStartOf="parent"
             ></Button>
@@ -564,7 +569,8 @@
             android:layout_marginTop="10dp"
             android:text="Delete"
             android:id="@+id/Delete"
-            android:textColor="@color/almostorange"
+            android:textColor="@color/white"
+            android:backgroundTint="@color/almostorange"
             app:layout_constraintTop_toBottomOf="@id/LinearLayoutCategory"
             app:layout_constraintEnd_toEndOf="parent"
             ></Button>
