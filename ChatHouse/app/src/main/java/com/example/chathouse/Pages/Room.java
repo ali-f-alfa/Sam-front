@@ -1,9 +1,11 @@
 package com.example.chathouse.Pages;
 
+import androidx.annotation.RequiresApi;
 import androidx.fragment.app.FragmentActivity;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.View;
@@ -27,6 +29,7 @@ import com.google.gson.GsonBuilder;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 
 import io.reactivex.Single;
 import microsoft.aspnet.signalr.client.hubs.HubProxy;
@@ -61,7 +64,9 @@ public class Room extends FragmentActivity {
     private EditText MessageText;
     SearchPerson me;
     ArrayList<LoadAllMessagesViewModel> LoadMessages = new ArrayList<>();
+    ProfileInformation Response;
 
+    @RequiresApi(api = Build.VERSION_CODES.R)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -129,13 +134,13 @@ public class Room extends FragmentActivity {
                 }
 
                 // Set the values from back
-                ProfileInformation Response = response.body();
+                Response = response.body();
 
                 JoinHub.setRoomId(RoomId);
                 SearchPerson person = new SearchPerson(Username, Response.getImageLink(), Response.getFirstName(), Response.getLastName());
                 JoinHub.setUser(person);
-                System.out.println(JoinHub.getRoomId() + JoinHub.getUser().getUsername());
                 Join();
+                LoadAllMessages(Username, RoomId);
 
             }
 
@@ -147,7 +152,6 @@ public class Room extends FragmentActivity {
 
         Call<Void> LeaveRoom = APIS.LeaveRoom(RoomId);
         Call<GetRoomViewModel> GetRoom = APIS.GetRoom(RoomId);
-        Call<ProfileInformation> Profile = APIS.GetProfile(Username);
         GetRoom.enqueue(new Callback<GetRoomViewModel>() {
             @Override
             public void onResponse(Call<GetRoomViewModel> call, retrofit2.Response<GetRoomViewModel> response) {
@@ -229,37 +233,11 @@ public class Room extends FragmentActivity {
             @Override
             public void onClick(View v) {
                 if (!MessageText.getText().toString().equals("")) {
-                    Message.setMessage(MessageText.getText());
+                    Message.setMessage(MessageText.getText().toString());
                     Message.setMe(true);
                     Message.setRoomId(RoomId);
 
-                    Profile.enqueue(new Callback<ProfileInformation>() {
-                        @Override
-                        public void onResponse(Call<ProfileInformation> call, Response<ProfileInformation> response) {
-                            if (!response.isSuccessful()) {
-                                try {
-                                    System.out.println("1" + response.errorBody().string());
-                                    System.out.println("1" + response.code());
-                                } catch (IOException e) {
-                                    System.out.println("2" + response.errorBody().toString());
-
-                                    e.printStackTrace();
-                                }
-
-                                return;
-                            }
-
-                            // Set the values from back
-                            ProfileInformation Response = response.body();
-                            me = new SearchPerson(Response.getUsername(), Response.getImageLink(), Response.getFirstName(), Response.getLastName());
-
-                        }
-
-                        @Override
-                        public void onFailure(Call<ProfileInformation> call, Throwable t) {
-                            Toast.makeText(Room.this, "Hi ali failed" + t.getMessage(), Toast.LENGTH_LONG).show();
-                        }
-                    });
+                    me = new SearchPerson(Response.getUsername(), Response.getImageLink(), Response.getFirstName(), Response.getLastName());
 
                     Message.setUserModel(me);
                     MessageText.setText("");
@@ -315,13 +293,14 @@ public class Room extends FragmentActivity {
         }
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.R)
     private void DefineMethods() {
         hubConnection.on("ReceiveRoomMessage", (messageModel) ->
         {
             String text = "";
             int RoomId = messageModel.getRoomId();
-            int messageType = messageModel.getMessageType();
-            String message = ((String) messageModel.getMessage());
+//            int messageType = messageModel.getMessageType();
+            String message = messageModel.getMessage().toString();
             String senderLastName = messageModel.getUserModel().getLastName();
             String senderUsername = messageModel.getUserModel().getUsername();
             String senderFirstName = messageModel.getUserModel().getFirstName();
@@ -362,26 +341,30 @@ public class Room extends FragmentActivity {
 
         hubConnection.on("ReceiveRoomAllMessages", (messageModel) ->
         {
-//            for (LoadAllMessagesViewModel x: messageModel
-//                 ) {
-//
-//            }
-//            {
+
+            for (Object X: messageModel)
+            {
+
+                System.out.println(X);
+
 //                String sender = "";
-//                if (x.) sender = "You";
-//                else sender = x.Sender.Username;
-//                if (x.ContetntType == MessageViewModel.MessageType.Text)
+//                if (x.isMe) sender = "You";
+//                else sender = x.sender.getUsername();
+//                if (x.contetntType == 0)
 //                {
+//                    System.out.println(sender + " : " + x.content + "\t" + x.sentDate.toString());
 //                }
-//                else if (x.ContetntType == MessageViewModel.MessageType.JoinNotification)
+//                else if (x.contetntType == 2)
 //                {
+//                    System.out.println(sender + " Joined room number " + x.roomId);
 //                }
-//                else if (x.ContetntType == MessageViewModel.MessageType.LeftNotification)
+//                else if (x.contetntType == 3)
 //                {
+//                    System.out.println(sender + " Left room number " + x.roomId);
 //                }
-//            }
+            }
             System.out.println("Notification");
-        }, LoadAllMessagesViewModel.class);
+        }, (Class<List<LoadAllMessagesViewModel>>)(Object)List.class);
     }
 
 

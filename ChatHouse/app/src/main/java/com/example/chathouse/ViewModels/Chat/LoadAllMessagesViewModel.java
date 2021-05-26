@@ -9,8 +9,8 @@ public class LoadAllMessagesViewModel {
     public int parentId ;
     public String content ;
     public int contetntType ;
-    public Date SentDate ;
-    public SearchPerson Sender ;
+    public Date sentDate ;
+    public SearchPerson sender ;
     public Boolean isMe ;
     public int roomId ;
 
@@ -31,11 +31,11 @@ public class LoadAllMessagesViewModel {
     }
 
     public Date getSentDate() {
-        return SentDate;
+        return sentDate;
     }
 
     public SearchPerson getSender() {
-        return Sender;
+        return sender;
     }
 
     public Boolean getMe() {
