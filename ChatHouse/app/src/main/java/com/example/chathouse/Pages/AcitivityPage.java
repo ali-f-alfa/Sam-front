@@ -514,32 +514,42 @@ public class AcitivityPage extends AppCompatActivity {
             Call<Void> DeleteRoom = APIS.DeleteRoom(p.getRoomId());
             @Override
             public void onClick(View v) {
-                DeleteRoom.enqueue(new Callback<Void>() {
-                    @Override
-                    public void onResponse(Call<Void> call, retrofit2.Response<Void> response) {
-                        if(!response.isSuccessful()){
-                            try {
-                                System.out.println("1" + response.errorBody().string());
-                                System.out.println("1" + response.code());
-                                System.out.println(response.errorBody().string());
-                            } catch (IOException e) {
-                                System.out.println("2" + response.errorBody().toString());
-                                e.printStackTrace();
+                new AlertDialog.Builder(AcitivityPage.this).setIcon(android.R.drawable.ic_dialog_alert)
+                        .setTitle("Deleting room").setMessage("Are you sure you want to delete this room?")
+                        .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                DeleteRoom.enqueue(new Callback<Void>() {
+                                    @Override
+                                    public void onResponse(Call<Void> call, retrofit2.Response<Void> response) {
+                                        if(!response.isSuccessful()){
+                                            try {
+                                                System.out.println("1" + response.errorBody().string());
+                                                System.out.println("1" + response.code());
+                                                System.out.println(response.errorBody().string());
+                                            } catch (IOException e) {
+                                                System.out.println("2" + response.errorBody().toString());
+                                                e.printStackTrace();
+                                            }
+                                            return;
+                                        }
+                                        System.out.println("Deleted");
+                                        finish();
+                                        Intent intent = new Intent(AcitivityPage.this, AcitivityPage.class);
+
+                                        startActivity(intent);
+                                    }
+
+                                    @Override
+                                    public void onFailure(Call<Void> call, Throwable t) {
+                                        Toast.makeText(AcitivityPage.this, "Request failed", Toast.LENGTH_LONG).show();
+                                    }
+                                });
+                                finish();
+                                Toast.makeText(AcitivityPage.this, "Room deleted",Toast.LENGTH_SHORT).show();
                             }
-                            return;
-                        }
-                        System.out.println("Deleted");
-                        finish();
-                        Intent intent = new Intent(AcitivityPage.this, AcitivityPage.class);
+                        }).setNegativeButton("No", null).show();
 
-                        startActivity(intent);
-                    }
-
-                    @Override
-                    public void onFailure(Call<Void> call, Throwable t) {
-                        Toast.makeText(AcitivityPage.this, "Request failed", Toast.LENGTH_LONG).show();
-                    }
-                });
             }
         });
 

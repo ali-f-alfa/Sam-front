@@ -262,7 +262,6 @@ public class Room extends FragmentActivity {
 
     }
 
-
     public void Leave() {
         try {
             hubConnection.invoke("LeaveRoom", JoinHub);

@@ -49,7 +49,9 @@
 
         <EditText
             android:layout_width="match_parent"
-            android:layout_height="40dp"
+            android:minHeight="50dp"
+            android:maxLines="6"
+            android:layout_height="wrap_content"
             android:hint="Enter message"
             android:id="@+id/Message"
             android:layout_alignParentBottom="true"
@@ -58,6 +60,7 @@
             android:layout_marginRight="10dp"
             android:clickable="true"
             android:layout_marginLeft="10dp"
+
             >
 
         </EditText>

@@ -1,7 +1,9 @@
 package com.example.chathouse.Pages;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -184,6 +186,7 @@ public class RoomInfo extends AppCompatActivity{
         });
 
     }
+
     public void showPopup(View v, SearchPerson position, int roomId) {
         PopupMenu popup = new PopupMenu(this, v);
         MenuInflater inflater = popup.getMenuInflater();
@@ -195,30 +198,41 @@ public class RoomInfo extends AppCompatActivity{
                 switch (item.getItemId()){
                     case R.id.remove:
                         Call<GetRoomViewModel> removeUser = APIS.RemoveUser(roomId, Username);
-                        removeUser.enqueue(new Callback<GetRoomViewModel>() {
-                            @Override
-                            public void onResponse(Call<GetRoomViewModel> call, Response<GetRoomViewModel> response) {
-                                if(!response.isSuccessful()){
-                                    try {
-                                        System.out.println("1" + response.errorBody().string());
-                                        System.out.println("1" + response.code());
-                                    } catch (IOException e) {
-                                        System.out.println("2" + response.errorBody().toString());
+                        new AlertDialog.Builder(RoomInfo.this).setIcon(android.R.drawable.ic_dialog_alert)
+                                .setTitle("Removing member").setMessage("Are you sure you want to remove this member?")
+                                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        removeUser.enqueue(new Callback<GetRoomViewModel>() {
+                                            @Override
+                                            public void onResponse(Call<GetRoomViewModel> call, Response<GetRoomViewModel> response) {
+                                                if(!response.isSuccessful()){
+                                                    try {
+                                                        System.out.println("1" + response.errorBody().string());
+                                                        System.out.println("1" + response.code());
+                                                    } catch (IOException e) {
+                                                        System.out.println("2" + response.errorBody().toString());
 
-                                        e.printStackTrace();
+                                                        e.printStackTrace();
+                                                    }
+
+                                                    return;
+                                                }
+                                                MembersList.remove(position);
+                                                MembersAdapter.notifyDataSetChanged();
+                                            }
+
+                                            @Override
+                                            public void onFailure(Call<GetRoomViewModel> call, Throwable t) {
+                                                Toast.makeText(RoomInfo.this, "Request failed", Toast.LENGTH_LONG).show();
+                                            }
+                                        });
+                                        finish();
+                                        Toast.makeText(RoomInfo.this, "Member removed",Toast.LENGTH_SHORT).show();
                                     }
+                                }).setNegativeButton("No", null).show();
 
-                                    return;
-                                }
-                                MembersList.remove(position);
-                                MembersAdapter.notifyDataSetChanged();
-                            }
 
-                            @Override
-                            public void onFailure(Call<GetRoomViewModel> call, Throwable t) {
-                                Toast.makeText(RoomInfo.this, "Request failed", Toast.LENGTH_LONG).show();
-                            }
-                        });
                         break;
                     case R.id.showPro:
                         Intent intent = new Intent(RoomInfo.this, ProfilePage.class);
@@ -233,10 +247,8 @@ public class RoomInfo extends AppCompatActivity{
         });
 
         popup.show();//showing popup menu
-        popup.show();
+
     }
-
-
 
     private void SetRoomInfo(GetRoomViewModel roominfo) {
         Name.setText(roominfo.getName());
