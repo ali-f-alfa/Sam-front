@@ -60,14 +60,11 @@ import com.microsoft.signalr.HubConnection;
 import com.microsoft.signalr.HubConnectionBuilder;
 
 public class Room extends FragmentActivity {
-    private Button Leave;
     private TextView RoomName;
     private GetRoomViewModel RoomInfo;
     private String Creator;
     private String Name;
     HubConnection hubConnection; //Do the signalR definitions
-    HubProxy hubProxy;
-    Handler mHandler = new Handler(); //listener
     JoinRoomViewModel JoinHub = new JoinRoomViewModel();
     int RoomId;
     String Token;
@@ -82,6 +79,7 @@ public class Room extends FragmentActivity {
     public ArrayList<ChatBoxModel> Chats = new ArrayList<ChatBoxModel>();
     public ListView chatBoxListView;
 
+
     @RequiresApi(api = Build.VERSION_CODES.R)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -89,7 +87,6 @@ public class Room extends FragmentActivity {
         setContentView(R.layout.activity_room);
         Bundle bundle = getIntent().getExtras();
 
-        Leave = (Button) findViewById(R.id.LeaveRoom);
         RoomName = (TextView) findViewById(R.id.RoomName);
         Send = (TextView) findViewById(R.id.SendButton);
         MessageText = (EditText) findViewById(R.id.Message);
@@ -186,7 +183,7 @@ public class Room extends FragmentActivity {
             }
         });
 
-        Call<Void> LeaveRoom = APIS.LeaveRoom(RoomId);
+
         Call<GetRoomViewModel> GetRoom = APIS.GetRoom(RoomId);
         GetRoom.enqueue(new Callback<GetRoomViewModel>() {
             @Override
@@ -206,11 +203,6 @@ public class Room extends FragmentActivity {
                 Creator = Response.getCreator().getUsername();
                 Name = Response.getName();
                 RoomName.setText(Name);
-
-                if (Creator.equals(Username)) {
-                    Leave.setVisibility(View.GONE);
-                }
-                System.out.println("Works");
 
             }
 
@@ -232,38 +224,6 @@ public class Room extends FragmentActivity {
             }
         });
 
-        Leave.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                LeaveRoom.enqueue(new Callback<Void>() {
-                    @Override
-                    public void onResponse(Call<Void> call, retrofit2.Response<Void> response) {
-                        if (!response.isSuccessful()) {
-                            try {
-                                System.out.println("1" + response.errorBody().string());
-                                System.out.println("1" + response.code());
-                                System.out.println(response.errorBody().string());
-                            } catch (IOException e) {
-                                System.out.println("2" + response.errorBody().toString());
-                                e.printStackTrace();
-                            }
-                            return;
-                        }
-                        System.out.println("Deleted");
-                        finish();
-                        Leave();
-                        Intent intent = new Intent(Room.this, AcitivityPage.class);
-
-                        startActivity(intent);
-                    }
-
-                    @Override
-                    public void onFailure(Call<Void> call, Throwable t) {
-                        Toast.makeText(Room.this, "Request failed", Toast.LENGTH_LONG).show();
-                    }
-                });
-            }
-        });
 
         Send.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -292,14 +252,6 @@ public class Room extends FragmentActivity {
 
         hubConnection.start();
 
-    }
-
-    public void Leave() {
-        try {
-            hubConnection.invoke("LeaveRoom", JoinHub);
-        } catch (Exception ex) {
-            System.out.println(ex.getMessage());
-        }
     }
 
     public void Join() {
@@ -411,7 +363,7 @@ public class Room extends FragmentActivity {
                    chat.setFirstName(x.getSender().getFirstName());
                    chat.setLastName(x.getSender().getLastName());
                    chat.setImageLink(x.getSender().getImageLink());
-                   chat.setTime(new Date());
+                   chat.setTime(x.sentDate);
                    if (x.getMe() == true)
                        chat.setMode(1);
                    else if (x.getMe() == false)
@@ -420,11 +372,21 @@ public class Room extends FragmentActivity {
                }
                else if(contentType == 2){
                    chat.setMode(0);
-                   chat.setMessage(x.getContent());
+                   if (x.getMe()) {
+                       chat.setMessage("You joined this room");
+
+                   } else {
+                       chat.setMessage(x.getSender().getUsername() + " join this room");
+                   }
                }
                else if(contentType == 3){
                    chat.setMode(0);
-                   chat.setMessage(x.getContent());
+                   if (x.getMe()) {
+                       chat.setMessage("You left this room");
+
+                   } else {
+                       chat.setMessage(x.getSender().getUsername() + " left this room");
+                   }
                }
                 runOnUiThread(new Runnable() {
 

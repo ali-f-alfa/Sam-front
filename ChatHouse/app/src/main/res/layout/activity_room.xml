@@ -88,19 +88,7 @@
             android:layout_alignParentEnd="true"
             android:layout_marginRight="20dp"></TextView>
     </RelativeLayout>
-    <Button
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:gravity="center"
-        android:id="@+id/LeaveRoom"
-        android:layout_alignParentBottom="true"
-        android:text="Leave"
-        android:fontFamily="serif"
-        android:backgroundTint="@color/light"
-        android:textStyle="bold"
-        android:textColor="@color/Verypink">
 
-    </Button>
 
 <!--    <View-->
 <!--        android:layout_width="match_parent"-->
