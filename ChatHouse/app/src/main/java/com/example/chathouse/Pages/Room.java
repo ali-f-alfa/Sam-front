@@ -3,17 +3,26 @@ package com.example.chathouse.Pages;
 import androidx.annotation.RequiresApi;
 import androidx.fragment.app.FragmentActivity;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.resource.bitmap.CircleCrop;
+import com.bumptech.glide.request.RequestOptions;
 import com.example.chathouse.API.ChatHouseAPI;
 import com.example.chathouse.R;
 import com.example.chathouse.Utility.Constants;
@@ -21,6 +30,7 @@ import com.example.chathouse.ViewModels.Acount.ProfileInformation;
 import com.example.chathouse.ViewModels.Acount.SearchPerson;
 import com.example.chathouse.ViewModels.Chat.LoadAllMessagesViewModel;
 import com.example.chathouse.ViewModels.Chat.ReceiveRoomNotification;
+import com.example.chathouse.ViewModels.Room.ChatBoxModel;
 import com.example.chathouse.ViewModels.Room.GetRoomViewModel;
 import com.example.chathouse.ViewModels.Chat.JoinRoomViewModel;
 import com.example.chathouse.ViewModels.Chat.MessageViewModel;
@@ -28,7 +38,9 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import io.reactivex.Single;
@@ -44,9 +56,6 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 import retrofit2.converter.scalars.ScalarsConverterFactory;
 
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonParser;
 import com.microsoft.signalr.HubConnection;
 import com.microsoft.signalr.HubConnectionBuilder;
 
@@ -69,6 +78,9 @@ public class Room extends FragmentActivity {
     ArrayList<LoadAllMessagesViewModel> LoadMessages = new ArrayList<>();
     ProfileInformation Response;
     Gson gson;
+    public ChatBoxAdaptor ChatAdaptor;
+    public ArrayList<ChatBoxModel> Chats = new ArrayList<ChatBoxModel>();
+    public ListView chatBoxListView;
 
     @RequiresApi(api = Build.VERSION_CODES.R)
     @Override
@@ -81,13 +93,33 @@ public class Room extends FragmentActivity {
         RoomName = (TextView) findViewById(R.id.RoomName);
         Send = (TextView) findViewById(R.id.SendButton);
         MessageText = (EditText) findViewById(R.id.Message);
-
+        chatBoxListView = (ListView) findViewById(R.id.chatBox);
 
         SharedPreferences settings = getSharedPreferences("Storage", MODE_PRIVATE);
         Token = settings.getString("Token", "n/a");
         String Username = settings.getString("Username", "n/a");
 
         RoomId = bundle.getInt("RoomId");
+
+        ChatBoxModel x = new ChatBoxModel();
+        x.setFirstName("ali");
+        x.setLastName("farahat");
+        x.setMessage("meeeeeeeessfsdjaflkasdjflkjasdlfk\nfjsldkjflkajslfkdsadf\nfd\nfdff");
+        x.setTime(new Date());
+        x.setMode(-1);
+        Chats.add(x);
+
+        ChatBoxModel y = new ChatBoxModel();
+        y.setFirstName("ali");
+        y.setLastName("farahat");
+        y.setMessage("meeeeeeeessfsdjaflkasdjflkjasdlfk\nfjsldkjflkajslfkdsadf\nfd\nfdff");
+        y.setTime(new Date());
+        y.setMode(1);
+        Chats.add(y);
+
+        ChatAdaptor = new ChatBoxAdaptor(Room.this, Chats);
+        chatBoxListView.setAdapter(ChatAdaptor);
+        ChatAdaptor.notifyDataSetChanged();
 
 
         // Hub Join
@@ -300,6 +332,27 @@ public class Room extends FragmentActivity {
     private void DefineMethods() {
         hubConnection.on("ReceiveRoomMessage", (messageModel) ->
         {
+            ChatBoxModel x = new ChatBoxModel();
+            x.setFirstName(messageModel.getUserModel().getFirstName());
+            x.setLastName(messageModel.getUserModel().getLastName());
+            x.setMessage(messageModel.getMessage().toString());
+            x.setImageLink(messageModel.getUserModel().getImageLink());
+            x.setTime(new Date());
+            if (messageModel.isMe() == true)
+                x.setMode(1);
+            else if (messageModel.isMe() == false)
+                x.setMode(-1);
+            runOnUiThread(new Runnable() {
+
+                @Override
+                public void run() {
+
+                    Chats.add(x);
+                    ChatAdaptor.notifyDataSetChanged();
+
+                }
+            });
+
             String text = "";
             int RoomId = messageModel.getRoomId();
 //            int messageType = messageModel.getMessageType();
@@ -344,31 +397,112 @@ public class Room extends FragmentActivity {
 
         hubConnection.on("ReceiveRoomAllMessages", (messageModel) ->
         {
-            for (Object X: messageModel)
-            {
+            for (Object X : messageModel) {
 
                 String s2 = gson.toJson(X);
-                LoadAllMessagesViewModel x = gson.fromJson(s2, LoadAllMessagesViewModel .class);
+                LoadAllMessagesViewModel x = gson.fromJson(s2, LoadAllMessagesViewModel.class);
 
                 String sender = "";
                 if (x.isMe) sender = "You";
                 else sender = x.sender.getUsername();
-                if (x.contetntType == 0)
-                {
+                if (x.contetntType == 0) {
                     System.out.println(sender + " : " + x.content + "\t" + x.sentDate.toString());
-                }
-                else if (x.contetntType == 2)
-                {
+                } else if (x.contetntType == 2) {
                     System.out.println(sender + " Joined room number " + x.roomId);
-                }
-                else if (x.contetntType == 3)
-                {
+                } else if (x.contetntType == 3) {
                     System.out.println(sender + " Left room number " + x.roomId);
                 }
             }
             System.out.println("Notification");
-        }, (Class<List<LoadAllMessagesViewModel>>)(Object)List.class);
+        }, (Class<List<LoadAllMessagesViewModel>>) (Object) List.class);
+    }
+}
+
+
+class ChatBoxAdaptor extends BaseAdapter {
+
+    Context mContext;
+    LayoutInflater inflater;
+    private List<ChatBoxModel> ChatsList = null;
+
+    public ChatBoxAdaptor(Context context, List<ChatBoxModel> chatsList) {
+        mContext = context;
+        this.ChatsList = chatsList;
+        inflater = LayoutInflater.from(mContext);
+
     }
 
+    public class ViewHolder {
+        TextView message;
+        TextView name;
+        TextView time;
+        ImageView Image;
 
+    }
+
+    @Override
+    public int getCount() {
+        return ChatsList.size();
+    }
+
+    @Override
+    public ChatBoxModel getItem(int position) {
+        return ChatsList.get(position);
+    }
+
+    @Override
+    public long getItemId(int position) {
+        return position;
+    }
+
+    public View getView(final int position, View view, ViewGroup parent) {
+        final ViewHolder holder;
+        holder = new ViewHolder();
+        ChatBoxModel chat = ChatsList.get(position);
+        if (ChatsList.get(position).getMode() == -1) {  //left
+            view = inflater.inflate(R.layout.chat_left, null);
+
+            holder.message = (TextView) view.findViewById(R.id.chat_message_left);
+            holder.name = (TextView) view.findViewById(R.id.chat_name_left);
+            holder.time = (TextView) view.findViewById(R.id.chat_time_left);
+            holder.Image = (ImageView) view.findViewById(R.id.chat_image_left);
+            view.setTag(holder);
+
+            holder.message.setText(chat.getMessage());
+            holder.name.setText(chat.getFirstName() + " " + chat.getLastName());
+
+            SimpleDateFormat formatter = new SimpleDateFormat("hh:mm aa");
+            holder.time.setText(formatter.format(chat.getTime()));
+
+            RequestOptions options = new RequestOptions()
+                    .placeholder(R.mipmap.default_user_profile)
+                    .centerCrop();
+            Glide.with(mContext).load(chat.getImageLink())
+                    .apply(options).transform(new CircleCrop()).into(holder.Image);
+
+
+        } else if (ChatsList.get(position).getMode() == 1) {
+            view = inflater.inflate(R.layout.chat_right, null);
+
+            holder.message = (TextView) view.findViewById(R.id.chat_message_right);
+            holder.time = (TextView) view.findViewById(R.id.chat_time_right);
+            holder.Image = (ImageView) view.findViewById(R.id.chat_image_right);
+            view.setTag(holder);
+
+            holder.message.setText(chat.getMessage());
+
+            SimpleDateFormat formatter = new SimpleDateFormat("hh:mm aa");
+            holder.time.setText(formatter.format(chat.getTime()));
+
+            RequestOptions options = new RequestOptions()
+                    .placeholder(R.mipmap.default_user_profile)
+                    .centerCrop();
+            Glide.with(mContext).load(chat.getImageLink())
+                    .apply(options).transform(new CircleCrop()).into(holder.Image);
+
+        }
+
+        return view;
+    }
 }
+
