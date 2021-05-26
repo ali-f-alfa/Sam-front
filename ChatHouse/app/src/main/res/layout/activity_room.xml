@@ -28,12 +28,23 @@
         android:clickable="true">
 
     </TextView>
+    <ImageButton
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_alignParentEnd="true"
+        android:foregroundGravity="center_vertical"
+        android:id="@+id/LeaveRoom"
+        android:src="@drawable/ic_baseline_exit_to_app_24"
+        android:backgroundTint="#00E7D2CC"
+>
+
+    </ImageButton>
+
     <RelativeLayout
         android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@+id/RoomName"
-        android:layout_above="@+id/LeaveRoom"
         android:id="@+id/chatFragment"
         android:layout_marginTop="5dp"
       >

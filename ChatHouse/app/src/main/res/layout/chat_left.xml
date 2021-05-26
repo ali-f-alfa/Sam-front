@@ -43,7 +43,7 @@
                     android:layout_gravity="left"
                     android:gravity="left"
                     android:text="ali"
-                    android:textColor="@color/black"
+                    android:textColor="@color/gray"
                     android:textSize="15dp"
                     android:textStyle="bold">
 
