@@ -269,7 +269,7 @@ public class Room extends FragmentActivity {
             @Override
             public void onClick(View v) {
                 if (!MessageText.getText().toString().equals("")) {
-                    Message.setMessage(MessageText.getText().toString());
+                    Message.setMessage(MessageText.getText().toString().trim());
                     Message.setMe(true);
                     Message.setRoomId(RoomId);
 
@@ -355,12 +355,10 @@ public class Room extends FragmentActivity {
 
             String text = "";
             int RoomId = messageModel.getRoomId();
-//            int messageType = messageModel.getMessageType();
             String message = messageModel.getMessage().toString();
             String senderLastName = messageModel.getUserModel().getLastName();
             String senderUsername = messageModel.getUserModel().getUsername();
             String senderFirstName = messageModel.getUserModel().getFirstName();
-            String senderImageLink = messageModel.getUserModel().getImageLink();
             Boolean IsMe = messageModel.isMe();
             if (IsMe) {
                 text += "Your Message To  Room number #" + RoomId + ":";
@@ -374,25 +372,31 @@ public class Room extends FragmentActivity {
 
         hubConnection.on("ReceiveRoomNotification", (ReceiveRoomNotification) ->
         {
+            ChatBoxModel x = new ChatBoxModel();
+            x.setMode(0);
+
             if (ReceiveRoomNotification.getNotification() == 0) {
                 if (ReceiveRoomNotification.getMe()) {
-//                   Toast.makeText(Room.this, "You joined room number " + ReceiveRoomNotification.getRoomId(), Toast.LENGTH_LONG).show();
-                    System.out.println("You joined room number " + ReceiveRoomNotification.getRoomId());
-
+                    x.setMessage("You joined this room");
 
                 } else {
-//               Toast.makeText(Room.this, ReceiveRoomNotification.getUserModel().getUsername() + " Joined room number " + ReceiveRoomNotification.getRoomId(), Toast.LENGTH_LONG).show();
-                    System.out.println(ReceiveRoomNotification.getUserModel().getUsername() + " Joined room number " + ReceiveRoomNotification.getRoomId());
+                    x.setMessage(ReceiveRoomNotification.getUserModel().getUsername() + " join this room");
                 }
             } else {
                 if (ReceiveRoomNotification.getMe()) {
-//                        Toast.makeText(Room.this, "You left room number "  + ReceiveRoomNotification.getRoomId(), Toast.LENGTH_LONG).show();
-                    System.out.println("You left room number " + ReceiveRoomNotification.getRoomId());
+                    x.setMessage("You left this room");
                 } else {
-//                        Toast.makeText(Room.this, ReceiveRoomNotification.getUserModel().getUsername() + " Left room number " + ReceiveRoomNotification.getRoomId(), Toast.LENGTH_LONG).show();
-                    System.out.println(ReceiveRoomNotification.getUserModel().getUsername() + " Left room number " + ReceiveRoomNotification.getRoomId());
+                    x.setMessage(ReceiveRoomNotification.getUserModel().getUsername() + " left this room");
                 }
             }
+            runOnUiThread(new Runnable() {
+
+                @Override
+                public void run() {
+                    Chats.add(x);
+                    ChatAdaptor.notifyDataSetChanged();
+                }
+            });
         }, ReceiveRoomNotification.class);
 
         hubConnection.on("ReceiveRoomAllMessages", (messageModel) ->
@@ -401,19 +405,38 @@ public class Room extends FragmentActivity {
 
                 String s2 = gson.toJson(X);
                 LoadAllMessagesViewModel x = gson.fromJson(s2, LoadAllMessagesViewModel.class);
+                ChatBoxModel chat = new ChatBoxModel();
+                int contentType = x.contetntType;
+               if(contentType == 0){
+                   chat.setFirstName(x.getSender().getFirstName());
+                   chat.setLastName(x.getSender().getLastName());
+                   chat.setImageLink(x.getSender().getImageLink());
+                   chat.setTime(new Date());
+                   if (x.getMe() == true)
+                       chat.setMode(1);
+                   else if (x.getMe() == false)
+                       chat.setMode(-1);
+                   chat.setMessage(x.getContent());
+               }
+               else if(contentType == 2){
+                   chat.setMode(0);
+                   chat.setMessage(x.getContent());
+               }
+               else if(contentType == 3){
+                   chat.setMode(0);
+                   chat.setMessage(x.getContent());
+               }
+                runOnUiThread(new Runnable() {
 
-                String sender = "";
-                if (x.isMe) sender = "You";
-                else sender = x.sender.getUsername();
-                if (x.contetntType == 0) {
-                    System.out.println(sender + " : " + x.content + "\t" + x.sentDate.toString());
-                } else if (x.contetntType == 2) {
-                    System.out.println(sender + " Joined room number " + x.roomId);
-                } else if (x.contetntType == 3) {
-                    System.out.println(sender + " Left room number " + x.roomId);
-                }
+                    @Override
+                    public void run() {
+
+                        Chats.add(chat);
+                        ChatAdaptor.notifyDataSetChanged();
+
+                    }
+                });
             }
-            System.out.println("Notification");
         }, (Class<List<LoadAllMessagesViewModel>>) (Object) List.class);
     }
 }
@@ -499,6 +522,14 @@ class ChatBoxAdaptor extends BaseAdapter {
                     .centerCrop();
             Glide.with(mContext).load(chat.getImageLink())
                     .apply(options).transform(new CircleCrop()).into(holder.Image);
+
+        } else if (ChatsList.get(position).getMode() == 0) {
+            view = inflater.inflate(R.layout.chat_middle, null);
+
+            holder.message = (TextView) view.findViewById(R.id.chat_middle);
+            view.setTag(holder);
+
+            holder.message.setText(chat.getMessage());
 
         }
 
