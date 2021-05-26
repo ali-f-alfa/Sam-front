@@ -11,13 +11,7 @@
         android:layout_height="wrap_content"
         android:gravity="right"
         android:paddingVertical="4dp">
-        <ImageView
-            android:id="@+id/chat_image_right"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:layout_toEndOf="@+id/chat_card_right"
-            app:srcCompat="@mipmap/default_user_profile"
-            android:layout_marginRight="1dp"/>
+
 
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/chat_card_right"

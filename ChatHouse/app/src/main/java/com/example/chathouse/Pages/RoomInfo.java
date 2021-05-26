@@ -247,7 +247,6 @@ public class RoomInfo extends AppCompatActivity {
                             }
                             System.out.println("Deleted");
                             finish();
-                            Leave();
                             Intent intent = new Intent(RoomInfo.this, AcitivityPage.class);
                             startActivity(intent);
                         }
@@ -417,108 +416,9 @@ public class RoomInfo extends AppCompatActivity {
         return temp;
     }
 
-    private void Connect() {
 
-        hubConnection = HubConnectionBuilder.create(Constants.serverUrl).withAccessTokenProvider(Single.defer(() -> {
-            return Single.just(Token);
-        })).build();
 
-        hubConnection.start();
 
-    }
 
-    @RequiresApi(api = Build.VERSION_CODES.R)
-    public void Leave() {
-        Connect();
-//        DefineMethods();
-        try {
-            hubConnection.invoke("LeaveRoom", JoinHub);
-        } catch (Exception ex) {
-            System.out.println(ex.getMessage());
-        }
-    }
-
-    @RequiresApi(api = Build.VERSION_CODES.R)
-    private void DefineMethods() {
-
-        hubConnection.on("ReceiveRoomNotification", (ReceiveRoomNotification) ->
-        {
-            ChatBoxModel x = new ChatBoxModel();
-            x.setMode(0);
-
-            if (ReceiveRoomNotification.getNotification() == 0) {
-                if (ReceiveRoomNotification.getMe()) {
-                    x.setMessage("You joined this room");
-
-                } else {
-                    x.setMessage(ReceiveRoomNotification.getUserModel().getUsername() + " join this room");
-                }
-            } else {
-                if (ReceiveRoomNotification.getMe()) {
-                    x.setMessage("You left this room");
-                } else {
-                    x.setMessage(ReceiveRoomNotification.getUserModel().getUsername() + " left this room");
-                }
-            }
-            runOnUiThread(new Runnable() {
-
-                @Override
-                public void run() {
-//                    Chats.add(x);
-//                    ChatAdaptor.notifyDataSetChanged();
-                }
-            });
-        }, ReceiveRoomNotification.class);
-
-        hubConnection.on("ReceiveRoomAllMessages", (messageModel) ->
-        {
-            for (Object X : messageModel) {
-
-                String s2 = gson.toJson(X);
-                LoadAllMessagesViewModel x = gson.fromJson(s2, LoadAllMessagesViewModel.class);
-                ChatBoxModel chat = new ChatBoxModel();
-                int contentType = x.contetntType;
-                if(contentType == 0){
-                    chat.setFirstName(x.getSender().getFirstName());
-                    chat.setLastName(x.getSender().getLastName());
-                    chat.setImageLink(x.getSender().getImageLink());
-                    chat.setTime(x.sentDate);
-                    if (x.getMe() == true)
-                        chat.setMode(1);
-                    else if (x.getMe() == false)
-                        chat.setMode(-1);
-                    chat.setMessage(x.getContent());
-                }
-                else if(contentType == 2){
-                    chat.setMode(0);
-                    if (x.getMe()) {
-                        chat.setMessage("You joined this room");
-
-                    } else {
-                        chat.setMessage(x.getSender().getUsername() + " join this room");
-                    }
-                }
-                else if(contentType == 3){
-                    chat.setMode(0);
-                    if (x.getMe()) {
-                        chat.setMessage("You left this room");
-
-                    } else {
-                        chat.setMessage(x.getSender().getUsername() + " left this room");
-                    }
-                }
-                runOnUiThread(new Runnable() {
-
-                    @Override
-                    public void run() {
-
-//                        Chats.add(chat);
-//                        ChatAdaptor.notifyDataSetChanged();
-
-                    }
-                });
-            }
-        }, (Class<List<LoadAllMessagesViewModel>>) (Object) List.class);
-    }
 
 }
