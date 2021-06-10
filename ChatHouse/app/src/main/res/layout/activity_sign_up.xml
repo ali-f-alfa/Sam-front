@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:paddingVertical="8dp"
     android:paddingHorizontal="35dp"
-    android:background="@color/light"
+    android:background="?colorPrimaryVariant"
     tools:context=".Pages.MainActivity">
 
     <TextView
@@ -18,7 +18,7 @@
         android:fontFamily="serif"
         android:gravity="center"
         android:text="GoNuts"
-        android:textColor="@color/Verypink"
+        android:textColor="?colorSecondary"
         android:textSize="50dp"
         app:layout_constraintBottom_toTopOf="@+id/resultText"
         app:layout_constraintEnd_toEndOf="parent"
@@ -36,7 +36,36 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/Logo"
         />
+    <EditText
+        android:id="@+id/FirstNameInput"
+        android:layout_width="0dp"
+        android:layout_height="60dp"
+        android:layout_marginTop="20dp"
+        android:ems="10"
+        android:fontFamily="sans-serif-condensed-light"
+        android:hint="First Name"
+        android:inputType="text"
+        android:textColor="@color/black"
+        app:layout_constraintBottom_toTopOf="@+id/LastNameInput"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.491"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/resultText" />
 
+    <EditText
+        android:id="@+id/LastNameInput"
+        android:layout_width="0dp"
+        android:layout_height="60dp"
+        android:ems="10"
+        android:fontFamily="sans-serif-condensed-light"
+        android:hint="Last Name"
+        android:inputType="text"
+        android:textColor="@color/black"
+        app:layout_constraintBottom_toTopOf="@+id/EmailInput"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.491"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/FirstNameInput" />
 
     <EditText
         android:id="@+id/EmailInput"
@@ -51,7 +80,9 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.491"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/resultText" />
+        app:layout_constraintTop_toBottomOf="@+id/LastNameInput" />
+
+
 
     <EditText
         android:id="@+id/usernameInput"
@@ -131,7 +162,7 @@
         android:layout_width="0dp"
         android:layout_height="50dp"
         android:layout_marginBottom="85dp"
-        android:backgroundTint="@color/Verypink"
+        android:backgroundTint="?colorSecondary"
         android:fontFamily="sans-serif-condensed-light"
         android:text="sign up"
         android:textColor="@color/white"

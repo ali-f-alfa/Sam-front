@@ -2,14 +2,18 @@ package com.example.chathouse.Pages;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatDelegate;
 import androidx.cardview.widget.CardView;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.core.content.ContextCompat;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
+import android.text.Layout;
 import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
@@ -89,13 +93,23 @@ public class ProfilePage extends AppCompatActivity {
     private TextView Followsyou;
     private Boolean followCheck = false;
     BottomNavigationView menu;
+    SharedPreferences settings;
+    private ConstraintLayout layout;
 
 //    private Switch OnOff;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
+        settings  = getSharedPreferences("Theme", Context.MODE_PRIVATE);
+        String themeName = settings.getString("ThemeName", "DarkTheme");
+        if (themeName.equalsIgnoreCase("DarkTheme")) {
+            setTheme(R.style.DarkTheme_ChatHouse);
+        } else if (themeName.equalsIgnoreCase("Theme")) {
+            setTheme(R.style.Theme_ChatHouse);
+        }
         setContentView(R.layout.activity_profile_page);
 
         Fake = (ConstraintLayout) findViewById(R.id.Fake);
@@ -110,7 +124,6 @@ public class ProfilePage extends AppCompatActivity {
         Following = (TextView) findViewById(R.id.FollowingText);
         Message = (Button) findViewById(R.id.MessageButton);
         Follow = (Button) findViewById(R.id.FollowButton);
-//        Memberof = (TextView)findViewById(R.id.MemberOf);
         UsernameText = (TextView) findViewById(R.id.UsernameText);
         EmailText = (TextView) findViewById(R.id.EmailText);
         EditProfile = (Button) findViewById(R.id.EditProfileButton);
@@ -121,6 +134,7 @@ public class ProfilePage extends AppCompatActivity {
         loading = (ProgressBar) findViewById(R.id.progressBar);
         Followsyou = (TextView) findViewById(R.id.FollowsYouText);
         menu = (BottomNavigationView) findViewById(R.id.Profile_menu);
+        layout = (ConstraintLayout)findViewById(R.id.ProfileBack);
 
         Bundle bundle = getIntent().getExtras();
         Fake.setVisibility(View.INVISIBLE);
@@ -129,8 +143,12 @@ public class ProfilePage extends AppCompatActivity {
         Setting.setVisibility(View.INVISIBLE);
 
         loading.setVisibility(View.VISIBLE);
-
-        SharedPreferences settings = getSharedPreferences("Storage", MODE_PRIVATE);
+        if (themeName.equalsIgnoreCase("DarkTheme")) {
+            layout.setBackgroundResource(R.drawable.b22d);
+        } else if (themeName.equalsIgnoreCase("Theme")) {
+            layout.setBackgroundResource(R.drawable.b22);
+        }
+        settings = getSharedPreferences("Storage", MODE_PRIVATE);
         SharedPreferences.Editor edit = getSharedPreferences("Storage", MODE_PRIVATE).edit();
 
 
@@ -263,7 +281,8 @@ public class ProfilePage extends AppCompatActivity {
             public void onClick(View v) {
                 Intent intent = new Intent(ProfilePage.this, SettingPage.class);
                 Bundle bundle = new Bundle();
-
+                bundle.putString("Username", UsernameX);
+                intent.putExtras(bundle);
                 startActivity(intent);
             }
         });

@@ -9,8 +9,25 @@
         <item name="colorSecondary">@color/Verypink</item>
         <item name="colorSecondaryVariant">@color/almostorange</item>
         <item name="colorOnSecondary">@color/almostgreen</item>
+
+        <item name="colorOnBackground">@color/white</item>
         <!-- Status bar color. -->
         <item name="android:statusBarColor" tools:targetApi="l">?attr/colorPrimaryVariant</item>
+        <!-- Customize your theme here. -->
+    </style>
+    <style name="DarkTheme.ChatHouse" parent="Theme.MaterialComponents.Light.NoActionBar">
+        <!-- Primary brand color. -->
+        <item name="colorPrimary">@color/betweengraypurpule</item>
+        <item name="colorPrimaryVariant">@color/yasi</item>
+        <item name="colorOnPrimary">@color/purpulel</item>
+        <!-- Secondary brand color. -->
+        <item name="colorSecondary">@color/purpulel</item>
+        <item name="colorSecondaryVariant">@color/darkpur</item>
+        <item name="colorOnSecondary">@color/puralmost</item>
+        <!-- Status bar color. -->
+        <item name="android:statusBarColor" tools:targetApi="l">?attr/colorPrimaryVariant</item>
+        <item name="colorOnBackground">@color/purpulel</item>
+
         <!-- Customize your theme here. -->
     </style>
 </resources>

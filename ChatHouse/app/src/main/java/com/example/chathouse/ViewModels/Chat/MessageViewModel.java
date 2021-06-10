@@ -7,7 +7,7 @@ public class MessageViewModel {
     private Object message;
     private int roomId;
     private boolean isMe;
-    private int messageType = 0;
+    private int messageType;
     public int parentId;
 
 
@@ -15,7 +15,7 @@ public class MessageViewModel {
         this.userModel = userModel;
     }
 
-    public void setMessage(String message) {
+    public void setMessage(Object message) {
         this.message = message;
     }
 

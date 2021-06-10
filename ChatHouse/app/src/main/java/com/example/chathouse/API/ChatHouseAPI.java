@@ -93,4 +93,7 @@ public interface ChatHouseAPI {
     @POST("Room/UpdateRoom")
     Call<GetRoomViewModel> UpdateRoom(@Body UpdateRoomViewModel updateRoom);
 
+    @DELETE("Account/RemoveImage")
+    Call<ProfileInformation> DeleteImage();
+
 }

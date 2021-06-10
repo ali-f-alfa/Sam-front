@@ -5,6 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".Pages.AcitivityPage"
+    android:id="@+id/ActivityBack"
     android:background="@drawable/b22"
     android:orientation="vertical"
     android:padding="2dp"
@@ -19,7 +20,7 @@
            android:layout_height="wrap_content"
            android:text="Activities"
            android:fontFamily="serif"
-           android:textColor="@color/Verypink"
+           android:textColor="?colorSecondary"
            android:textStyle="bold"
            android:textSize="20dp"
            android:layout_gravity="center">
@@ -36,7 +37,7 @@
            android:layout_height="wrap_content"
            android:text="Created Rooms"
            android:fontFamily="serif"
-           android:textColor="@color/gray"
+           android:textColor="?colorPrimary"
            android:textStyle="italic"
            android:textSize="16dp"
            android:layout_gravity="center">
@@ -60,7 +61,7 @@
            android:layout_height="wrap_content"
            android:text="In Rooms"
            android:fontFamily="serif"
-           android:textColor="@color/gray"
+           android:textColor="?colorPrimary"
            android:textStyle="italic"
            android:textSize="16dp"
            android:layout_gravity="center">
@@ -105,7 +106,7 @@
         app:itemIconTint="@color/black"
         app:itemTextColor="@color/black"
         android:layout_alignParentBottom="true"
-        android:background="@color/light"
+        android:background="?colorPrimaryVariant"
         app:menu="@menu/bottom_navigation"/>
 
 </RelativeLayout>

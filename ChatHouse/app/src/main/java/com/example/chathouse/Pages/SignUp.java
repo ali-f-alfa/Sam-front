@@ -2,7 +2,9 @@ package com.example.chathouse.Pages;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
@@ -32,6 +34,8 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class SignUp extends AppCompatActivity {
     private TextView textViewResult;
     private EditText emailTextView;
+    private EditText firstNameTextView;
+    private EditText lastNameTextView;
     private EditText userNameTextView;
     private EditText passwordTextView;
     private EditText confirmPasswordTextView;
@@ -42,6 +46,13 @@ public class SignUp extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        SharedPreferences settings  = getSharedPreferences("Theme", Context.MODE_PRIVATE);
+        String themeName = settings.getString("ThemeName", "DarkTheme");
+        if (themeName.equalsIgnoreCase("DarkTheme")) {
+            setTheme(R.style.DarkTheme_ChatHouse);
+        } else if (themeName.equalsIgnoreCase("Theme")) {
+            setTheme(R.style.Theme_ChatHouse);
+        }
         setContentView(R.layout.activity_sign_up);
 
 
@@ -54,6 +65,8 @@ public class SignUp extends AppCompatActivity {
 
         textViewResult = findViewById(R.id.resultText);
         emailTextView = findViewById(R.id.EmailInput);
+        firstNameTextView = findViewById(R.id.FirstNameInput);
+        lastNameTextView = findViewById(R.id.LastNameInput);
         userNameTextView = findViewById(R.id.usernameInput);
         passwordTextView = findViewById(R.id.passwordInput);
         confirmPasswordTextView = findViewById(R.id.confirmPasswordInput);
@@ -68,7 +81,10 @@ public class SignUp extends AppCompatActivity {
                 Load.setVisibility(View.VISIBLE);
 
                 if (checkFields()) {
-                    OutputSignupViewModel model1 = new OutputSignupViewModel(userNameTextView.getText().toString(),
+                    OutputSignupViewModel model1 = new OutputSignupViewModel(
+                            firstNameTextView.getText().toString(),
+                            lastNameTextView.getText().toString(),
+                            userNameTextView.getText().toString(),
                             emailTextView.getText().toString(),
                             passwordTextView.getText().toString(),
                             confirmPasswordTextView.getText().toString());
@@ -79,6 +95,7 @@ public class SignUp extends AppCompatActivity {
                         @Override
                         public void onResponse(Call<InputSignupViewModel> call, Response<InputSignupViewModel> response) {
                             if (!response.isSuccessful()) {
+                                Load.setVisibility(View.GONE);
                                 try {
                                     textViewResult.setTextColor(Color.parseColor("#B00020"));
                                     textViewResult.setText(response.errorBody().string());
@@ -106,6 +123,7 @@ public class SignUp extends AppCompatActivity {
                         public void onFailure(Call<InputSignupViewModel> call, Throwable t) {
                             textViewResult.setTextColor(Color.parseColor("#B00020"));
                             textViewResult.setText("please check your connection");
+                            Load.setVisibility(View.GONE);
                         }
                     });
 //                    textViewResult.append("wait... ");
@@ -129,6 +147,14 @@ public class SignUp extends AppCompatActivity {
 
     private boolean checkFields() {
         boolean hasEmpty = false;
+        if (TextUtils.isEmpty(firstNameTextView.getText())) {
+            firstNameTextView.setError("Email is required!");
+            hasEmpty = true;
+        }
+        if (TextUtils.isEmpty(lastNameTextView.getText())) {
+            lastNameTextView.setError("Email is required!");
+            hasEmpty = true;
+        }
         if (TextUtils.isEmpty(emailTextView.getText())) {
             emailTextView.setError("Email is required!");
             hasEmpty = true;

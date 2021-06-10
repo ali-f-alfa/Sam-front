@@ -39,6 +39,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListAdapter;
 import android.widget.ListView;
+import android.widget.ScrollView;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -110,7 +111,8 @@ public class EditProfile extends AppCompatActivity {
     private Boolean Ans1 = false;
     private Boolean Ans2 = false;
     private ChatHouseAPI API;
-
+    SharedPreferences settings;
+    ScrollView layout;
 
     @Override
     public void onBackPressed() {
@@ -134,6 +136,13 @@ public class EditProfile extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        settings  = getSharedPreferences("Theme", Context.MODE_PRIVATE);
+        String themeName = settings.getString("ThemeName", "DarkTheme");
+        if (themeName.equalsIgnoreCase("DarkTheme")) {
+            setTheme(R.style.DarkTheme_ChatHouse);
+        } else if (themeName.equalsIgnoreCase("Theme")) {
+            setTheme(R.style.Theme_ChatHouse);
+        }
         setContentView(R.layout.activity_edit_profile);
 
 
@@ -162,13 +171,17 @@ public class EditProfile extends AppCompatActivity {
         textView = (TextView)findViewById(R.id.textView);
         InterestEdit = (HorizontalScrollView)findViewById((R.id.InterestEdit));
         ProfilePic = (ImageView)findViewById(R.id.ProfileImageEdit);
+        layout = (ScrollView)findViewById(R.id.EditProBack);
 
 
 
-
-
+        if (themeName.equalsIgnoreCase("DarkTheme")) {
+            layout.setBackgroundResource(R.drawable.b22d);
+        } else if (themeName.equalsIgnoreCase("Theme")) {
+            layout.setBackgroundResource(R.drawable.b22);
+        }
         Bundle bundle = getIntent().getExtras();
-        SharedPreferences settings = getSharedPreferences("Storage", MODE_PRIVATE);
+        settings = getSharedPreferences("Storage", MODE_PRIVATE);
 
 
         String Token = settings.getString("Token", "n/a");
@@ -187,8 +200,8 @@ public class EditProfile extends AppCompatActivity {
 
         RequestOptions options = new RequestOptions()
                 .centerCrop()
-                .placeholder(R.mipmap.ic_launcher_round)
-                .error(R.mipmap.ic_launcher_round);
+                .placeholder(R.mipmap.default_user_profile)
+                .error(R.mipmap.default_user_profile);
 
 
 
@@ -215,6 +228,7 @@ public class EditProfile extends AppCompatActivity {
 
         Gson gson = new GsonBuilder()
                 .setLenient()
+                .setDateFormat("yyyy-MM-dd'T'HH:mm:ss")
                 .create();
 
         Retrofit retrofit = new Retrofit.Builder()
@@ -649,7 +663,6 @@ public class EditProfile extends AppCompatActivity {
                                 Glide.with(this).load(picturePath).apply(options).skipMemoryCache(true) //2
                                         .diskCacheStrategy(DiskCacheStrategy.NONE) //3
                                         .transform(new CircleCrop()).into(ProfilePic);
-//                                ProfilePic.setImageBitmap(BitmapFactory.decodeFile(picturePath));
                                 File file = new File(picturePath);
                                 fbody = RequestBody.create(MediaType.parse("multipart/form-data"), file);
                                 requestImage = MultipartBody.Part.createFormData("image", file.getName(), fbody);
@@ -690,10 +703,10 @@ public class EditProfile extends AppCompatActivity {
     }
 
     private void selectImage(Context context) {
-        final CharSequence[] options = {"Choose from Gallery","Cancel" };
+        final CharSequence[] options = {"Take photo", "Choose from Gallery", "Delete photo", "Cancel" };
 
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
-        builder.setTitle("Choose your profile picture");
+        builder.setTitle("Profile picture");
 
         builder.setItems(options, new DialogInterface.OnClickListener() {
 
@@ -703,16 +716,58 @@ public class EditProfile extends AppCompatActivity {
 
                 requestPermissions(PERMISSIONS, REQUEST_PERMISSIONS);
 
-//                if (options[item].equals("Take Photo")) {
-//                    Intent takePicture = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
-//                    startActivityForResult(takePicture, 0);
+                if (options[item].equals("Take Photo")) {
+                    Intent takePicture = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
+                    startActivityForResult(takePicture, 0);
 
-//                }
+                }
                 if (options[item].equals("Choose from Gallery")) {
                     Intent pickPhoto = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
                     startActivityForResult(pickPhoto , 1);
 
-                } else if (options[item].equals("Cancel")) {
+                }
+                if (options[item].equals("Delete photo")) {
+                    new AlertDialog.Builder(EditProfile.this).setIcon(android.R.drawable.ic_dialog_alert)
+                            .setTitle("Deleting photo").setMessage("Are you sure you want to delete this photo?")
+                            .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    Call<ProfileInformation> Delete = API.DeleteImage();
+                                    Delete.enqueue(new Callback<ProfileInformation>() {
+                                        @Override
+                                        public void onResponse(Call<ProfileInformation> call, Response<ProfileInformation> response) {
+                                            if(!response.isSuccessful()){
+                                                try {
+                                                    System.out.println("1" + response.errorBody().string());
+                                                    System.out.println("1" + response.code());
+                                                    System.out.println(response.errorBody().string());
+                                                } catch (IOException e) {
+                                                    System.out.println("2" + response.errorBody().toString());
+                                                    e.printStackTrace();
+                                                }
+                                                return;
+                                            }
+                                            RequestOptions options = new RequestOptions()
+                                                    .placeholder(R.mipmap.default_user_profile)
+                                                    .centerCrop();
+
+
+                                            Glide.with(EditProfile.this).load("").apply(options).skipMemoryCache(true) //2
+                                                    .diskCacheStrategy(DiskCacheStrategy.NONE) //3
+                                                    .transform(new CircleCrop()).into(ProfilePic);
+                                        }
+
+                                        @Override
+                                        public void onFailure(Call<ProfileInformation> call, Throwable t) {
+                                            Toast.makeText(EditProfile.this, t.getMessage(), Toast.LENGTH_LONG).show();
+                                        }
+                                    });
+                                    Toast.makeText(EditProfile.this, "photo deleted", Toast.LENGTH_SHORT).show();
+                                }
+                            }).setNegativeButton("No", null).show();
+
+                }
+                else if(options[item].equals("Cancel")){
                     dialog.dismiss();
                 }
             }
