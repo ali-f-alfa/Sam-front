@@ -44,7 +44,7 @@
                         android:paddingLeft="15dp"
                         android:paddingEnd="16dp"
                         android:paddingRight="16dp"
-                        android:textColor="@color/Verypink"
+                        android:textColor="?colorSecondary"
                         android:textSize="21sp"
                         android:textStyle="bold"/>
 
@@ -57,7 +57,7 @@
                         android:paddingLeft="15dp"
                         android:paddingEnd="16dp"
                         android:paddingRight="16dp"
-                        android:textColor="@color/Verypink"
+                        android:textColor="?colorSecondary"
                         android:textSize="17sp" />
 
                 </LinearLayout>
@@ -80,7 +80,7 @@
                         android:paddingLeft="8dp"
                         android:paddingEnd="16dp"
                         android:paddingRight="16dp"
-                        android:textColor="@color/Verypink"
+                        android:textColor="?colorSecondary"
                         android:textSize="17sp" />
 
                     <TextView
@@ -92,7 +92,7 @@
                         android:paddingLeft="8dp"
                         android:paddingEnd="16dp"
                         android:paddingRight="16dp"
-                        android:textColor="@color/Verypink"
+                        android:textColor="?colorSecondary"
                         android:textSize="17sp" />
                 </LinearLayout>
             </LinearLayout>
@@ -105,7 +105,7 @@
                 android:layout_weight="1"
                 android:layout_marginBottom="10dp"
                 android:layout_marginTop="5dp"
-                android:textColor="@color/Verypink"
+                android:textColor="?colorSecondary"
                 android:layout_marginHorizontal="15dp"></TextView>
 
         </LinearLayout>

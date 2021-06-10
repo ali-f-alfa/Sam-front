@@ -6,6 +6,7 @@
     android:layout_height="fill_parent"
     tools:context=".Pages.RoomInfo"
     android:background="@drawable/b22"
+    android:id="@+id/RoominfoBack"
     android:orientation="vertical">
     <TextView
         android:layout_width="wrap_content"
@@ -52,7 +53,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         android:id="@+id/RoomInterestCardView"
         android:layout_marginTop="5dp"
-        app:cardBackgroundColor="@color/almostgreen"
+        app:cardBackgroundColor="?colorSecondary"
         app:cardCornerRadius="50dp"
         app:cardElevation="6dp"
 >
@@ -89,7 +90,7 @@
         android:layout_width="wrap_content"
         android:layout_height="2dp"
         android:layout_marginTop="5dp"
-        android:background="@color/gray"
+        android:background="?colorPrimary"
         android:tooltipText="Interests" />
 
     <ListView
@@ -110,7 +111,7 @@
         android:layout_height="50dp"
         android:text="Delete Room"
         android:fontFamily="serif"
-        android:backgroundTint="@color/almostgreen"
+        android:backgroundTint="?colorSecondary"
         android:textStyle="bold"
         android:textColor="@color/white"
         android:gravity="center">

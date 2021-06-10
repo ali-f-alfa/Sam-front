@@ -1,13 +1,17 @@
 package com.example.chathouse.Pages;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.View;
 import android.widget.Button;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.Toast;
 
 import com.example.chathouse.API.ChatHouseAPI;
@@ -32,14 +36,64 @@ import retrofit2.converter.scalars.ScalarsConverterFactory;
 public class SettingPage extends AppCompatActivity {
     private Button LogoutButton;
     private ChatHouseAPI API;
+    SharedPreferences settings;
+    RadioButton defaultTheme, darkTheme;
+    RadioGroup group;
+    String themeName;
+    ConstraintLayout layout;
+    String U;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        settings  = getSharedPreferences("Theme", Context.MODE_PRIVATE);
+        String themeName = settings.getString("ThemeName", "DarkTheme");
+        if (themeName.equalsIgnoreCase("DarkTheme")) {
+            setTheme(R.style.DarkTheme_ChatHouse);
+        } else if (themeName.equalsIgnoreCase("Theme")) {
+            setTheme(R.style.Theme_ChatHouse);
+        }
         setContentView(R.layout.activity_setting_page);
         LogoutButton =  (Button)findViewById(R.id.LogoutButton);
-        SharedPreferences settings = getSharedPreferences("Storage", MODE_PRIVATE);
+        settings = getSharedPreferences("Storage", MODE_PRIVATE);
+        layout = (ConstraintLayout)findViewById(R.id.settingback);
 
+        U = getIntent().getExtras().getString("Username");
+
+        if (themeName.equalsIgnoreCase("DarkTheme")) {
+            layout.setBackgroundResource(R.drawable.b22d);
+        } else if (themeName.equalsIgnoreCase("Theme")) {
+            layout.setBackgroundResource(R.drawable.b22);
+        }
+
+        group = (RadioGroup) findViewById(R.id.group);
+        defaultTheme = (RadioButton) findViewById(R.id.light);
+        darkTheme = (RadioButton) findViewById(R.id.dark);
+
+        if (themeName.equalsIgnoreCase("Dark")) {
+            darkTheme.setChecked(true);
+        } else if (themeName.equalsIgnoreCase("Light")) {
+            defaultTheme.setChecked(true);
+        }
+
+        // Called when the checked radio button has changed.
+        group.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup group, int checkedId) {
+                if (checkedId == R.id.light) {
+                    setTheme("Theme");
+                } else if (checkedId == R.id.dark) {
+                    setTheme("DarkTheme");
+                }
+                Intent intent = getIntent();
+                finish();
+                Intent i = new Intent(SettingPage.this, ProfilePage.class);
+                Bundle bundle = new Bundle();
+                bundle.putString("Username", U);
+                i.putExtras(bundle);
+                startActivity(i);
+            }
+        });
 
         String Token = settings.getString("Token", "n/a");
         OkHttpClient client = new OkHttpClient.Builder().addInterceptor(new Interceptor() {
@@ -103,5 +157,13 @@ public class SettingPage extends AppCompatActivity {
                 });
             }
         });
+    }
+    public void setTheme(String name) {
+        // Create preference to store theme name
+        SharedPreferences preferences = getSharedPreferences("Theme", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putString("ThemeName", name);
+        editor.apply();
+        recreate();
     }
 }

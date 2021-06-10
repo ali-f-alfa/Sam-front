@@ -4,21 +4,32 @@ import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.Manifest;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.PopupMenu;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.load.resource.bitmap.CircleCrop;
+import com.bumptech.glide.request.RequestOptions;
 import com.example.chathouse.API.ChatHouseAPI;
 import com.example.chathouse.R;
 import com.example.chathouse.Utility.Constants;
@@ -35,6 +46,7 @@ import com.google.gson.GsonBuilder;
 import com.microsoft.signalr.HubConnection;
 import com.microsoft.signalr.HubConnectionBuilder;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
@@ -43,8 +55,11 @@ import java.util.List;
 import io.reactivex.Single;
 import okhttp3.HttpUrl;
 import okhttp3.Interceptor;
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
+import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -71,6 +86,8 @@ public class RoomInfo extends AppCompatActivity {
     String Token;
     ProfileInformation Response;
     Gson gson;
+    SharedPreferences settings;
+    LinearLayout layout;
 //    public ChatBoxAdaptor ChatAdaptor;
 //    public ArrayList<ChatBoxModel> Chats = new ArrayList<ChatBoxModel>();
 //    public ListView chatBoxListView;
@@ -79,6 +96,13 @@ public class RoomInfo extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        settings  = getSharedPreferences("Theme", Context.MODE_PRIVATE);
+        String themeName = settings.getString("ThemeName", "DarkTheme");
+        if (themeName.equalsIgnoreCase("DarkTheme")) {
+            setTheme(R.style.DarkTheme_ChatHouse);
+        } else if (themeName.equalsIgnoreCase("Theme")) {
+            setTheme(R.style.Theme_ChatHouse);
+        }
         setContentView(R.layout.activity_room_info);
         Name = (TextView) findViewById(R.id.RoomNameInfoPage);
         Description = (TextView) findViewById(R.id.DescriptionRoom);
@@ -86,11 +110,16 @@ public class RoomInfo extends AppCompatActivity {
         Delete = (Button) findViewById(R.id.DeleteRoom);
         MembersListView = (ListView) findViewById(R.id.RoomMembersListView);
         Bundle bundle = getIntent().getExtras();
+        layout = (LinearLayout)findViewById(R.id.RoominfoBack);
 //        chatBoxListView = (ListView) findViewById(R.id.chatBox);
 //        ChatAdaptor = new ChatBoxAdaptor(RoomInfo.this, Chats);
 //        chatBoxListView.setAdapter(ChatAdaptor);
-
-        SharedPreferences settings = getSharedPreferences("Storage", MODE_PRIVATE);
+        if (themeName.equalsIgnoreCase("DarkTheme")) {
+            layout.setBackgroundResource(R.drawable.b22d);
+        } else if (themeName.equalsIgnoreCase("Theme")) {
+            layout.setBackgroundResource(R.drawable.b22);
+        }
+        settings = getSharedPreferences("Storage", MODE_PRIVATE);
         Token = settings.getString("Token", "n/a");
         String Username = settings.getString("Username", "n/a");
 
@@ -415,8 +444,6 @@ public class RoomInfo extends AppCompatActivity {
         }
         return temp;
     }
-
-
 
 
 

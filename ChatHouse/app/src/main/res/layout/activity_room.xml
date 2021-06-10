@@ -4,121 +4,207 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Pages.Room"
-    android:layout_margin="2dp">
+    android:layout_margin="2dp"
+    android:background="?colorOnBackground"
+    tools:context=".Pages.Room">
 
     <View
         android:layout_width="match_parent"
         android:layout_height="40dp"
-        android:background="@color/light">
+        android:background="?colorPrimaryVariant">
 
     </View>
 
+
     <TextView
+        android:id="@+id/RoomName"
         android:layout_width="match_parent"
         android:layout_height="40dp"
-        android:id="@+id/RoomName"
         android:layout_alignParentTop="true"
-        android:text="Room"
-        android:gravity="center"
-        android:textStyle="bold"
-        android:textSize="20dp"
+        android:clickable="true"
         android:fontFamily="serif"
-        android:textColor="@color/Verypink"
-        android:clickable="true">
+        android:gravity="center"
+        android:text="Room"
+        android:textColor="?colorSecondary"
+        android:textSize="20dp"
+        android:textStyle="bold">
 
     </TextView>
+
     <ImageButton
+        android:id="@+id/LeaveRoom"
         android:layout_width="40dp"
         android:layout_height="40dp"
         android:layout_alignParentEnd="true"
-        android:foregroundGravity="center_vertical"
-        android:id="@+id/LeaveRoom"
-        android:src="@drawable/ic_baseline_exit_to_app_24"
         android:backgroundTint="#00E7D2CC"
->
+        android:foregroundGravity="center_vertical"
+        android:src="@drawable/ic_baseline_exit_to_app_24">
 
     </ImageButton>
 
     <RelativeLayout
-        android:orientation="vertical"
+        android:id="@+id/chatFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@+id/RoomName"
-        android:id="@+id/chatFragment"
-        android:layout_marginTop="5dp">
+        android:layout_marginTop="5dp"
+        android:orientation="vertical">
+
         <LinearLayout
+            android:id="@+id/MessagesPart"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="vertical"
+            android:layout_above="@+id/reply_bar"
             android:layout_alignParentTop="true"
-            android:layout_above="@+id/Message"
-            android:id="@+id/MessagesPart">
+            android:orientation="vertical">
 
             <ListView
                 android:id="@+id/chatBox"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:divider="@null"
-                android:dividerHeight="0dp"
-                >
+                android:dividerHeight="0dp" />
+        </LinearLayout>
 
-            </ListView>
+        <LinearLayout
+            android:id="@+id/reply_bar"
+            android:layout_width="match_parent"
+            android:layout_height="45dp"
+            android:layout_above="@id/SendButton"
+            android:layout_alignParentEnd="true"
+            android:background="#DCB4A4"
+            android:orientation="horizontal"
+            android:src="@drawable/ic_baseline_keyboard_arrow_down_24"
+            android:visibility="gone">
+
+            <ImageView
+                android:layout_width="35dp"
+                android:layout_height="35dp"
+                android:layout_gravity="center"
+                android:layout_marginLeft="5dp"
+                android:src="@drawable/ic_baseline_reply_24" />
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginHorizontal="10dp"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/reply_bar_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="left"
+                    android:layout_marginTop="2dp"
+                    android:gravity="left"
+                    android:maxLines="1"
+                    android:text="melika ahmadi"
+                    android:textColor="@color/gray"
+                    android:textSize="15dp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/reply_bar_message"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="left"
+                    android:maxWidth="230dp"
+                    android:maxLines="1"
+                    android:text="replied message is here"
+                    android:textColor="@color/black"
+                    android:textSize="14dp"
+                    android:textStyle="normal" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="right">
+
+                <ImageButton
+                    android:id="@+id/reply_clear"
+                    android:layout_width="35dp"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="right"
+                    android:background="#00710117"
+                    android:src="@drawable/ic_baseline_clear_24"
+                    android:layout_marginRight="5dp"/>
+            </LinearLayout>
+
         </LinearLayout>
 
         <ImageButton
             android:id="@+id/chat_downBtn"
             android:layout_width="40dp"
             android:layout_height="40dp"
-            android:layout_alignParentEnd="true"
             android:layout_above="@id/SendButton"
+            android:layout_alignParentEnd="true"
             android:layout_marginRight="30dp"
-            android:layout_marginBottom="30dp"
+            android:layout_marginBottom="50dp"
             android:background="#00FFFFFF"
             android:src="@drawable/ic_baseline_keyboard_arrow_down_24"
-            android:visibility="gone">
-        </ImageButton>
-        <EditText
-            android:layout_width="match_parent"
-            android:minHeight="50dp"
-            android:maxLines="6"
-            android:layout_height="wrap_content"
-            android:hint="Enter message"
-            android:id="@+id/Message"
-            android:layout_alignParentBottom="true"
-            android:layout_alignParentStart="true"
-            android:layout_toStartOf="@+id/SendButton"
-            android:layout_marginRight="10dp"
-            android:clickable="true"
-            android:layout_marginLeft="10dp"
+            android:visibility="gone"></ImageButton>
 
-            >
+        <ImageButton
+            android:id="@+id/Attachment"
+            android:layout_width="25dp"
+            android:layout_height="40dp"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentBottom="true"
+            android:backgroundTint="#00E7D2CC"
+            android:foregroundGravity="center_vertical"
+            android:src="@drawable/ic_baseline_attach_file_24">
+
+        </ImageButton>
+
+        <EditText
+            android:id="@+id/Message"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_marginLeft="4dp"
+            android:layout_marginRight="4dp"
+            android:layout_toStartOf="@+id/SendButton"
+            android:layout_toEndOf="@+id/Attachment"
+            android:hint="Enter message"
+            android:maxLines="6"
+            android:minHeight="50dp">
 
         </EditText>
 
+        <ImageView
+            android:id="@+id/Imageview"
+            android:layout_width="70dp"
+            android:layout_height="120dp"
+            android:layout_alignParentBottom="true"
+            android:layout_marginBottom="50dp"
+            android:adjustViewBounds="true"
+            android:clickable="true"
+            app:layout_collapseMode="parallax"
+            app:layout_collapseParallaxMultiplier="0.7">
 
-        <TextView
+        </ImageView>
+
+        <ImageButton
+            android:id="@+id/SendButton"
             android:layout_width="wrap_content"
             android:layout_height="40dp"
-            android:text="Send"
-            android:textStyle="normal"
-            android:fontFamily="serif"
-            android:textSize="20dp"
-            android:id="@+id/SendButton"
-            android:layout_alignParentBottom="true"
-            android:textColor="@color/Verypink"
             android:layout_alignParentEnd="true"
-            android:layout_marginRight="20dp"></TextView>
+            android:layout_alignParentBottom="true"
+            android:layout_marginRight="10dp"
+            android:background="?colorOnBackground"
+
+            android:src="@drawable/ic_baseline_send_24"></ImageButton>
     </RelativeLayout>
 
 
-<!--    <View-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="40dp"-->
-<!--        app:layout_constraintBottom_toBottomOf="parent"-->
-<!--        app:layout_constraintStart_toStartOf="parent"-->
-<!--        android:background="@color/light">-->
+    <!--    <View-->
+    <!--        android:layout_width="match_parent"-->
+    <!--        android:layout_height="40dp"-->
+    <!--        app:layout_constraintBottom_toBottomOf="parent"-->
+    <!--        app:layout_constraintStart_toStartOf="parent"-->
+    <!--        android:background="?colorPrimaryVariant">-->
 
-<!--    </View>-->
+    <!--    </View>-->
 
 </RelativeLayout>

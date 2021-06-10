@@ -25,7 +25,6 @@
         <activity android:name=".Pages.FollowingFollowersPage" />
         <activity android:name=".Pages.EditProfile" />
         <activity android:name=".Pages.Search" />
-        <activity android:name=".Pages.EditProfile" />
         <activity android:name=".Pages.ProfilePage" />
         <activity android:name=".Pages.SignUp" />
         <activity android:name=".Pages.Login" />

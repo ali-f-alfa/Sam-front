@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="5dp">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="right"
+        android:paddingVertical="4dp">
+
+
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/chat_card_right_reply"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="5dp"
+            android:backgroundTint="?colorPrimaryVariant"
+            android:minWidth="80dp"
+            android:minHeight="30dp"
+            android:maxWidth="35dp"
+            app:cardCornerRadius="13dp"
+            app:cardElevation="0dp">
+
+            <androidx.appcompat.widget.LinearLayoutCompat
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:paddingTop="6dp"
+                android:paddingBottom="2dp"
+                android:paddingHorizontal="9dp">
+
+
+                <LinearLayout
+                    android:id="@+id/chat_replied_box_right_reply"
+                    android:layout_width="wrap_content"
+                    android:layout_height="45dp"
+                    android:orientation="horizontal"
+                    android:layout_marginTop="2dp">
+
+                    <View
+                        android:layout_width="2dp"
+                        android:layout_height="match_parent"
+                        android:background="@color/Verypink"
+                        android:layout_marginVertical="3dp"/>
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:orientation="vertical"
+                        android:layout_marginLeft="10dp">
+
+                        <TextView
+                            android:id="@+id/chat_replied_name_right_reply"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="left"
+                            android:gravity="left"
+                            android:text="melika ahmadi"
+                            android:textColor="@color/gray"
+                            android:textSize="15dp"
+                            android:textStyle="bold"
+                            android:layout_marginTop="2dp"
+                            android:maxLines="1" />
+
+                        <TextView
+                            android:id="@+id/chat_replied_message_right_reply"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="left"
+                            android:maxWidth="250dp"
+                            android:maxLines="1"
+                            android:text="replied message is here"
+                            android:textColor="@color/black"
+                            android:textSize="14dp"
+                            android:textStyle="normal"/>
+                    </LinearLayout>
+
+
+                </LinearLayout>
+                <TextView
+                    android:id="@+id/chat_message_right_reply"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="left"
+                    android:maxWidth="250dp"
+                    android:layout_marginTop="2dp"
+                    android:text="MessageMessageMessageMessageMessageMessageMessageMessage\nhello\nMessageMessageMessageMessage"
+                    android:textColor="@color/black"
+                    android:textSize="14dp"
+                    android:textStyle="normal">
+
+                </TextView>
+
+                <TextView
+                    android:id="@+id/chat_time_right_reply"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="right"
+                    android:text="2:20 PM"
+                    android:textColor="@color/gray"
+                    android:textSize="12dp"
+                    android:textStyle="normal">
+
+                </TextView>
+            </androidx.appcompat.widget.LinearLayoutCompat>
+
+        </com.google.android.material.card.MaterialCardView>
+    </RelativeLayout>
+
+</LinearLayout>

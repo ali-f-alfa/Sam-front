@@ -22,7 +22,7 @@
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="5dp"
             android:layout_toEndOf="@+id/chat_image_left"
-            android:backgroundTint="@color/almostgreen"
+            android:backgroundTint="?colorOnSecondary"
             android:minWidth="80dp"
             android:minHeight="60dp"
             app:cardCornerRadius="13dp"
@@ -43,7 +43,7 @@
                     android:layout_gravity="left"
                     android:gravity="left"
                     android:text="ali"
-                    android:textColor="@color/gray"
+                    android:textColor="?colorPrimary"
                     android:textSize="15dp"
                     android:textStyle="bold">
 
@@ -68,7 +68,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="right"
                     android:text="2:20 PM"
-                    android:textColor="@color/gray"
+                    android:textColor="?colorPrimary"
                     android:textSize="12dp"
                     android:textStyle="normal">
 

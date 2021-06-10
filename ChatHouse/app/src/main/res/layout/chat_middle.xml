@@ -27,7 +27,7 @@
                     android:layout_gravity="center"
                     android:gravity="center"
                     android:text="ali joined the room"
-                    android:textColor="@color/gray"
+                    android:textColor="?colorPrimary"
                     android:textSize="16dp"
                     android:textStyle="italic">
 

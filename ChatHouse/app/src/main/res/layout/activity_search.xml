@@ -5,6 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/b22"
+    android:id="@+id/searchback"
     android:orientation="vertical">
 
     <SearchView
@@ -35,7 +36,7 @@
             app:checkedBorderColor="@color/blue"
             app:uncheckedBorderColor="@color/gray_border"
             app:checkedTextColor="@android:color/white"
-            app:uncheckedBackgroundColor="@color/light"
+            app:uncheckedBackgroundColor="?colorPrimaryVariant"
             app:separatorColor="@color/white"
             />
 
@@ -56,7 +57,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Search in all people"
-            android:textColor="@color/Verypink"
+            android:textColor="?colorSecondary"
             android:textStyle="bold"
             android:fontFamily="serif"
             android:textSize="20dp"
@@ -468,7 +469,7 @@
         android:layout_alignParentBottom="true"
         app:labelVisibilityMode="labeled"
 
-        android:background="@color/light"
+        android:background="?colorPrimaryVariant"
         app:menu="@menu/bottom_navigation" />
 
 </RelativeLayout>
