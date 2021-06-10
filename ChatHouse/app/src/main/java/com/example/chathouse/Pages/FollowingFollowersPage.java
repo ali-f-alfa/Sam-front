@@ -1,7 +1,9 @@
 package com.example.chathouse.Pages;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -42,10 +44,22 @@ public class FollowingFollowersPage extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        SharedPreferences settings  = getSharedPreferences("Theme", Context.MODE_PRIVATE);
+        String themeName = settings.getString("ThemeName", "DarkTheme");
+        if (themeName.equalsIgnoreCase("DarkTheme")) {
+            setTheme(R.style.DarkTheme_ChatHouse);
+        } else if (themeName.equalsIgnoreCase("Theme")) {
+            setTheme(R.style.Theme_ChatHouse);
+        }
         setContentView(R.layout.activity_following_followers_page);
         FollowerFollowing = (TextView)findViewById(R.id.FollowingfollowersText);
         FollowingFollowersListView = (ListView) findViewById(R.id.FollowingFollowersListView);
-
+        ConstraintLayout layout = (ConstraintLayout)findViewById(R.id.FollowingBack);
+        if (themeName.equalsIgnoreCase("DarkTheme")) {
+            layout.setBackgroundResource(R.drawable.b22d);
+        } else if (themeName.equalsIgnoreCase("Theme")) {
+            layout.setBackgroundResource(R.drawable.b22);
+        }
         Intent i = getIntent();
         Bundle bundle = getIntent().getExtras();
         String Title = bundle.getString("Name");

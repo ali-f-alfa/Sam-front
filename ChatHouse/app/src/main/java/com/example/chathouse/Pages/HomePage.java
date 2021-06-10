@@ -102,10 +102,19 @@ public class HomePage extends AppCompatActivity {
     boolean Room2EndOfList;
     TextView SearchError1;
     TextView SearchError2;
+    SharedPreferences settings;
+    LinearLayout layout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        settings  = getSharedPreferences("Theme", Context.MODE_PRIVATE);
+        String themeName = settings.getString("ThemeName", "DarkTheme");
+        if (themeName.equalsIgnoreCase("DarkTheme")) {
+            setTheme(R.style.DarkTheme_ChatHouse);
+        } else if (themeName.equalsIgnoreCase("Theme")) {
+            setTheme(R.style.Theme_ChatHouse);
+        }
         setContentView(R.layout.activity_home_page);
         StartRoom = (Button) findViewById(R.id.StartRoom);
         loading = (ProgressBar) findViewById(R.id.progressBar);
@@ -113,7 +122,13 @@ public class HomePage extends AppCompatActivity {
         SuggestedRoomsByFollowingsList = (ListView) findViewById(R.id.SuggestRoomsFollowings);
         SearchError1 = findViewById(R.id.SearchError1);
         SearchError2 = findViewById(R.id.SearchError2);
+        layout = (LinearLayout)findViewById(R.id.Homeback);
 
+        if (themeName.equalsIgnoreCase("DarkTheme")) {
+            layout.setBackgroundResource(R.drawable.b22d);
+        } else if (themeName.equalsIgnoreCase("Theme")) {
+            layout.setBackgroundResource(R.drawable.b22);
+        }
 
         menu = (BottomNavigationView) findViewById(R.id.Home_menu);
 
@@ -122,7 +137,7 @@ public class HomePage extends AppCompatActivity {
         }
 
 
-        SharedPreferences settings = getSharedPreferences("Storage", MODE_PRIVATE);
+        settings = getSharedPreferences("Storage", MODE_PRIVATE);
         SharedPreferences.Editor edit = getSharedPreferences("Storage", MODE_PRIVATE).edit();
 
 
@@ -420,6 +435,13 @@ public class HomePage extends AppCompatActivity {
 
     public void Open(View view) {
 
+        settings  = getSharedPreferences("Theme", Context.MODE_PRIVATE);
+        String themeName = settings.getString("ThemeName", "DarkTheme");
+        if (themeName.equalsIgnoreCase("DarkTheme")) {
+            setTheme(R.style.DarkTheme_ChatHouse);
+        } else if (themeName.equalsIgnoreCase("Theme")) {
+            setTheme(R.style.Theme_ChatHouse);
+        }
         final Dialog dialog = new Dialog(this);
         dialog.setContentView(R.layout.dialog_room_creation);
         category_grid_modal = (GridLayout) dialog.findViewById(R.id.category_grid_modal);

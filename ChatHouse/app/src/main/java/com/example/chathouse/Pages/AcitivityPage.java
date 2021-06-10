@@ -32,6 +32,7 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.RadioButton;
+import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.TimePicker;
@@ -97,24 +98,36 @@ public class AcitivityPage extends AppCompatActivity {
     private ArrayList<RoomModel> RoomsModelListArrayIn = new ArrayList<RoomModel>();
 
     private boolean selected;
+    SharedPreferences settings;
+    RelativeLayout relativeLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         Date objDate = new Date();
-
+        settings  = getSharedPreferences("Theme", Context.MODE_PRIVATE);
+        String themeName = settings.getString("ThemeName", "DarkTheme");
+        if (themeName.equalsIgnoreCase("DarkTheme")) {
+            setTheme(R.style.DarkTheme_ChatHouse);
+        } else if (themeName.equalsIgnoreCase("Theme")) {
+            setTheme(R.style.Theme_ChatHouse);
+        }
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_acitivity_page);
-        SharedPreferences settings = getSharedPreferences("Storage", MODE_PRIVATE);
+        settings = getSharedPreferences("Storage", MODE_PRIVATE);
         Username = settings.getString("Username", "n/a");
         menu = (BottomNavigationView) findViewById(R.id.Activity_menu);
         RoomsList = (ListView)findViewById(R.id.RoomsInactivity);
         RoomsListIn = (ListView)findViewById(R.id.RoomsInactivityIn);
         loading = (ProgressBar)findViewById(R.id.progressBar);
-
+        relativeLayout = (RelativeLayout)findViewById(R.id.ActivityBack);
         menu.setOnNavigationItemSelectedListener(navListener);
         int a = menu.getSelectedItemId();
         selected = false;
-
+        if (themeName.equalsIgnoreCase("DarkTheme")) {
+            relativeLayout.setBackgroundResource(R.drawable.b22d);
+        } else if (themeName.equalsIgnoreCase("Theme")) {
+            relativeLayout.setBackgroundResource(R.drawable.b22);
+        }
         String Token = settings.getString("Token", "n/a");
 
 

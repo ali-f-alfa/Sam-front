@@ -11,14 +11,21 @@ import android.graphics.drawable.Drawable;
 import android.widget.LinearLayout;
 import androidx.fragment.app.FragmentActivity;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.media.Image;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.provider.MediaStore;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuInflater;
@@ -56,6 +63,7 @@ import com.example.chathouse.ViewModels.Search.InputSearchViewModel;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
+import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -67,8 +75,11 @@ import io.reactivex.Single;
 import microsoft.aspnet.signalr.client.hubs.HubProxy;
 import okhttp3.HttpUrl;
 import okhttp3.Interceptor;
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
+import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -90,7 +101,7 @@ public class Room extends FragmentActivity {
     int RoomId;
     String Token;
     MessageViewModel Message = new MessageViewModel();
-    private TextView Send;
+    private ImageButton Send;
     private EditText MessageText;
     SearchPerson me;
     ArrayList<LoadAllMessagesViewModel> LoadMessages = new ArrayList<>();
@@ -100,28 +111,39 @@ public class Room extends FragmentActivity {
     public ArrayList<ChatBoxModel> Chats = new ArrayList<ChatBoxModel>();
     public ListView chatBoxListView;
     public ImageButton downBtn;
+    private ImageButton Attachment;
+    private Boolean attachment = false;
+    private MultipartBody.Part requestImage;
+    RequestBody requestBody;
+    private ImageView imageView;
+    SharedPreferences settings;
     public int isReplying = -1;
 
-
-    public ListView getChatBoxListView() {
-        return chatBoxListView;
-    }
 
     @RequiresApi(api = Build.VERSION_CODES.R)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        settings  = getSharedPreferences("Theme", Context.MODE_PRIVATE);
+        String themeName = settings.getString("ThemeName", "DarkTheme");
+        if (themeName.equalsIgnoreCase("DarkTheme")) {
+            setTheme(R.style.DarkTheme_ChatHouse);
+        } else if (themeName.equalsIgnoreCase("Theme")) {
+            setTheme(R.style.Theme_ChatHouse);
+        }
         setContentView(R.layout.activity_room);
         Bundle bundle = getIntent().getExtras();
 
         RoomName = (TextView) findViewById(R.id.RoomName);
-        Send = (TextView) findViewById(R.id.SendButton);
+        Send = (ImageButton) findViewById(R.id.SendButton);
         MessageText = (EditText) findViewById(R.id.Message);
         chatBoxListView = (ListView) findViewById(R.id.chatBox);
         downBtn = (ImageButton) findViewById(R.id.chat_downBtn);
         Leave = (ImageButton) findViewById(R.id.LeaveRoom);
+        Attachment = (ImageButton) findViewById(R.id.Attachment);
+        imageView = (ImageView) findViewById(R.id.Imageview);
 
-        SharedPreferences settings = getSharedPreferences("Storage", MODE_PRIVATE);
+        settings = getSharedPreferences("Storage", MODE_PRIVATE);
         Token = settings.getString("Token", "n/a");
         String Username = settings.getString("Username", "n/a");
 
@@ -180,12 +202,13 @@ public class Room extends FragmentActivity {
         OkHttpClient client = new OkHttpClient.Builder().addInterceptor(new Interceptor() {
             @Override
             public okhttp3.Response intercept(Chain chain) throws IOException {
-                Request newRequest = chain.request().newBuilder()
+                Request newRequest  = chain.request().newBuilder()
                         .addHeader("Authorization", Token)
                         .build();
                 return chain.proceed(newRequest);
             }
         }).build();
+
 
         gson = new GsonBuilder()
                 .setLenient()
@@ -294,10 +317,19 @@ public class Room extends FragmentActivity {
         Send.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (!MessageText.getText().toString().equals("")) {
-                    Message.setMessage(MessageText.getText().toString().trim());
+                if (!MessageText.getText().toString().equals("") || attachment) {
                     Message.setMe(true);
                     Message.setRoomId(RoomId);
+                    if(!attachment){
+                        Message.setMessageType(0);
+                        Message.setMessage(MessageText.getText().toString().trim());
+                    }
+                    else{
+                        Message.setMessageType(1);
+                        Message.setMessage(requestImage);
+                        imageView.setVisibility(View.INVISIBLE);
+                        attachment = false;
+                    }
 
                     if (isReplying != -1)
                         Message.setParentId(isReplying);
@@ -310,6 +342,20 @@ public class Room extends FragmentActivity {
                     SendMessage(Message);
                 }
 
+            }
+        });
+
+        imageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                attachment = false;
+                imageView.setVisibility(View.INVISIBLE);
+            }
+        });
+        Attachment.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                selectImage(v.getContext());
             }
         });
 
@@ -379,6 +425,7 @@ public class Room extends FragmentActivity {
     public void SendMessage(MessageViewModel message) {
         try {
             hubConnection.invoke("SendMessageToRoom", message);
+
         } catch (Exception ex) {
             System.out.println(ex.getMessage());
         }
@@ -538,6 +585,105 @@ public class Room extends FragmentActivity {
         }, (Class<List<LoadAllMessagesViewModel>>) (Object) List.class);
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(resultCode != RESULT_CANCELED) {
+            switch (requestCode) {
+                case 0:
+                    if (resultCode == RESULT_OK && data != null) {
+                        Bitmap selectedImage = (Bitmap) data.getExtras().get("data");
+                        RequestOptions options = new RequestOptions()
+                                .centerCrop()
+                                .placeholder(R.mipmap.ic_launcher_round)
+                                .error(R.mipmap.ic_launcher_round);
+
+//                        ProfilePic.setImageBitmap(selectedImage);
+                    }
+
+                    break;
+                case 1:
+                    if (resultCode == RESULT_OK && data != null) {
+                        Uri selectedImage =  data.getData();
+
+                        String[] filePathColumn = {MediaStore.Images.Media.DATA};
+                        if (selectedImage != null) {
+                            Cursor cursor = getContentResolver().query(selectedImage,
+                                    filePathColumn, null, null, null);
+                            if (cursor != null) {
+                                cursor.moveToFirst();
+
+                                int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
+                                String picturePath = cursor.getString(columnIndex);
+
+                                imageView.setImageBitmap(BitmapFactory.decodeFile(picturePath));
+                                imageView.setVisibility(View.VISIBLE);
+                                File file = new File(picturePath);
+                                requestBody = RequestBody.create(MediaType.parse("multipart/form-data"), file);
+                                requestImage = MultipartBody.Part.createFormData("image", file.getName(), requestBody);
+                                attachment = true;
+
+                                cursor.close();
+                            }
+                        }
+
+                    }
+                    break;
+
+            }
+        }
+
+    }
+
+
+    private void selectImage(Context context) {
+        final CharSequence[] options = {"Take photo", "Choose from Gallery", "Cancel" };
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        builder.setTitle("Profile picture");
+
+        builder.setItems(options, new DialogInterface.OnClickListener() {
+
+            @RequiresApi(api = Build.VERSION_CODES.M)
+            @Override
+            public void onClick(DialogInterface dialog, int item) {
+
+                requestPermissions(PERMISSIONS, REQUEST_PERMISSIONS);
+
+                if (options[item].equals("Take Photo")) {
+                    Intent takePicture = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
+                    startActivityForResult(takePicture, 0);
+
+                }
+                if (options[item].equals("Choose from Gallery")) {
+                    Intent pickPhoto = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                    startActivityForResult(pickPhoto , 1);
+
+            @Override
+            public void onMenuModeChange(MenuBuilder menu) {}
+        });
+        optionsMenu.show(300,-150);
+    }
+}
+                }
+
+                else if(options[item].equals("Cancel")){
+                    dialog.dismiss();
+                }
+            }
+        });
+        builder.show();
+    }
+    private static final String[] PERMISSIONS = {
+            Manifest.permission.READ_EXTERNAL_STORAGE,
+            Manifest.permission.WRITE_EXTERNAL_STORAGE,
+            Manifest.permission.CAMERA,
+            Manifest.permission.INTERNET,
+            Manifest.permission.ACCESS_NETWORK_STATE,
+    };
+    private static final int REQUEST_PERMISSIONS = 12345;
+
+
     @SuppressLint("RestrictedApi")
     public void ShowFeatures(View v, ChatBoxModel chat) {
         MenuBuilder chatFeatures = new MenuBuilder(this);
@@ -565,6 +711,7 @@ public class Room extends FragmentActivity {
         optionsMenu.show(300,-150);
     }
 }
+
 
 
 class ChatBoxAdaptor extends BaseAdapter {

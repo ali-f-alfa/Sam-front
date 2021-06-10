@@ -15,7 +15,7 @@ public class MessageViewModel {
         this.userModel = userModel;
     }
 
-    public void setMessage(String message) {
+    public void setMessage(Object message) {
         this.message = message;
     }
 

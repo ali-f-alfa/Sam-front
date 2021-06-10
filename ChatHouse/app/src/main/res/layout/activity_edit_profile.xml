@@ -7,6 +7,7 @@
     android:layout_height="wrap_content"
     android:nestedScrollingEnabled="false"
     android:background="@drawable/b22"
+    android:id="@+id/EditProBack"
     tools:context=".Pages.EditProfile">
     <androidx.constraintlayout.widget.ConstraintLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
@@ -189,7 +190,7 @@
                             android:layout_height="wrap_content"
                             android:text="Wellness"
                             android:textSize="20dp"
-                            android:textColor="@color/almostorange"
+                            android:textColor="?colorSecondaryVariant"
                             android:layout_marginBottom="5dp"
 >
 
@@ -214,7 +215,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:textSize="20dp"
-                            android:textColor="@color/almostorange"
+                            android:textColor="?colorSecondaryVariant"
                             android:layout_marginBottom="5dp"
                             android:text="Identity"
                             >
@@ -238,7 +239,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:textSize="20dp"
-                            android:textColor="@color/almostorange"
+                            android:textColor="?colorSecondaryVariant"
                             android:layout_marginBottom="5dp"
                             android:text="Places"
                             >
@@ -265,7 +266,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:textSize="20dp"
-                            android:textColor="@color/almostorange"
+                            android:textColor="?colorSecondaryVariant"
                             android:text="World Affaris"
                             >
 
@@ -289,7 +290,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:textSize="20dp"
-                            android:textColor="@color/almostorange"
+                            android:textColor="?colorSecondaryVariant"
                             android:layout_marginBottom="5dp"
                             android:text="Tech"
                             >
@@ -313,7 +314,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:textSize="20dp"
-                            android:textColor="@color/almostorange"
+                            android:textColor="?colorSecondaryVariant"
                             android:layout_marginBottom="5dp"
                             android:text="Hanging Out"
                             >
@@ -339,7 +340,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:textSize="20dp"
-                            android:textColor="@color/almostorange"
+                            android:textColor="?colorSecondaryVariant"
                             android:layout_marginBottom="5dp"
                             android:text="Knowledge"
                             >
@@ -364,7 +365,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:textSize="20dp"
-                            android:textColor="@color/almostorange"
+                            android:textColor="?colorSecondaryVariant"
                             android:layout_marginBottom="5dp"
                             android:text="Hustle"
                             >
@@ -390,7 +391,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:textSize="20dp"
-                            android:textColor="@color/almostorange"
+                            android:textColor="?colorSecondaryVariant"
                             android:layout_marginBottom="5dp"
                             android:text="Sports"
                             >
@@ -417,7 +418,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:textSize="20dp"
-                            android:textColor="@color/almostorange"
+                            android:textColor="?colorSecondaryVariant"
                             android:layout_marginBottom="5dp"
                             android:text="Arts"
                             >
@@ -442,7 +443,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:textSize="20dp"
-                            android:textColor="@color/almostorange"
+                            android:textColor="?colorSecondaryVariant"
                             android:layout_marginBottom="5dp"
                             android:text="Life"
                             >
@@ -467,7 +468,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:textSize="20dp"
-                            android:textColor="@color/almostorange"
+                            android:textColor="?colorSecondaryVariant"
                             android:layout_marginBottom="5dp"
                             android:text="Languages"
                             >
@@ -494,7 +495,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:textSize="20dp"
-                            android:textColor="@color/almostorange"
+                            android:textColor="?colorSecondaryVariant"
                             android:layout_marginBottom="5dp"
                             android:text="Entertainment"
                             >
@@ -521,7 +522,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:textSize="20dp"
-                            android:textColor="@color/almostorange"
+                            android:textColor="?colorSecondaryVariant"
                             android:layout_marginBottom="5dp"
                             android:text="Faith"
                             >
@@ -554,7 +555,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/BioEdit"
             android:textSize="26dp"
-            android:textColor="@color/Verypink">
+            android:textColor="?colorSecondary">
 
         </TextView>
 
@@ -567,7 +568,7 @@
             android:backgroundTint="@color/white"
             android:layout_marginTop="10dp"
             android:text="Save"
-            android:textColor="@color/almostorange"
+            android:textColor="?colorSecondaryVariant"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/InterestEditContainer">
