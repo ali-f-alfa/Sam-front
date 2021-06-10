@@ -22,7 +22,7 @@
         <item name="colorPrimaryVariant">@color/yasi</item>
         <item name="colorOnPrimary">@color/purpulel</item>
         <!-- Secondary brand color. -->
-        <item name="colorSecondary">@color/purpulel</item>
+        <item name="colorSecondary">@color/puralmost</item>
         <item name="colorSecondaryVariant">@color/darkpur</item>
         <item name="colorOnSecondary">@color/puralmost</item>
         <!-- Status bar color. -->
