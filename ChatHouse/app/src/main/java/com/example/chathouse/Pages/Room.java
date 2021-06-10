@@ -4,10 +4,7 @@ import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.view.menu.MenuBuilder;
 import androidx.appcompat.view.menu.MenuPopupHelper;
-import androidx.appcompat.widget.LinearLayoutCompat;
 
-import android.graphics.Color;
-import android.graphics.drawable.Drawable;
 import android.widget.LinearLayout;
 import androidx.fragment.app.FragmentActivity;
 
@@ -20,11 +17,9 @@ import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.media.Image;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -35,12 +30,10 @@ import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
-import android.widget.PopupMenu;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -58,8 +51,6 @@ import com.example.chathouse.ViewModels.Room.ChatBoxModel;
 import com.example.chathouse.ViewModels.Room.GetRoomViewModel;
 import com.example.chathouse.ViewModels.Chat.JoinRoomViewModel;
 import com.example.chathouse.ViewModels.Chat.MessageViewModel;
-import com.example.chathouse.ViewModels.Search.InputRoomSearchViewModel;
-import com.example.chathouse.ViewModels.Search.InputSearchViewModel;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
@@ -72,7 +63,6 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import io.reactivex.Single;
-import microsoft.aspnet.signalr.client.hubs.HubProxy;
 import okhttp3.HttpUrl;
 import okhttp3.Interceptor;
 import okhttp3.MediaType;
@@ -111,6 +101,7 @@ public class Room extends FragmentActivity {
     public ArrayList<ChatBoxModel> Chats = new ArrayList<ChatBoxModel>();
     public ListView chatBoxListView;
     public ImageButton downBtn;
+    public ImageButton replyClear;
     private ImageButton Attachment;
     private Boolean attachment = false;
     private MultipartBody.Part requestImage;
@@ -118,7 +109,7 @@ public class Room extends FragmentActivity {
     private ImageView imageView;
     SharedPreferences settings;
     public int isReplying = -1;
-
+    public LinearLayout replyBar;
 
     @RequiresApi(api = Build.VERSION_CODES.R)
     @Override
@@ -139,9 +130,12 @@ public class Room extends FragmentActivity {
         MessageText = (EditText) findViewById(R.id.Message);
         chatBoxListView = (ListView) findViewById(R.id.chatBox);
         downBtn = (ImageButton) findViewById(R.id.chat_downBtn);
+        replyClear = (ImageButton) findViewById(R.id.reply_clear);
         Leave = (ImageButton) findViewById(R.id.LeaveRoom);
         Attachment = (ImageButton) findViewById(R.id.Attachment);
         imageView = (ImageView) findViewById(R.id.Imageview);
+        replyBar = (LinearLayout) findViewById(R.id.reply_bar);
+
 
         settings = getSharedPreferences("Storage", MODE_PRIVATE);
         Token = settings.getString("Token", "n/a");
@@ -150,27 +144,17 @@ public class Room extends FragmentActivity {
         RoomId = bundle.getInt("RoomId");
 
 
-//        ChatBoxModel test1 = new ChatBoxModel();
-//        test1.setId(1);
-//        test1.setMessage("message is here \n my name is ali \n do you know me ?");
-//        test1.setFirstName("ali");
-//        test1.setLastName("farahat");
-//        test1.setTime(new Date());
-//        test1.setMode(-1);
-//        Chats.add(test1);
-//        ChatBoxModel test2 = new ChatBoxModel();
-//        test2.setId(2);
-//        test2.setParentId(1);
-//        test2.setMessage("message 2");
-//        test2.setFirstName("melika");
-//        test2.setLastName("ahmadi");
-//        test2.setTime(new Date());
-//        test2.setMode(2);
-//        Chats.add(test2);
-
         ChatAdaptor = new ChatBoxAdaptor(Room.this, Chats, chatBoxListView);
         chatBoxListView.setAdapter(ChatAdaptor);
         ChatAdaptor.notifyDataSetChanged();
+
+        replyClear.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                isReplying = -1;
+                replyBar.setVisibility(View.GONE);
+            }
+        });
 
         chatBoxListView.setOnScrollListener(new AbsListView.OnScrollListener() {
             @Override
@@ -335,11 +319,14 @@ public class Room extends FragmentActivity {
                         Message.setParentId(isReplying);
                     else
                         Message.setParentId(-1);
+
                     me = new SearchPerson(Response.getUsername(), Response.getImageLink(), Response.getFirstName(), Response.getLastName());
 
                     Message.setUserModel(me);
                     MessageText.setText("");
                     SendMessage(Message);
+                    isReplying = -1;
+                    replyBar.setVisibility(View.GONE);
                 }
 
             }
@@ -455,13 +442,13 @@ public class Room extends FragmentActivity {
             if (messageModel.isMe() == true) {
 //                Toast.makeText(Room.this, "parentId is: "+x.getParentId(), Toast.LENGTH_LONG).show();
                 Log.println(Log.ERROR, "ssssssss", "parentId is : " + String.valueOf(messageModel.getParentId()));
-                if (x.getParentId() == 0)
+                if (x.getParentId() == -1)
                     x.setMode(1);
                 else
                     x.setMode(2);
             } else if (messageModel.isMe() == false) {
 
-                if (x.getParentId() == 0)
+                if (x.getParentId() == -1)
                     x.setMode(-1);
                 else
                     x.setMode(-2);
@@ -659,12 +646,6 @@ public class Room extends FragmentActivity {
                     Intent pickPhoto = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
                     startActivityForResult(pickPhoto , 1);
 
-            @Override
-            public void onMenuModeChange(MenuBuilder menu) {}
-        });
-        optionsMenu.show(300,-150);
-    }
-}
                 }
 
                 else if(options[item].equals("Cancel")){
@@ -674,6 +655,7 @@ public class Room extends FragmentActivity {
         });
         builder.show();
     }
+
     private static final String[] PERMISSIONS = {
             Manifest.permission.READ_EXTERNAL_STORAGE,
             Manifest.permission.WRITE_EXTERNAL_STORAGE,
@@ -700,6 +682,7 @@ public class Room extends FragmentActivity {
                 switch (item.getItemId()) {
                     case R.id.reply:
                         isReplying = chat.getId();
+                        openReplyBar(chat);
                         break;
                 }
                 return true;
@@ -709,6 +692,15 @@ public class Room extends FragmentActivity {
             public void onMenuModeChange(MenuBuilder menu) {}
         });
         optionsMenu.show(300,-150);
+    }
+
+    private void openReplyBar(ChatBoxModel replyingTo) {
+        replyBar.setVisibility(View.VISIBLE);
+        TextView namee = findViewById(R.id.reply_bar_name);
+        TextView mesagee = findViewById(R.id.reply_bar_message);
+        namee.setText(replyingTo.getFirstName() + " " + replyingTo.getLastName());
+        mesagee.setText(replyingTo.getMessage().replace('\n', ' '));
+
     }
 }
 
@@ -838,6 +830,16 @@ class ChatBoxAdaptor extends BaseAdapter {
             Glide.with(mContext).load(chat.getImageLink())
                     .apply(options).transform(new CircleCrop()).into(holder.Image);
 
+            holder.Image.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(mContext, ProfilePage.class);
+                    Bundle bundle1 = new Bundle();
+                    bundle1.putString("Username", chat.getUserName());
+                    intent.putExtras(bundle1);
+                    mContext.startActivity(intent);
+                }
+            });
 
             ChatBoxModel replied = null;
             int repliedPosition = -1;
