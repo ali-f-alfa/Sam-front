@@ -4,13 +4,23 @@ import java.util.Date;
 
 public class ChatBoxModel {
     private String message;
-    private String id;
+    private int id;
     private Date time;
     private String firstName;
     private String lastName;
     private String userName;
     private String imageLink;
-    private String parentId;
+    private int parentId;
+
+    public int getParentPosition() {
+        return parentPosition;
+    }
+
+    public void setParentPosition(int parentPosition) {
+        this.parentPosition = parentPosition;
+    }
+
+    private int parentPosition;
     private int mode;
 
 
@@ -22,11 +32,11 @@ public class ChatBoxModel {
         this.message = message;
     }
 
-    public String getId() {
+    public int getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(int id) {
         this.id = id;
     }
 
@@ -70,11 +80,11 @@ public class ChatBoxModel {
         this.imageLink = imageLink;
     }
 
-    public String getParentId() {
+    public int getParentId() {
         return parentId;
     }
 
-    public void setParentId(String parentId) {
+    public void setParentId(int parentId) {
         this.parentId = parentId;
     }
 

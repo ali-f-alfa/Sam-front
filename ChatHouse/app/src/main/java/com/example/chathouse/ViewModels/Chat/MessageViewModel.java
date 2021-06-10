@@ -5,10 +5,10 @@ import com.example.chathouse.ViewModels.Acount.SearchPerson;
 public class MessageViewModel {
     private SearchPerson userModel;
     private Object message;
-    private int roomId;
+    private Integer roomId;
     private boolean isMe;
     private int messageType = 0;
-    public int parentId;
+    private int parentId;
 
 
     public void setUserModel(SearchPerson userModel) {
@@ -19,7 +19,7 @@ public class MessageViewModel {
         this.message = message;
     }
 
-    public void setRoomId(int roomId) {
+    public void setRoomId(Integer roomId) {
         this.roomId = roomId;
     }
 
@@ -40,8 +40,12 @@ public class MessageViewModel {
         return message;
     }
 
-    public int getRoomId() {
+    public Integer getRoomId() {
         return roomId;
+    }
+
+    public void setParentId(int parentId) {
+        this.parentId = parentId;
     }
 
     public boolean isMe() {

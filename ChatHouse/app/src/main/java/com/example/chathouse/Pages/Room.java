@@ -1,15 +1,28 @@
 package com.example.chathouse.Pages;
 
 import androidx.annotation.RequiresApi;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.view.menu.MenuBuilder;
+import androidx.appcompat.view.menu.MenuPopupHelper;
+import androidx.appcompat.widget.LinearLayoutCompat;
+
+import android.graphics.Color;
+import android.graphics.drawable.Drawable;
+import android.widget.LinearLayout;
 import androidx.fragment.app.FragmentActivity;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
@@ -20,6 +33,7 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.PopupMenu;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -47,6 +61,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import io.reactivex.Single;
 import microsoft.aspnet.signalr.client.hubs.HubProxy;
@@ -85,7 +100,12 @@ public class Room extends FragmentActivity {
     public ArrayList<ChatBoxModel> Chats = new ArrayList<ChatBoxModel>();
     public ListView chatBoxListView;
     public ImageButton downBtn;
+    public int isReplying = -1;
 
+
+    public ListView getChatBoxListView() {
+        return chatBoxListView;
+    }
 
     @RequiresApi(api = Build.VERSION_CODES.R)
     @Override
@@ -108,7 +128,25 @@ public class Room extends FragmentActivity {
         RoomId = bundle.getInt("RoomId");
 
 
-        ChatAdaptor = new ChatBoxAdaptor(Room.this, Chats);
+//        ChatBoxModel test1 = new ChatBoxModel();
+//        test1.setId(1);
+//        test1.setMessage("message is here \n my name is ali \n do you know me ?");
+//        test1.setFirstName("ali");
+//        test1.setLastName("farahat");
+//        test1.setTime(new Date());
+//        test1.setMode(-1);
+//        Chats.add(test1);
+//        ChatBoxModel test2 = new ChatBoxModel();
+//        test2.setId(2);
+//        test2.setParentId(1);
+//        test2.setMessage("message 2");
+//        test2.setFirstName("melika");
+//        test2.setLastName("ahmadi");
+//        test2.setTime(new Date());
+//        test2.setMode(2);
+//        Chats.add(test2);
+
+        ChatAdaptor = new ChatBoxAdaptor(Room.this, Chats, chatBoxListView);
         chatBoxListView.setAdapter(ChatAdaptor);
         ChatAdaptor.notifyDataSetChanged();
 
@@ -189,6 +227,12 @@ public class Room extends FragmentActivity {
                 SearchPerson person = new SearchPerson(Username, Response.getImageLink(), Response.getFirstName(), Response.getLastName());
                 JoinHub.setUser(person);
                 Join();
+                try {
+                    TimeUnit.MILLISECONDS.sleep(1000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+
                 LoadAllMessages(Username, RoomId);
 
             }
@@ -240,6 +284,12 @@ public class Room extends FragmentActivity {
             }
         });
 
+        chatBoxListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                ShowFeatures(view, (ChatBoxModel) chatBoxListView.getAdapter().getItem(position));
+            }
+        });
 
         Send.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -249,6 +299,10 @@ public class Room extends FragmentActivity {
                     Message.setMe(true);
                     Message.setRoomId(RoomId);
 
+                    if (isReplying != -1)
+                        Message.setParentId(isReplying);
+                    else
+                        Message.setParentId(-1);
                     me = new SearchPerson(Response.getUsername(), Response.getImageLink(), Response.getFirstName(), Response.getLastName());
 
                     Message.setUserModel(me);
@@ -343,16 +397,28 @@ public class Room extends FragmentActivity {
         hubConnection.on("ReceiveRoomMessage", (messageModel) ->
         {
             ChatBoxModel x = new ChatBoxModel();
+            x.setId(messageModel.getRoomId());
+            x.setParentId(messageModel.getParentId());
             x.setFirstName(messageModel.getUserModel().getFirstName());
             x.setLastName(messageModel.getUserModel().getLastName());
             x.setMessage(messageModel.getMessage().toString());
             x.setImageLink(messageModel.getUserModel().getImageLink());
             x.setUserName(messageModel.getUserModel().getUsername());
             x.setTime(new Date());
-            if (messageModel.isMe() == true)
-                x.setMode(1);
-            else if (messageModel.isMe() == false)
-                x.setMode(-1);
+            if (messageModel.isMe() == true) {
+//                Toast.makeText(Room.this, "parentId is: "+x.getParentId(), Toast.LENGTH_LONG).show();
+                Log.println(Log.ERROR, "ssssssss", "parentId is : " + String.valueOf(messageModel.getParentId()));
+                if (x.getParentId() == 0)
+                    x.setMode(1);
+                else
+                    x.setMode(2);
+            } else if (messageModel.isMe() == false) {
+
+                if (x.getParentId() == 0)
+                    x.setMode(-1);
+                else
+                    x.setMode(-2);
+            }
             runOnUiThread(new Runnable() {
 
                 @Override
@@ -421,22 +487,30 @@ public class Room extends FragmentActivity {
                 LoadAllMessagesViewModel x = gson.fromJson(s2, LoadAllMessagesViewModel.class);
                 ChatBoxModel chat = new ChatBoxModel();
                 int contentType = x.contetntType;
-               if(contentType == 0){
-                   chat.setFirstName(x.getSender().getFirstName());
-                   chat.setLastName(x.getSender().getLastName());
-                   chat.setImageLink(x.getSender().getImageLink());
-                   chat.setUserName(x.getSender().getUsername());
-                   chat.setTime(x.sentDate);
-                   if (x.getMe() == true)
-                       chat.setMode(1);
-                   else if (x.getMe() == false)
-                       chat.setMode(-1);
-                   chat.setMessage(x.getContent());
-               }
-               else if(contentType == 2){
-                   chat.setMode(0);
-                   if (x.getMe()) {
-                       chat.setMessage("You joined this room");
+                if (contentType == 0) {
+                    chat.setId(x.getId());
+                    chat.setParentId(x.getParentId());
+                    chat.setFirstName(x.getSender().getFirstName());
+                    chat.setLastName(x.getSender().getLastName());
+                    chat.setImageLink(x.getSender().getImageLink());
+                    chat.setUserName(x.getSender().getUsername());
+                    chat.setTime(x.sentDate);
+                    if (x.getMe() == true) {
+                        if (x.getParentId() == -1)
+                            chat.setMode(1);
+                        else
+                            chat.setMode(2);
+                    } else if (x.getMe() == false) {
+                        if (x.getParentId() == -1)
+                            chat.setMode(-1);
+                        else
+                            chat.setMode(-2);
+                    }
+                    chat.setMessage(x.getContent());
+                } else if (contentType == 2) {
+                    chat.setMode(0);
+                    if (x.getMe()) {
+                        chat.setMessage("You joined this room");
 
                     } else {
                         chat.setMessage(x.getSender().getUsername() + " join this room");
@@ -463,6 +537,33 @@ public class Room extends FragmentActivity {
             }
         }, (Class<List<LoadAllMessagesViewModel>>) (Object) List.class);
     }
+
+    @SuppressLint("RestrictedApi")
+    public void ShowFeatures(View v, ChatBoxModel chat) {
+        MenuBuilder chatFeatures = new MenuBuilder(this);
+
+        MenuInflater inflater = new MenuInflater(this);
+        inflater.inflate(R.menu.chat_features, chatFeatures);
+        MenuPopupHelper optionsMenu = new MenuPopupHelper(this, chatFeatures, v);
+        optionsMenu.setForceShowIcon(true);
+        optionsMenu.setGravity(1);
+        chatFeatures.setCallback(new MenuBuilder.Callback() {
+            @Override
+            public boolean onMenuItemSelected(MenuBuilder menu, MenuItem item) {
+
+                switch (item.getItemId()) {
+                    case R.id.reply:
+                        isReplying = chat.getId();
+                        break;
+                }
+                return true;
+            }
+
+            @Override
+            public void onMenuModeChange(MenuBuilder menu) {}
+        });
+        optionsMenu.show(300,-150);
+    }
 }
 
 
@@ -470,12 +571,14 @@ class ChatBoxAdaptor extends BaseAdapter {
 
     Context mContext;
     LayoutInflater inflater;
+    ListView ChatListView;
     private List<ChatBoxModel> ChatsList = null;
 
-    public ChatBoxAdaptor(Context context, List<ChatBoxModel> chatsList) {
+    public ChatBoxAdaptor(Context context, List<ChatBoxModel> chatsList, ListView chatListView) {
         mContext = context;
         this.ChatsList = chatsList;
         inflater = LayoutInflater.from(mContext);
+        this.ChatListView = chatListView;
 
     }
 
@@ -485,6 +588,10 @@ class ChatBoxAdaptor extends BaseAdapter {
         TextView time;
         ImageView Image;
 
+        TextView replied_message;
+        TextView replied_name;
+
+        LinearLayout repliedPart;
     }
 
     @Override
@@ -539,7 +646,6 @@ class ChatBoxAdaptor extends BaseAdapter {
             });
 
 
-
         } else if (ChatsList.get(position).getMode() == 1) {
             view = inflater.inflate(R.layout.chat_right, null);
 
@@ -561,6 +667,97 @@ class ChatBoxAdaptor extends BaseAdapter {
 
             holder.message.setText(chat.getMessage());
 
+        } else if (ChatsList.get(position).getMode() == -2) {
+            view = inflater.inflate(R.layout.chat_reply_left, null);
+
+            holder.message = (TextView) view.findViewById(R.id.chat_message_left_reply);
+            holder.name = (TextView) view.findViewById(R.id.chat_name_left_reply);
+            holder.time = (TextView) view.findViewById(R.id.chat_time_left_reply);
+            holder.replied_message = (TextView) view.findViewById(R.id.chat_replied_message_left_reply);
+            holder.replied_name = (TextView) view.findViewById(R.id.chat_replied_name_left_reply);
+            holder.Image = (ImageView) view.findViewById(R.id.chat_image_left_reply);
+            holder.repliedPart = (LinearLayout) view.findViewById(R.id.chat_replied_box_left_reply);
+
+
+            holder.message.setText(chat.getMessage());
+            holder.name.setText(chat.getFirstName() + " " + chat.getLastName());
+
+            SimpleDateFormat formatter = new SimpleDateFormat("hh:mm aa");
+            holder.time.setText(formatter.format(chat.getTime()));
+
+            RequestOptions options = new RequestOptions()
+                    .placeholder(R.mipmap.default_user_profile)
+                    .centerCrop();
+            Glide.with(mContext).load(chat.getImageLink())
+                    .apply(options).transform(new CircleCrop()).into(holder.Image);
+
+
+            ChatBoxModel replied = null;
+            int repliedPosition = -1;
+            for (ChatBoxModel ch : ChatsList) {
+                repliedPosition += 1;
+                if (ch.getId() == chat.getParentId()) {
+                    replied = ch;
+                    chat.setParentPosition(repliedPosition);
+                    break;
+                }
+            }
+            if (replied != null) {
+                holder.replied_message.setText(replied.getMessage().replace('\n', ' '));
+                holder.replied_name.setText(replied.getFirstName() + " " + replied.getLastName());
+
+                int finalRepliedPosition = repliedPosition;
+                holder.repliedPart.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        ChatListView.smoothScrollToPosition(finalRepliedPosition);
+                    }
+                });
+            } else
+                holder.replied_message.setText("no message found!");
+
+
+            view.setTag(holder);
+        } else if (ChatsList.get(position).getMode() == 2) {
+            view = inflater.inflate(R.layout.chat_reply_right, null);
+
+            holder.message = (TextView) view.findViewById(R.id.chat_message_right_reply);
+            holder.time = (TextView) view.findViewById(R.id.chat_time_right_reply);
+            holder.replied_message = (TextView) view.findViewById(R.id.chat_replied_message_right_reply);
+            holder.replied_name = (TextView) view.findViewById(R.id.chat_replied_name_right_reply);
+            holder.repliedPart = (LinearLayout) view.findViewById(R.id.chat_replied_box_right_reply);
+
+            holder.message.setText(chat.getMessage());
+
+            SimpleDateFormat formatter = new SimpleDateFormat("hh:mm aa");
+            holder.time.setText(formatter.format(chat.getTime()));
+
+
+            ChatBoxModel replied = null;
+            int repliedPosition = -1;
+            for (ChatBoxModel ch : ChatsList) {
+                repliedPosition += 1;
+                if (ch.getId() == chat.getParentId()) {
+                    replied = ch;
+                    chat.setParentPosition(repliedPosition);
+                    break;
+                }
+            }
+            if (replied != null) {
+                holder.replied_message.setText(replied.getMessage().replace('\n', ' '));
+                holder.replied_name.setText(replied.getFirstName() + " " + replied.getLastName());
+
+                int finalRepliedPosition = repliedPosition;
+                holder.repliedPart.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        ChatListView.smoothScrollToPosition(finalRepliedPosition);
+                    }
+                });
+            } else
+                holder.replied_message.setText("no message found!");
+
+            view.setTag(holder);
         }
 
 
