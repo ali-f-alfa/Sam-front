@@ -5,8 +5,8 @@ import com.example.chathouse.ViewModels.Acount.SearchPerson;
 import java.util.Date;
 
 public class LoadAllMessagesViewModel {
-    public int id ;
-    public int parentId ;
+    public Integer id ;
+    public Integer parentId ;
     public String content ;
     public int contetntType ;
     public Date sentDate ;
@@ -18,7 +18,11 @@ public class LoadAllMessagesViewModel {
         return id;
     }
 
-    public int getParentId() {
+    public void setParentId(Integer parentId) {
+        this.parentId = parentId;
+    }
+
+    public Integer getParentId() {
         return parentId;
     }
 

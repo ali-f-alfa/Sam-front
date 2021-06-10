@@ -22,6 +22,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -202,7 +203,6 @@ public class EditProfile extends AppCompatActivity {
                 .centerCrop()
                 .placeholder(R.mipmap.default_user_profile)
                 .error(R.mipmap.default_user_profile);
-
 
 
         Glide.with(this).load(bundle.getString("imageLink")).apply(options).skipMemoryCache(true) //2
