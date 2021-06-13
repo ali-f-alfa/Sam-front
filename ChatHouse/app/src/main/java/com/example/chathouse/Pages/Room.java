@@ -233,14 +233,9 @@ public class Room extends FragmentActivity {
                 JoinHub.setRoomId(RoomId);
                 SearchPerson person = new SearchPerson(Username, Response.getImageLink(), Response.getFirstName(), Response.getLastName());
                 JoinHub.setUser(person);
-                Join();
-                try {
-                    TimeUnit.MILLISECONDS.sleep(1000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-
                 LoadAllMessages(Username, RoomId);
+                Join();
+
 
             }
 
@@ -386,14 +381,20 @@ public class Room extends FragmentActivity {
         hubConnection = HubConnectionBuilder.create(Constants.serverUrl).withAccessTokenProvider(Single.defer(() -> {
             return Single.just(Token);
         })).build();
+        try {
+            hubConnection.start().blockingAwait();
+            Log.println(Log.ERROR, "connection","connected");
 
-        hubConnection.start();
-
+        }
+        catch (Exception ex){
+            Log.println(Log.ERROR, "connecting failed:", ex.getMessage());
+        }
     }
 
     public void Leave() {
         try {
             hubConnection.invoke("LeaveRoom", JoinHub);
+            Log.println(Log.DEBUG, "leave","leave connection");
         } catch (Exception ex) {
             System.out.println(ex.getMessage());
         }
@@ -422,7 +423,7 @@ public class Room extends FragmentActivity {
         try {
             hubConnection.invoke("LoadRoomMessages", roomId, username);
         } catch (Exception ex) {
-            System.out.println(ex.getMessage());
+            Log.println(Log.ERROR,"aaaaa",ex.getMessage());
         }
     }
 
@@ -770,7 +771,8 @@ class ChatBoxAdaptor extends BaseAdapter {
             RequestOptions options = new RequestOptions()
                     .placeholder(R.mipmap.default_user_profile)
                     .centerCrop();
-            Glide.with(mContext).load(chat.getImageLink())
+            if (chat.getImageLink() != null)
+                Glide.with(mContext).load(chat.getImageLink())
                     .apply(options).transform(new CircleCrop()).into(holder.Image);
 
             holder.Image.setOnClickListener(new View.OnClickListener() {
@@ -827,7 +829,8 @@ class ChatBoxAdaptor extends BaseAdapter {
             RequestOptions options = new RequestOptions()
                     .placeholder(R.mipmap.default_user_profile)
                     .centerCrop();
-            Glide.with(mContext).load(chat.getImageLink())
+            if (chat.getImageLink() != null)
+                Glide.with(mContext).load(chat.getImageLink())
                     .apply(options).transform(new CircleCrop()).into(holder.Image);
 
             holder.Image.setOnClickListener(new View.OnClickListener() {
