@@ -7,22 +7,23 @@
 <!--    <color name="teal_700">#FF018786</color>-->
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
-    <color name="light">#E7D2CC</color>
-    <color name="almostblack">#67595E</color>
-    <color name="almostpink">#FFC5D0</color>
-    <color name="gray">#54627B</color>
-    <color name="almostorange">#E98980</color>
-    <color name="Pink">#FB6B90</color>
-    <color name="Verypink">#710117</color>
-    <color name="Orange">#D48C70</color>
-    <color name="almostgreen">#EBBBB0</color>
-    <color name="purpulelight">#917898</color>
-    <color name="purpulel">#603D65</color>
-    <color name="betweengraypurpule">#9C97B3</color>
-    <color name="darkpur">#5C1CCF</color>
-    <color name="purlight">#d5ddef</color>
-    <color name="puralmost">#BA99A4</color>
-    <color name="yasi">#9885b2</color>
+
+    
+    <color name="LightCreamy">#ECD8D2</color>
+    <color name="LightBlue">#e1e5ea</color>
+
+    <color name="LightPink">#da7f8f</color>
+    <color name="DarkPink">#7b113a</color>
+    <color name="DarkGray">#536162</color>
+
+    <color name="LightBlueAndGray">#a7bbc7</color>
+    <color name="LightOrange">#f2a365</color>
+
+    <color name="VeryDarkGray">#222831</color>
+    <color name="DarkBlue">#30475e</color>
+    <color name="Silver">#ececec</color>
+
+
 
 
 

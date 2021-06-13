@@ -42,7 +42,7 @@
                     android:layout_gravity="left"
                     android:maxWidth="250dp"
                     android:text="MessageMessageMessageMessageMessageMessageMessageMessage\nhello\nMessageMessageMessageMessage"
-                    android:textColor="@color/black"
+                    android:textColor="?colorOnSurface"
                     android:textSize="14dp"
                     android:textStyle="normal">
 

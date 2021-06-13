@@ -22,7 +22,7 @@
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="5dp"
             android:layout_toEndOf="@+id/chat_image_left_reply"
-            android:backgroundTint="?colorOnSecondary"
+            android:backgroundTint="?colorOnPrimarySurface"
             android:minWidth="80dp"
             android:minHeight="60dp"
             app:cardCornerRadius="13dp"
@@ -58,7 +58,7 @@
                     <View
                         android:layout_width="2dp"
                         android:layout_height="match_parent"
-                        android:background="@color/Verypink"
+                        android:background="?colorSecondary"
                         android:layout_marginVertical="3dp"/>
 
                     <LinearLayout
@@ -88,7 +88,7 @@
                             android:maxWidth="230dp"
                             android:maxLines="1"
                             android:text="replied message is herehereherehere"
-                            android:textColor="@color/black"
+                            android:textColor="?colorOnSurface"
                             android:textSize="14dp"
                             android:textStyle="normal"/>
                     </LinearLayout>
@@ -103,7 +103,7 @@
                     android:maxWidth="250dp"
                     android:layout_marginTop="2dp"
                     android:text="a\"
-                    android:textColor="@color/black"
+                    android:textColor="?colorOnSurface"
                     android:textSize="14dp"
                     android:textStyle="normal">
 
