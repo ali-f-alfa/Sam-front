@@ -22,7 +22,7 @@
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="5dp"
             android:layout_toEndOf="@+id/chat_image_left_reply"
-            android:backgroundTint="?colorOnSecondary"
+            android:backgroundTint="?colorOnPrimarySurface"
             android:minWidth="80dp"
             android:minHeight="60dp"
             app:cardCornerRadius="13dp"
