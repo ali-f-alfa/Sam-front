@@ -115,7 +115,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="right"
                     android:text="2:20 PM"
-                    android:textColor="@color/gray"
+                    android:textColor="?colorPrimary"
                     android:textSize="12dp"
                     android:textStyle="normal">
 
