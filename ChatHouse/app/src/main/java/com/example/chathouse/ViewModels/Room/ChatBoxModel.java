@@ -10,6 +10,16 @@ public class ChatBoxModel {
     private String lastName;
     private String userName;
     private String imageLink;
+
+    public String getMessageImageLink() {
+        return messageImageLink;
+    }
+
+    public void setMessageImageLink(String messageImageLink) {
+        this.messageImageLink = messageImageLink;
+    }
+
+    private String messageImageLink;
     private int parentId;
 
     public int getParentPosition() {

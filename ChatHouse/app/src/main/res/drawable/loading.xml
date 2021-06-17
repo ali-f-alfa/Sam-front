@@ -12,9 +12,10 @@
         android:thicknessRatio="4.0">
 
         <gradient
-            android:centerColor="?colorSecondary"
-            android:endColor="?colorSecondary"
-            android:startColor="?colorSecondary"
+            android:gradientRadius="20"
+            android:centerColor="@color/black"
+            android:endColor="@color/black"
+            android:startColor="@color/black"
             android:angle="0"
             android:type="radial"
             android:useLevel="false" />
