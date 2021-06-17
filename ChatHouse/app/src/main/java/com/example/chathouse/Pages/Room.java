@@ -1034,7 +1034,7 @@ class ChatBoxAdaptor extends BaseAdapter {
                 holder.repliedPart.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        ChatListView.smoothScrollToPosition(finalRepliedPosition - 2);
+                        ChatListView.smoothScrollToPosition(finalRepliedPosition);
                     }
                 });
             } else
@@ -1075,7 +1075,7 @@ class ChatBoxAdaptor extends BaseAdapter {
                 holder.repliedPart.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        ChatListView.smoothScrollToPosition(finalRepliedPosition - 2);
+                        ChatListView.smoothScrollToPosition(finalRepliedPosition);
                     }
                 });
             } else
@@ -1188,7 +1188,7 @@ class ChatBoxAdaptor extends BaseAdapter {
                 holder.repliedPart.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        ChatListView.smoothScrollToPosition(finalRepliedPosition - 2);
+                        ChatListView.smoothScrollToPosition(finalRepliedPosition);
                     }
                 });
             } else
@@ -1229,7 +1229,7 @@ class ChatBoxAdaptor extends BaseAdapter {
                 holder.repliedPart.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        ChatListView.smoothScrollToPosition(finalRepliedPosition - 2);
+                        ChatListView.smoothScrollToPosition(finalRepliedPosition);
                     }
                 });
             } else
