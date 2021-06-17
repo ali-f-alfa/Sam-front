@@ -6,6 +6,7 @@ import androidx.appcompat.view.menu.MenuBuilder;
 import androidx.appcompat.view.menu.MenuPopupHelper;
 
 import android.widget.LinearLayout;
+
 import androidx.fragment.app.FragmentActivity;
 
 import android.Manifest;
@@ -110,12 +111,14 @@ public class Room extends FragmentActivity {
     SharedPreferences settings;
     public int isReplying = -1;
     public LinearLayout replyBar;
+    public ImageView repliedImage;
+    private ImageButton SendButtonImage;
 
     @RequiresApi(api = Build.VERSION_CODES.R)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        settings  = getSharedPreferences("Theme", Context.MODE_PRIVATE);
+        settings = getSharedPreferences("Theme", Context.MODE_PRIVATE);
         String themeName = settings.getString("ThemeName", "DarkTheme");
         if (themeName.equalsIgnoreCase("DarkTheme")) {
             setTheme(R.style.DarkTheme_ChatHouse);
@@ -135,8 +138,11 @@ public class Room extends FragmentActivity {
         Attachment = (ImageButton) findViewById(R.id.Attachment);
         imageView = (ImageView) findViewById(R.id.Imageview);
         replyBar = (LinearLayout) findViewById(R.id.reply_bar);
+        repliedImage = findViewById(R.id.reply_bar_image);
+        SendButtonImage = (ImageButton)findViewById(R.id.SendButtonImage);
 
-
+        SendButtonImage.setVisibility(View.GONE);
+        imageView.setVisibility(View.GONE);
         settings = getSharedPreferences("Storage", MODE_PRIVATE);
         Token = settings.getString("Token", "n/a");
         String Username = settings.getString("Username", "n/a");
@@ -186,7 +192,7 @@ public class Room extends FragmentActivity {
         OkHttpClient client = new OkHttpClient.Builder().addInterceptor(new Interceptor() {
             @Override
             public okhttp3.Response intercept(Chain chain) throws IOException {
-                Request newRequest  = chain.request().newBuilder()
+                Request newRequest = chain.request().newBuilder()
                         .addHeader("Authorization", Token)
                         .build();
                 return chain.proceed(newRequest);
@@ -289,7 +295,91 @@ public class Room extends FragmentActivity {
         chatBoxListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                ShowFeatures(view, (ChatBoxModel) chatBoxListView.getAdapter().getItem(position));
+                ChatBoxModel item = (ChatBoxModel) chatBoxListView.getAdapter().getItem(position);
+                if (item.getMode() != 0)
+                    ShowFeatures(view, item);
+            }
+        });
+
+        SendButtonImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Call<Void> SendImage = APIS.SendImage(Response.getFirstName(), Response.getLastName(), Response.getUsername(),
+                        Response.getImageLink(), String.valueOf(1), RoomId, MessageText.getText().toString(), true, String.valueOf(-1), hubConnection.getConnectionId(), requestImage);
+                if(attachment){
+                    SendImage.enqueue(new Callback<Void>() {
+                        @Override
+                        public void onResponse(Call<Void> call, retrofit2.Response<Void> response) {
+
+                            if(!response.isSuccessful()){
+                                try {
+                                    System.out.println("1" + response.errorBody().string());
+                                    System.out.println("1" + response.code());
+                                    System.out.println(response.errorBody().string());
+                                } catch (IOException e) {
+                                    System.out.println("2" + response.errorBody().toString());
+                                    e.printStackTrace();
+                                }
+                                return;
+                            }
+                            MessageText.setText("");
+                            System.out.println("Image Is Fine");
+                            SendButtonImage.setVisibility(View.GONE);
+                            imageView.setVisibility(View.GONE);
+
+
+                        }
+
+                        @Override
+                        public void onFailure(Call<Void> call, Throwable t) {
+
+                        }
+                    });
+                }
+                imageView.setVisibility(View.INVISIBLE);
+                attachment = false;
+
+            }
+        });
+
+        SendButtonImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Call<Void> SendImage = APIS.SendImage(Response.getFirstName(), Response.getLastName(), Response.getUsername(),
+                        Response.getImageLink(), String.valueOf(1), RoomId, MessageText.getText().toString(), true, String.valueOf(isReplying), hubConnection.getConnectionId(), requestImage);
+                if(attachment){
+                    SendImage.enqueue(new Callback<Void>() {
+                        @Override
+                        public void onResponse(Call<Void> call, retrofit2.Response<Void> response) {
+
+                            if(!response.isSuccessful()){
+                                try {
+                                    System.out.println("1" + response.errorBody().string());
+                                    System.out.println("1" + response.code());
+                                    System.out.println(response.errorBody().string());
+                                } catch (IOException e) {
+                                    System.out.println("2" + response.errorBody().toString());
+                                    e.printStackTrace();
+                                }
+                                return;
+                            }
+                            MessageText.setText("");
+                            System.out.println("Image Is Fine");
+                            SendButtonImage.setVisibility(View.GONE);
+                            imageView.setVisibility(View.GONE);
+
+
+                        }
+
+                        @Override
+                        public void onFailure(Call<Void> call, Throwable t) {
+
+                        }
+                    });
+                }
+                imageView.setVisibility(View.INVISIBLE);
+                attachment = false;
+
             }
         });
 
@@ -302,12 +392,13 @@ public class Room extends FragmentActivity {
                     if(!attachment){
                         Message.setMessageType(0);
                         Message.setMessage(MessageText.getText().toString().trim());
-                    }
-                    else{
-                        Message.setMessageType(1);
-                        Message.setMessage(requestImage);
-                        imageView.setVisibility(View.INVISIBLE);
-                        attachment = false;
+                        me = new SearchPerson(Response.getUsername(), Response.getImageLink(), Response.getFirstName(), Response.getLastName());
+
+                        Message.setUserModel(me);
+                        MessageText.setText("");
+                        Message.setParentId(isReplying);
+
+                        SendMessage(Message);
                     }
 
                     if (isReplying != -1)
@@ -315,11 +406,7 @@ public class Room extends FragmentActivity {
                     else
                         Message.setParentId(-1);
 
-                    me = new SearchPerson(Response.getUsername(), Response.getImageLink(), Response.getFirstName(), Response.getLastName());
 
-                    Message.setUserModel(me);
-                    MessageText.setText("");
-                    SendMessage(Message);
                     isReplying = -1;
                     replyBar.setVisibility(View.GONE);
                 }
@@ -327,10 +414,12 @@ public class Room extends FragmentActivity {
             }
         });
 
+
         imageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 attachment = false;
+                SendButtonImage.setVisibility(View.GONE);
                 imageView.setVisibility(View.INVISIBLE);
             }
         });
@@ -383,18 +472,18 @@ public class Room extends FragmentActivity {
         })).build();
         try {
             hubConnection.start().blockingAwait();
-            Log.println(Log.ERROR, "connection","connected");
+            Log.println(Log.ERROR, "connection", "connected");
 
-        }
-        catch (Exception ex){
+        } catch (Exception ex) {
             Log.println(Log.ERROR, "connecting failed:", ex.getMessage());
         }
+
     }
 
     public void Leave() {
         try {
             hubConnection.invoke("LeaveRoom", JoinHub);
-            Log.println(Log.DEBUG, "leave","leave connection");
+            Log.println(Log.DEBUG, "leave", "leave connection");
         } catch (Exception ex) {
             System.out.println(ex.getMessage());
         }
@@ -423,7 +512,7 @@ public class Room extends FragmentActivity {
         try {
             hubConnection.invoke("LoadRoomMessages", roomId, username);
         } catch (Exception ex) {
-            Log.println(Log.ERROR,"aaaaa",ex.getMessage());
+            Log.println(Log.ERROR, "aaaaa", ex.getMessage());
         }
     }
 
@@ -431,28 +520,65 @@ public class Room extends FragmentActivity {
     private void DefineMethods() {
         hubConnection.on("ReceiveRoomMessage", (messageModel) ->
         {
+            Log.println(Log.ERROR, "fd", "message type is : " + String.valueOf(messageModel.getMessageType()));
             ChatBoxModel x = new ChatBoxModel();
-            x.setId(messageModel.getRoomId());
-            x.setParentId(messageModel.getParentId());
-            x.setFirstName(messageModel.getUserModel().getFirstName());
-            x.setLastName(messageModel.getUserModel().getLastName());
-            x.setMessage(messageModel.getMessage().toString());
-            x.setImageLink(messageModel.getUserModel().getImageLink());
-            x.setUserName(messageModel.getUserModel().getUsername());
-            x.setTime(new Date());
-            if (messageModel.isMe() == true) {
+            int messageType = messageModel.getMessageType();
+            if (messageType == 0) {
+                x.setId(messageModel.getRoomId());
+                x.setParentId(messageModel.getParentId());
+                x.setFirstName(messageModel.getUserModel().getFirstName());
+                x.setLastName(messageModel.getUserModel().getLastName());
+                x.setMessage(messageModel.getMessage().toString());
+                x.setImageLink(messageModel.getUserModel().getImageLink());
+                x.setUserName(messageModel.getUserModel().getUsername());
+                x.setTime(new Date());
+                if (messageModel.isMe() == true) {
 //                Toast.makeText(Room.this, "parentId is: "+x.getParentId(), Toast.LENGTH_LONG).show();
-                Log.println(Log.ERROR, "ssssssss", "parentId is : " + String.valueOf(messageModel.getParentId()));
-                if (x.getParentId() == -1)
-                    x.setMode(1);
-                else
-                    x.setMode(2);
-            } else if (messageModel.isMe() == false) {
+                    Log.println(Log.ERROR, "ssssssss", "parentId is : " + String.valueOf(messageModel.getParentId()));
+                    if (x.getParentId() == -1)
+                        x.setMode(1);
+                    else {
+                        ChatBoxModel parent = FindChat(messageModel.getParentId());
+                        if (parent.getMode() == 3 || parent.getMode() == -3)
+                            x.setMode(4);
+                        else
+                            x.setMode(2);
+                    }
+                } else if (messageModel.isMe() == false) {
 
-                if (x.getParentId() == -1)
-                    x.setMode(-1);
-                else
-                    x.setMode(-2);
+                    if (x.getParentId() == -1)
+                        x.setMode(-1);
+                    else {
+                        ChatBoxModel parent = FindChat(messageModel.getParentId());
+                        if (parent.getMode() == 3 || parent.getMode() == -3)
+                            x.setMode(-4);
+                        else
+                            x.setMode(-2);
+                    }
+                }
+            } else if (messageType == 1) {
+                x.setId(messageModel.getRoomId());
+                x.setParentId(messageModel.getParentId());
+                x.setFirstName(messageModel.getUserModel().getFirstName());
+                x.setLastName(messageModel.getUserModel().getLastName());
+                x.setMessageImageLink(messageModel.getMessage().toString());
+                x.setImageLink(messageModel.getUserModel().getImageLink());
+                x.setUserName(messageModel.getUserModel().getUsername());
+                x.setTime(new Date());
+                if (messageModel.isMe() == true) {
+//                Toast.makeText(Room.this, "parentId is: "+x.getParentId(), Toast.LENGTH_LONG).show();
+                    Log.println(Log.ERROR, "ssssssss", "parentId is : " + String.valueOf(messageModel.getParentId()));
+                    if (x.getParentId() == -1)
+                        x.setMode(3);
+                    else
+                        x.setMode(4);
+                } else if (messageModel.isMe() == false) {
+
+                    if (x.getParentId() == -1)
+                        x.setMode(-3);
+                    else
+                        x.setMode(-4);
+                }
             }
             runOnUiThread(new Runnable() {
 
@@ -461,25 +587,10 @@ public class Room extends FragmentActivity {
 
                     Chats.add(x);
                     ChatAdaptor.notifyDataSetChanged();
-                    chatBoxListView.smoothScrollToPosition(Chats.size() - 1);
+                    chatBoxListView.smoothScrollToPosition(Chats.size());
                 }
             });
 
-            String text = "";
-            int RoomId = messageModel.getRoomId();
-            String message = messageModel.getMessage().toString();
-            String senderLastName = messageModel.getUserModel().getLastName();
-            String senderUsername = messageModel.getUserModel().getUsername();
-            String senderFirstName = messageModel.getUserModel().getFirstName();
-            Boolean IsMe = messageModel.isMe();
-            if (IsMe) {
-                text += "Your Message To  Room number #" + RoomId + ":";
-            } else {
-                text += "New Message From " + senderFirstName + " " + senderLastName + " To  Room number #" + RoomId + ":";
-            }
-
-//            Toast.makeText(Room.this, text + message, Toast.LENGTH_LONG).show();
-            System.out.println(text + message);
         }, MessageViewModel.class);
 
         hubConnection.on("ReceiveRoomNotification", (ReceiveRoomNotification) ->
@@ -509,7 +620,7 @@ public class Room extends FragmentActivity {
                 public void run() {
                     Chats.add(x);
                     ChatAdaptor.notifyDataSetChanged();
-                    chatBoxListView.smoothScrollToPosition(Chats.size() - 1);
+                    chatBoxListView.smoothScrollToPosition(Chats.size());
                 }
             });
         }, ReceiveRoomNotification.class);
@@ -533,13 +644,46 @@ public class Room extends FragmentActivity {
                     if (x.getMe() == true) {
                         if (x.getParentId() == -1)
                             chat.setMode(1);
-                        else
-                            chat.setMode(2);
+                        else {
+                            ChatBoxModel parent = FindChat(x.getParentId());
+                            if (parent.getMode() == 3 || parent.getMode() == -3)
+                                chat.setMode(4);
+                            else
+                                chat.setMode(2);
+                        }
                     } else if (x.getMe() == false) {
                         if (x.getParentId() == -1)
                             chat.setMode(-1);
+                        else {
+                            ChatBoxModel parent = FindChat(x.getParentId());
+                            if (parent.getMode() == 3 || parent.getMode() == -3)
+                                chat.setMode(-4);
+                            else
+                                chat.setMode(-2);
+                        }
+                    }
+                    chat.setMessage(x.getContent());
+                } else if (contentType == 1) {
+
+                    chat.setId(x.getId());
+                    chat.setParentId(x.getParentId());
+                    chat.setFirstName(x.getSender().getFirstName());
+                    chat.setLastName(x.getSender().getLastName());
+                    chat.setImageLink(x.getSender().getImageLink());
+                    chat.setUserName(x.getSender().getUsername());
+                    chat.setTime(x.sentDate);
+                    chat.setMessageImageLink(x.getLinkIfImage());
+
+                    if (x.getMe() == true) {
+                        if (x.getParentId() == -1)
+                            chat.setMode(3);
                         else
-                            chat.setMode(-2);
+                            chat.setMode(4);
+                    } else if (x.getMe() == false) {
+                        if (x.getParentId() == -1)
+                            chat.setMode(-3);
+                        else
+                            chat.setMode(-4);
                     }
                     chat.setMessage(x.getContent());
                 } else if (contentType == 2) {
@@ -559,24 +703,33 @@ public class Room extends FragmentActivity {
                         chat.setMessage(x.getSender().getUsername() + " left this room");
                     }
                 }
-                runOnUiThread(new Runnable() {
-
-                    @Override
-                    public void run() {
-
-                        Chats.add(chat);
-                        ChatAdaptor.notifyDataSetChanged();
-                        chatBoxListView.smoothScrollToPosition(Chats.size() - 1);
-                    }
-                });
+                Chats.add(chat);
             }
+            runOnUiThread(new Runnable() {
+
+                @Override
+                public void run() {
+
+                    ChatAdaptor.notifyDataSetChanged();
+                    chatBoxListView.smoothScrollToPosition(Chats.size() - 1);
+                }
+            });
         }, (Class<List<LoadAllMessagesViewModel>>) (Object) List.class);
+    }
+
+    private ChatBoxModel FindChat(int parentId) {
+        for (ChatBoxModel ch : Chats) {
+            if (ch.getId() == parentId) {
+                return ch;
+            }
+        }
+        return null;
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if(resultCode != RESULT_CANCELED) {
+        if (resultCode != RESULT_CANCELED) {
             switch (requestCode) {
                 case 0:
                     if (resultCode == RESULT_OK && data != null) {
@@ -592,7 +745,7 @@ public class Room extends FragmentActivity {
                     break;
                 case 1:
                     if (resultCode == RESULT_OK && data != null) {
-                        Uri selectedImage =  data.getData();
+                        Uri selectedImage = data.getData();
 
                         String[] filePathColumn = {MediaStore.Images.Media.DATA};
                         if (selectedImage != null) {
@@ -610,6 +763,9 @@ public class Room extends FragmentActivity {
                                 requestBody = RequestBody.create(MediaType.parse("multipart/form-data"), file);
                                 requestImage = MultipartBody.Part.createFormData("image", file.getName(), requestBody);
                                 attachment = true;
+                                SendButtonImage.setVisibility(View.VISIBLE);
+                                imageView.setVisibility(View.VISIBLE);
+
 
                                 cursor.close();
                             }
@@ -625,7 +781,7 @@ public class Room extends FragmentActivity {
 
 
     private void selectImage(Context context) {
-        final CharSequence[] options = {"Take photo", "Choose from Gallery", "Cancel" };
+        final CharSequence[] options = {"Take photo", "Choose from Gallery", "Cancel"};
 
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
         builder.setTitle("Profile picture");
@@ -645,11 +801,9 @@ public class Room extends FragmentActivity {
                 }
                 if (options[item].equals("Choose from Gallery")) {
                     Intent pickPhoto = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-                    startActivityForResult(pickPhoto , 1);
+                    startActivityForResult(pickPhoto, 1);
 
-                }
-
-                else if(options[item].equals("Cancel")){
+                } else if (options[item].equals("Cancel")) {
                     dialog.dismiss();
                 }
             }
@@ -683,6 +837,7 @@ public class Room extends FragmentActivity {
                 switch (item.getItemId()) {
                     case R.id.reply:
                         isReplying = chat.getId();
+                        Log.println(Log.ERROR, "fd", "isReplying is :" + String.valueOf(isReplying));
                         openReplyBar(chat);
                         break;
                 }
@@ -690,21 +845,31 @@ public class Room extends FragmentActivity {
             }
 
             @Override
-            public void onMenuModeChange(MenuBuilder menu) {}
+            public void onMenuModeChange(MenuBuilder menu) {
+            }
         });
-        optionsMenu.show(300,-150);
+        optionsMenu.show(300, -150);
     }
 
     private void openReplyBar(ChatBoxModel replyingTo) {
         replyBar.setVisibility(View.VISIBLE);
         TextView namee = findViewById(R.id.reply_bar_name);
         TextView mesagee = findViewById(R.id.reply_bar_message);
-        namee.setText(replyingTo.getFirstName() + " " + replyingTo.getLastName());
-        mesagee.setText(replyingTo.getMessage().replace('\n', ' '));
+        if (replyingTo.getMode() == 3 || replyingTo.getMode() == -3 || replyingTo.getMode() == -4 || replyingTo.getMode() == -4) {
+            repliedImage.setVisibility(View.VISIBLE);
+            Glide.with(this).load(replyingTo.getMessageImageLink()).into(repliedImage);
+            namee.setText(replyingTo.getFirstName() + " " + replyingTo.getLastName());
+            mesagee.setText("Photo");
+        } else {
+            namee.setText(replyingTo.getFirstName() + " " + replyingTo.getLastName());
+            mesagee.setText(replyingTo.getMessage().replace('\n', ' '));
+            repliedImage.setVisibility(View.GONE);
+        }
+
+        MessageText.requestFocus();
 
     }
 }
-
 
 
 class ChatBoxAdaptor extends BaseAdapter {
@@ -727,6 +892,9 @@ class ChatBoxAdaptor extends BaseAdapter {
         TextView name;
         TextView time;
         ImageView Image;
+
+        ImageView messageImage;
+        ImageView replied_image;
 
         TextView replied_message;
         TextView replied_name;
@@ -773,7 +941,9 @@ class ChatBoxAdaptor extends BaseAdapter {
                     .centerCrop();
             if (chat.getImageLink() != null)
                 Glide.with(mContext).load(chat.getImageLink())
-                    .apply(options).transform(new CircleCrop()).into(holder.Image);
+                        .apply(options).transform(new CircleCrop()).into(holder.Image);
+            else
+                holder.Image.setImageResource(R.mipmap.default_user_profile);
 
             holder.Image.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -831,7 +1001,9 @@ class ChatBoxAdaptor extends BaseAdapter {
                     .centerCrop();
             if (chat.getImageLink() != null)
                 Glide.with(mContext).load(chat.getImageLink())
-                    .apply(options).transform(new CircleCrop()).into(holder.Image);
+                        .apply(options).transform(new CircleCrop()).into(holder.Image);
+            else
+                holder.Image.setImageResource(R.mipmap.default_user_profile);
 
             holder.Image.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -862,7 +1034,7 @@ class ChatBoxAdaptor extends BaseAdapter {
                 holder.repliedPart.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        ChatListView.smoothScrollToPosition(finalRepliedPosition);
+                        ChatListView.smoothScrollToPosition(finalRepliedPosition - 2);
                     }
                 });
             } else
@@ -903,16 +1075,168 @@ class ChatBoxAdaptor extends BaseAdapter {
                 holder.repliedPart.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        ChatListView.smoothScrollToPosition(finalRepliedPosition);
+                        ChatListView.smoothScrollToPosition(finalRepliedPosition - 2);
                     }
                 });
             } else
                 holder.replied_message.setText("no message found!");
 
             view.setTag(holder);
+        } else if (ChatsList.get(position).getMode() == -3) {
+            view = inflater.inflate(R.layout.chat_image_left, null);
+
+            holder.name = (TextView) view.findViewById(R.id.chat_name_left_image);
+            holder.time = (TextView) view.findViewById(R.id.chat_time_left_image);
+            holder.Image = (ImageView) view.findViewById(R.id.chat_image_left_image);
+            holder.messageImage = (ImageView) view.findViewById(R.id.chat_messageImage_left_image);
+            view.setTag(holder);
+
+            holder.name.setText(chat.getFirstName() + " " + chat.getLastName());
+
+            SimpleDateFormat formatter = new SimpleDateFormat("hh:mm aa");
+            holder.time.setText(formatter.format(chat.getTime()));
+
+            RequestOptions options = new RequestOptions()
+                    .placeholder(R.mipmap.default_user_profile)
+                    .centerCrop();
+            if (chat.getImageLink() != null)
+                Glide.with(mContext).load(chat.getImageLink())
+                        .apply(options).transform(new CircleCrop()).into(holder.Image);
+            else
+                holder.Image.setImageResource(R.mipmap.default_user_profile);
+
+            Glide.with(mContext).load(chat.getMessageImageLink()).override(1000).into(holder.messageImage);
+
+            holder.Image.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(mContext, ProfilePage.class);
+                    Bundle bundle1 = new Bundle();
+                    bundle1.putString("Username", chat.getUserName());
+                    intent.putExtras(bundle1);
+                    mContext.startActivity(intent);
+                }
+            });
+
+        } else if (ChatsList.get(position).getMode() == 3) {
+            view = inflater.inflate(R.layout.chat_image_right, null);
+
+            holder.time = (TextView) view.findViewById(R.id.chat_time_right_image);
+            holder.messageImage = (ImageView) view.findViewById(R.id.chat_messageImage_right_image);
+            view.setTag(holder);
+
+
+            SimpleDateFormat formatter = new SimpleDateFormat("hh:mm aa");
+            holder.time.setText(formatter.format(chat.getTime()));
+
+            Glide.with(mContext).load(chat.getMessageImageLink()).override(1000).into(holder.messageImage);
+
+
+        } else if (ChatsList.get(position).getMode() == -4) {
+            view = inflater.inflate(R.layout.chat_reply_image_left, null);
+
+            holder.message = (TextView) view.findViewById(R.id.chat_message_left_reply_image);
+            holder.name = (TextView) view.findViewById(R.id.chat_name_left_reply_image);
+            holder.time = (TextView) view.findViewById(R.id.chat_time_left_reply_image);
+            holder.replied_image = (ImageView) view.findViewById(R.id.chat_repliedImage_left_image);
+            holder.replied_name = (TextView) view.findViewById(R.id.chat_replied_name_left_reply_image);
+            holder.Image = (ImageView) view.findViewById(R.id.chat_image_left_reply_image);
+            holder.repliedPart = (LinearLayout) view.findViewById(R.id.chat_replied_box_left_reply_image);
+
+
+            holder.message.setText(chat.getMessage());
+            holder.name.setText(chat.getFirstName() + " " + chat.getLastName());
+
+            SimpleDateFormat formatter = new SimpleDateFormat("hh:mm aa");
+            holder.time.setText(formatter.format(chat.getTime()));
+
+            RequestOptions options = new RequestOptions()
+                    .placeholder(R.mipmap.default_user_profile)
+                    .centerCrop();
+            if (chat.getImageLink() != null)
+                Glide.with(mContext).load(chat.getImageLink())
+                        .apply(options).transform(new CircleCrop()).into(holder.Image);
+            else
+                holder.Image.setImageResource(R.mipmap.default_user_profile);
+
+            holder.Image.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(mContext, ProfilePage.class);
+                    Bundle bundle1 = new Bundle();
+                    bundle1.putString("Username", chat.getUserName());
+                    intent.putExtras(bundle1);
+                    mContext.startActivity(intent);
+                }
+            });
+
+            ChatBoxModel replied = null;
+            int repliedPosition = -1;
+            for (ChatBoxModel ch : ChatsList) {
+                repliedPosition += 1;
+                if (ch.getId() == chat.getParentId()) {
+                    replied = ch;
+                    chat.setParentPosition(repliedPosition);
+                    break;
+                }
+            }
+            if (replied != null) {
+                Glide.with(mContext).load(replied.getMessageImageLink()).into(holder.replied_image);
+                holder.replied_name.setText(replied.getFirstName() + " " + replied.getLastName());
+
+                int finalRepliedPosition = repliedPosition;
+                holder.repliedPart.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        ChatListView.smoothScrollToPosition(finalRepliedPosition - 2);
+                    }
+                });
+            } else
+                holder.replied_name.setText("no photo found!");
+
+
+            view.setTag(holder);
+        } else if (ChatsList.get(position).getMode() == 4) {
+            view = inflater.inflate(R.layout.chat_reply_image_right, null);
+
+            holder.message = (TextView) view.findViewById(R.id.chat_message_right_reply_image);
+            holder.time = (TextView) view.findViewById(R.id.chat_time_right_reply_image);
+            holder.replied_image = (ImageView) view.findViewById(R.id.chat_repliedImage_right_image);
+            holder.replied_name = (TextView) view.findViewById(R.id.chat_replied_name_right_reply_image);
+            holder.repliedPart = (LinearLayout) view.findViewById(R.id.chat_replied_box_right_reply_image);
+
+            holder.message.setText(chat.getMessage());
+
+            SimpleDateFormat formatter = new SimpleDateFormat("hh:mm aa");
+            holder.time.setText(formatter.format(chat.getTime()));
+
+
+            ChatBoxModel replied = null;
+            int repliedPosition = -1;
+            for (ChatBoxModel ch : ChatsList) {
+                repliedPosition += 1;
+                if (ch.getId() == chat.getParentId()) {
+                    replied = ch;
+                    chat.setParentPosition(repliedPosition);
+                    break;
+                }
+            }
+            if (replied != null) {
+                Glide.with(mContext).load(replied.getMessageImageLink()).into(holder.replied_image);
+                holder.replied_name.setText(replied.getFirstName() + " " + replied.getLastName());
+
+                int finalRepliedPosition = repliedPosition;
+                holder.repliedPart.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        ChatListView.smoothScrollToPosition(finalRepliedPosition - 2);
+                    }
+                });
+            } else
+                holder.replied_name.setText("no photo found!");
+
+            view.setTag(holder);
         }
-
-
         return view;
     }
 }

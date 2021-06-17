@@ -26,6 +26,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:gravity="center"
+                    android:fontFamily="serif"
                     android:text="ali joined the room"
                     android:textColor="?colorPrimary"
                     android:textSize="16dp"

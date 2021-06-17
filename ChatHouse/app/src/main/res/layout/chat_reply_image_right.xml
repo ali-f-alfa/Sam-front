@@ -14,7 +14,7 @@
 
 
         <com.google.android.material.card.MaterialCardView
-            android:id="@+id/chat_card_right_reply"
+            android:id="@+id/chat_card_right_reply_image"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="5dp"
@@ -35,7 +35,7 @@
 
 
                 <LinearLayout
-                    android:id="@+id/chat_replied_box_right_reply"
+                    android:id="@+id/chat_replied_box_right_reply_image"
                     android:layout_width="wrap_content"
                     android:layout_height="45dp"
                     android:orientation="horizontal"
@@ -46,15 +46,23 @@
                         android:layout_height="match_parent"
                         android:background="?colorSecondary"
                         android:layout_marginVertical="3dp"/>
+                    <ImageView
+                        android:id="@+id/chat_repliedImage_right_image"
+                        android:layout_width="wrap_content"
+                        android:layout_height="40dp"
+                        android:layout_gravity="center"
+                        android:layout_marginLeft="5dp"
+                        android:adjustViewBounds="true"
+                        app:srcCompat="@drawable/thumb_15951118880user" />
 
                     <LinearLayout
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
                         android:orientation="vertical"
-                        android:layout_marginLeft="10dp">
+                        android:layout_marginLeft="5dp">
 
                         <TextView
-                            android:id="@+id/chat_replied_name_right_reply"
+                            android:id="@+id/chat_replied_name_right_reply_image"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_gravity="left"
@@ -67,14 +75,13 @@
                             android:maxLines="1" />
 
                         <TextView
-                            android:id="@+id/chat_replied_message_right_reply"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_gravity="left"
                             android:maxWidth="250dp"
                             android:maxLines="1"
-                            android:text="replied message is here"
-                            android:textColor="?colorOnSurface"
+                            android:text="Photo"
+                            android:textColor="?colorPrimary"
                             android:textSize="14dp"
                             android:textStyle="normal"/>
                     </LinearLayout>
@@ -82,7 +89,7 @@
 
                 </LinearLayout>
                 <TextView
-                    android:id="@+id/chat_message_right_reply"
+                    android:id="@+id/chat_message_right_reply_image"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="left"
@@ -96,7 +103,7 @@
                 </TextView>
 
                 <TextView
-                    android:id="@+id/chat_time_right_reply"
+                    android:id="@+id/chat_time_right_reply_image"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="right"

@@ -4,27 +4,24 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:padding="3dp">
+    android:padding="5dp">
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:gravity="right"
+        android:paddingVertical="4dp">
 
-        <ImageView
-            android:id="@+id/chat_image_left"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:layout_marginLeft="0dp"
-            app:srcCompat="@mipmap/default_user_profile" />
 
         <com.google.android.material.card.MaterialCardView
+            android:id="@+id/chat_card_right_image"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="5dp"
-            android:layout_toEndOf="@+id/chat_image_left"
-            android:backgroundTint="?colorOnPrimarySurface"
+            android:backgroundTint="?colorPrimaryVariant"
             android:minWidth="80dp"
-            android:minHeight="60dp"
+            android:minHeight="30dp"
+            android:maxWidth="35dp"
             app:cardCornerRadius="13dp"
             app:cardElevation="0dp">
 
@@ -32,38 +29,24 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:orientation="vertical"
-                android:paddingTop="4dp"
+                android:paddingTop="6dp"
                 android:paddingBottom="2dp"
                 android:paddingHorizontal="9dp">
 
-                <TextView
-                    android:id="@+id/chat_name_left"
+
+                <ImageView
+                    android:adjustViewBounds="true"
+                    android:id="@+id/chat_messageImage_right_image"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="left"
-                    android:gravity="left"
-                    android:text="ali"
-                    android:textColor="?colorPrimary"
-                    android:textSize="15dp"
-                    android:textStyle="bold">
-
-                </TextView>
-
-                <TextView
-                    android:id="@+id/chat_message_left"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="left"
                     android:maxWidth="250dp"
-                    android:text="MessageMessageMessageMessageMessageMessageMessageMessageMessageMessageMessageMessageMessageMessageMessageMessage\nhello\nMessageMessageMessageMessage"
-                    android:textColor="?colorOnSurface"
-                    android:textSize="14dp"
-                    android:textStyle="normal">
+                    android:maxHeight="600dp"
+                    android:layout_marginVertical="4dp"
+                    app:srcCompat="@drawable/thumb_15951118880user" />
 
-                </TextView>
 
                 <TextView
-                    android:id="@+id/chat_time_left"
+                    android:id="@+id/chat_time_right_image"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="right"

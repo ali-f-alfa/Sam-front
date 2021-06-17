@@ -13,9 +13,9 @@
 
         <gradient
             android:gradientRadius="20"
-            android:centerColor="@color/almostpink"
-            android:endColor="@color/Pink"
-            android:startColor="@color/Verypink"
+            android:centerColor="@color/black"
+            android:endColor="@color/black"
+            android:startColor="@color/black"
             android:angle="0"
             android:type="radial"
             android:useLevel="false" />

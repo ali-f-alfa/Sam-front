@@ -13,6 +13,16 @@ public class LoadAllMessagesViewModel {
     public SearchPerson sender ;
     public Boolean isMe ;
     public int roomId ;
+    public String linkIfImage ;
+
+    public String getLinkIfImage() {
+        return linkIfImage;
+    }
+
+    public void setLinkIfImage(String linkIfImage) {
+        this.linkIfImage = linkIfImage;
+    }
+
 
     public int getId() {
         return id;

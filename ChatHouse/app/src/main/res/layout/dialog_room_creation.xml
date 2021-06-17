@@ -6,6 +6,8 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:nestedScrollingEnabled="false"
+
+    android:background="?colorOnBackground"
     >
     <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="380dp"
@@ -19,10 +21,11 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             android:textSize="20dp"
-            android:textColor="?colorSecondaryVariant"
+            android:textColor="?colorSecondary"
             android:textStyle="bold"
             android:layout_marginLeft="20dp"
             android:layout_marginTop="10dp"
+            android:fontFamily="serif"
             android:id="@+id/Title">
 
         </TextView>
@@ -37,20 +40,27 @@
             android:textSize="18dp"
             android:layout_marginLeft="20dp"
             android:textColor="?colorPrimary"
+            android:fontFamily="serif"
+
             android:id="@+id/NameRoom">
 
         </TextView>
         <EditText
             android:id="@+id/editNameRoom"
             android:layout_marginTop="30dp"
+            android:textColor="?colorPrimary"
+
             app:layout_constraintStart_toEndOf="@+id/NameRoom"
             app:layout_constraintTop_toTopOf="@id/Title"
             android:layout_width="wrap_content"
+
             android:layout_height="wrap_content"/>
         <TextView
             android:layout_width="wrap_content"
             android:layout_marginLeft="20dp"
             android:layout_height="50dp"
+            android:fontFamily="serif"
+
             android:gravity="center_vertical"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/NameRoom"
@@ -65,11 +75,15 @@
             app:layout_constraintStart_toEndOf="@+id/DesRoom"
             app:layout_constraintTop_toBottomOf="@+id/NameRoom"
             android:layout_width="wrap_content"
+            android:textColor="?colorPrimary"
+
             android:layout_height="wrap_content"/>
         <TextView
             android:layout_width="wrap_content"
             android:layout_marginLeft="20dp"
             android:layout_height="50dp"
+            android:fontFamily="serif"
+
             android:gravity="center_vertical"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/DesRoom"
@@ -83,6 +97,8 @@
             android:id="@+id/timeEditmodal"
             android:gravity="center_vertical"
             android:textSize="18dp"
+            android:textColor="?colorPrimary"
+
             app:layout_constraintStart_toEndOf="@+id/TimeText"
             android:layout_marginLeft="10dp"
             app:layout_constraintTop_toBottomOf="@+id/DesRoom"
@@ -91,6 +107,8 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_marginLeft="20dp"
+            android:fontFamily="serif"
+            android:textStyle="bold"
             android:layout_height="50dp"
             android:gravity="center_vertical"
             app:layout_constraintStart_toStartOf="parent"
@@ -175,6 +193,8 @@
                                 android:layout_marginVertical="8dp"
                                 android:gravity="center"
                                 android:text="Wellness"
+                                android:fontFamily="serif"
+
                                 android:textColor="@color/white"
                                 android:textSize="20sp"
                                 android:textStyle="bold" />
@@ -198,6 +218,8 @@
                                 android:layout_marginVertical="8dp"
                                 android:gravity="center"
                                 android:text="Identity"
+                                android:fontFamily="serif"
+
                                 android:textColor="@color/white"
                                 android:textSize="20sp"
                                 android:textStyle="bold" />
@@ -221,6 +243,8 @@
                                 android:layout_marginVertical="8dp"
                                 android:gravity="center"
                                 android:text="Places"
+                                android:fontFamily="serif"
+
                                 android:textColor="@color/white"
                                 android:textSize="20sp"
                                 android:textStyle="bold" />
@@ -244,6 +268,8 @@
                                 android:layout_marginVertical="8dp"
                                 android:gravity="center"
                                 android:text="World affairs"
+                                android:fontFamily="serif"
+
                                 android:textSize="20sp"
                                 android:textColor="@color/white"
                                 android:textStyle="bold" />
@@ -266,6 +292,8 @@
                                 android:layout_height="fill_parent"
                                 android:layout_marginVertical="8dp"
                                 android:gravity="center"
+                                android:fontFamily="serif"
+
                                 android:text="Tech"
                                 android:textColor="@color/white"
                                 android:textSize="20sp"
@@ -290,6 +318,8 @@
                                 android:layout_marginVertical="8dp"
                                 android:textColor="@color/white"
                                 android:gravity="center"
+                                android:fontFamily="serif"
+
                                 android:text="HangingOut"
                                 android:textSize="20sp"
                                 android:textStyle="bold" />
@@ -312,6 +342,8 @@
                                 android:layout_height="fill_parent"
                                 android:layout_marginVertical="8dp"
                                 android:gravity="center"
+                                android:fontFamily="serif"
+
                                 android:text="KnowLedge"
                                 android:textSize="20sp"
                                 android:textColor="@color/white"
@@ -335,6 +367,8 @@
                                 android:layout_height="fill_parent"
                                 android:layout_marginVertical="8dp"
                                 android:gravity="center"
+                                android:fontFamily="serif"
+
                                 android:textColor="@color/white"
                                 android:text="Hustle"
                                 android:textSize="20sp"
@@ -359,6 +393,8 @@
                                 android:layout_marginVertical="8dp"
                                 android:gravity="center"
                                 android:text="Sports"
+                                android:fontFamily="serif"
+
                                 android:textColor="@color/white"
                                 android:textSize="20sp"
                                 android:textStyle="bold" />
@@ -383,6 +419,8 @@
                                 android:gravity="center"
                                 android:textColor="@color/white"
                                 android:text="Arts"
+                                android:fontFamily="serif"
+
                                 android:textSize="20sp"
                                 android:textStyle="bold" />
 
@@ -405,6 +443,8 @@
                                 android:layout_marginVertical="8dp"
                                 android:textColor="@color/white"
                                 android:gravity="center"
+                                android:fontFamily="serif"
+
                                 android:text="Life"
                                 android:textSize="20sp"
                                 android:textStyle="bold" />
@@ -429,6 +469,8 @@
                                 android:gravity="center"
                                 android:text="Languages"
                                 android:textColor="@color/white"
+                                android:fontFamily="serif"
+
                                 android:textSize="20sp"
                                 android:textStyle="bold" />
 
@@ -451,6 +493,8 @@
                                 android:layout_marginVertical="8dp"
                                 android:gravity="center"
                                 android:text="Entertainment"
+                                android:fontFamily="serif"
+
                                 android:textColor="@color/white"
                                 android:textSize="20sp"
                                 android:textStyle="bold" />
@@ -475,6 +519,8 @@
                                 android:gravity="center"
                                 android:text="Faith"
                                 android:textColor="@color/white"
+                                android:fontFamily="serif"
+
                                 android:textSize="20sp"
                                 android:textStyle="bold" />
 
@@ -511,6 +557,7 @@
             android:layout_height="wrap_content"
             android:id="@+id/in_date"
             android:text="Date"
+            android:textColor="?colorPrimary"
 
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/Time"
@@ -520,10 +567,12 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Select date"
+            android:fontFamily="serif"
+
             android:id="@+id/btn_date"
             android:layout_marginLeft="10dp"
             android:textColor="?colorPrimary"
-            android:backgroundTint="@color/white"
+            android:backgroundTint="?colorOnSecondary"
             app:layout_constraintStart_toEndOf="@+id/in_date"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/Time" />
@@ -543,10 +592,13 @@
             android:text="SELECT TIME"
             android:layout_marginLeft="10dp"
             android:id="@+id/btn_time"
+
             android:textColor="?colorPrimary"
-            android:backgroundTint="@color/white"
+            android:backgroundTint="?colorOnSecondary"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/in_time"
+            android:fontFamily="serif"
+
             app:layout_constraintTop_toBottomOf="@+id/in_date"
             />
 
@@ -554,11 +606,13 @@
             android:layout_width="wrap_content"
             android:layout_marginLeft="20dp"
             android:layout_height="wrap_content"
+            android:fontFamily="serif"
+
             android:layout_marginTop="10dp"
             android:text="Create"
             android:id="@+id/Create"
             android:textColor="?colorPrimary"
-            android:backgroundTint="@color/white"
+            android:backgroundTint="?colorOnPrimarySurface"
             app:layout_constraintTop_toBottomOf="@id/LinearLayoutCategory"
             app:layout_constraintStart_toStartOf="parent"
             ></Button>
@@ -570,9 +624,11 @@
             android:text="Delete"
             android:id="@+id/Delete"
             android:textColor="@color/white"
-            android:backgroundTint="?colorSecondaryVariant"
+            android:backgroundTint="?colorSecondary"
             app:layout_constraintTop_toBottomOf="@id/LinearLayoutCategory"
             app:layout_constraintEnd_toEndOf="parent"
+            android:fontFamily="serif"
+
             ></Button>
     </androidx.constraintlayout.widget.ConstraintLayout>
 </ScrollView>

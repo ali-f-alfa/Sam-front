@@ -2,32 +2,38 @@
     <!-- Base application theme. -->
     <style name="Theme.ChatHouse" parent="Theme.MaterialComponents.Light.NoActionBar">
         <!-- Primary brand color. -->
-        <item name="colorPrimary">@color/gray</item>
-        <item name="colorPrimaryVariant">@color/light</item>
-        <item name="colorOnPrimary">@color/Pink</item>
+        <item name="colorPrimary">@color/DarkGray</item>
+        <item name="colorPrimaryVariant">@color/LightCreamy</item>
+        <item name="colorOnPrimary">@color/LightPink</item>
         <!-- Secondary brand color. -->
-        <item name="colorSecondary">@color/Verypink</item>
-        <item name="colorSecondaryVariant">@color/almostorange</item>
-        <item name="colorOnSecondary">@color/almostgreen</item>
+        <item name="colorSecondary">@color/DarkPink</item>
+        <item name="colorSecondaryVariant">@color/LightOrange</item>
+        <item name="colorOnSecondary">@color/LightBlue</item>
 
-        <item name="colorOnBackground">@color/white</item>
         <!-- Status bar color. -->
         <item name="android:statusBarColor" tools:targetApi="l">?attr/colorPrimaryVariant</item>
-        <item name="android:itemBackground">#F1C9B9</item>
+        <item name="colorOnBackground">@color/white</item>
+        <item name="colorOnSurface">@color/black</item>
+        <item name="colorOnPrimarySurface">@color/LightBlue</item>
+
+
         <!-- Customize your theme here. -->
     </style>
     <style name="DarkTheme.ChatHouse" parent="Theme.MaterialComponents.Light.NoActionBar">
         <!-- Primary brand color. -->
-        <item name="colorPrimary">@color/betweengraypurpule</item>
-        <item name="colorPrimaryVariant">@color/yasi</item>
-        <item name="colorOnPrimary">@color/purpulel</item>
+        <item name="colorPrimary">@color/Silver</item>
+        <item name="colorPrimaryVariant">@color/VeryDarkGray</item>
+        <item name="colorOnPrimary">@color/LightBlueAndGray</item>
         <!-- Secondary brand color. -->
-        <item name="colorSecondary">@color/puralmost</item>
-        <item name="colorSecondaryVariant">@color/darkpur</item>
-        <item name="colorOnSecondary">@color/puralmost</item>
+        <item name="colorSecondary">@color/LightOrange</item>
+        <item name="colorSecondaryVariant">@color/LightBlue</item>
+        <item name="colorOnSecondary">@color/DarkBlue</item>
         <!-- Status bar color. -->
         <item name="android:statusBarColor" tools:targetApi="l">?attr/colorPrimaryVariant</item>
-        <item name="colorOnBackground">@color/purpulel</item>
+        <item name="colorOnBackground">@color/DarkBlue</item>
+        <item name="colorOnSurface">@color/white</item>
+        <item name="colorOnPrimarySurface">@color/DarkGray</item>
+
 
         <!-- Customize your theme here. -->
     </style>

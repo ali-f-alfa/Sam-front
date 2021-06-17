@@ -17,8 +17,9 @@
         android:text="Following"
         android:textSize="24dp"
         android:textStyle="bold"
+        android:fontFamily="serif"
         android:id="@+id/FollowingfollowersText"
-        android:textColor="@color/almostblack">
+        android:textColor="?colorPrimary">
 
     </TextView>
     <ListView

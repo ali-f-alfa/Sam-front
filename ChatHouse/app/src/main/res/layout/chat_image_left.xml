@@ -11,7 +11,7 @@
         android:layout_height="wrap_content">
 
         <ImageView
-            android:id="@+id/chat_image_left"
+            android:id="@+id/chat_image_left_image"
             android:layout_width="50dp"
             android:layout_height="50dp"
             android:layout_marginLeft="0dp"
@@ -21,8 +21,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="5dp"
-            android:layout_toEndOf="@+id/chat_image_left"
-            android:backgroundTint="?colorOnPrimarySurface"
+            android:layout_toEndOf="@+id/chat_image_left_image"
+            android:backgroundTint="?colorOnSecondary"
             android:minWidth="80dp"
             android:minHeight="60dp"
             app:cardCornerRadius="13dp"
@@ -37,7 +37,7 @@
                 android:paddingHorizontal="9dp">
 
                 <TextView
-                    android:id="@+id/chat_name_left"
+                    android:id="@+id/chat_name_left_image"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="left"
@@ -49,21 +49,19 @@
 
                 </TextView>
 
-                <TextView
-                    android:id="@+id/chat_message_left"
+                <ImageView
+                    android:adjustViewBounds="true"
+                    android:id="@+id/chat_messageImage_left_image"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="left"
                     android:maxWidth="250dp"
-                    android:text="MessageMessageMessageMessageMessageMessageMessageMessageMessageMessageMessageMessageMessageMessageMessageMessage\nhello\nMessageMessageMessageMessage"
-                    android:textColor="?colorOnSurface"
-                    android:textSize="14dp"
-                    android:textStyle="normal">
+                    android:maxHeight="600dp"
+                    android:layout_marginVertical="4dp"
+                    app:srcCompat="@drawable/thumb_15951118880user" />
 
-                </TextView>
 
                 <TextView
-                    android:id="@+id/chat_time_left"
+                    android:id="@+id/chat_time_left_image"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="right"

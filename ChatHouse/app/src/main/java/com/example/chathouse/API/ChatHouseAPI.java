@@ -96,4 +96,10 @@ public interface ChatHouseAPI {
     @DELETE("Account/RemoveImage")
     Call<ProfileInformation> DeleteImage();
 
+    @Multipart
+    @POST("Room/SendMessage")
+    Call<Void> SendImage(@Query("UserModel.FirstName") String firstName, @Query("UserModel.LastName") String lastName, @Query("UserModel.Username") String username,
+                         @Query("UserModel.ImageLink") String imageLink, @Query("MessageType") String messageType, @Query("RoomId") int roomId, @Query("Message") String message,
+                         @Query("IsMe") Boolean isMe, @Query("ParentId") String parentId, @Query("ConnectionId") String connectionId, @Part MultipartBody.Part formFile);
+
 }

@@ -168,7 +168,7 @@ public class EditProfile extends AppCompatActivity {
         FirstName = (EditText)findViewById(R.id.FirstNameEdit);
         LastName = (EditText)findViewById(R.id.LastNameEdit);
         Interests = (HorizontalScrollView)findViewById(R.id.Interests);
-        SetNewPicture = (TextView)findViewById(R.id.SetNewPicture);
+//        SetNewPicture = (TextView)findViewById(R.id.SetNewPicture);
         textView = (TextView)findViewById(R.id.textView);
         InterestEdit = (HorizontalScrollView)findViewById((R.id.InterestEdit));
         ProfilePic = (ImageView)findViewById(R.id.ProfileImageEdit);
@@ -287,7 +287,7 @@ public class EditProfile extends AppCompatActivity {
 
 
 
-        SetNewPicture.setOnClickListener(new View.OnClickListener() {
+        ProfilePic.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 // Update image

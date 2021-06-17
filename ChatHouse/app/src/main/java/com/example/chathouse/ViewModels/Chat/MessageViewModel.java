@@ -7,9 +7,8 @@ public class MessageViewModel {
     private Object message;
     private Integer roomId;
     private boolean isMe;
-    private int messageType = 0;
-    private int parentId;
-
+    private int messageType;
+    private int parentId = -1;
 
     public void setUserModel(SearchPerson userModel) {
         this.userModel = userModel;

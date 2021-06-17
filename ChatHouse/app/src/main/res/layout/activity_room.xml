@@ -4,7 +4,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_margin="2dp"
     android:background="?colorOnBackground"
     tools:context=".Pages.Room">
 
@@ -56,6 +55,7 @@
             android:layout_height="match_parent"
             android:layout_above="@+id/reply_bar"
             android:layout_alignParentTop="true"
+            android:layout_marginBottom="10dp"
             android:orientation="vertical">
 
             <ListView
@@ -78,11 +78,20 @@
             android:visibility="gone">
 
             <ImageView
-                android:layout_width="35dp"
-                android:layout_height="35dp"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
                 android:layout_gravity="center"
                 android:layout_marginLeft="5dp"
                 android:src="@drawable/ic_baseline_reply_24" />
+
+            <ImageView
+                android:id="@+id/reply_bar_image"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_gravity="center"
+                android:layout_marginLeft="5dp"
+                android:src="@drawable/thumb_15951118880user"
+                android:visibility="visible"/>
 
             <LinearLayout
                 android:layout_width="wrap_content"
@@ -99,7 +108,7 @@
                     android:gravity="left"
                     android:maxLines="1"
                     android:text="melika ahmadi"
-                    android:textColor="@color/gray"
+                    android:textColor="?colorPrimary"
                     android:textSize="15dp"
                     android:textStyle="bold" />
 
@@ -110,8 +119,8 @@
                     android:layout_gravity="left"
                     android:maxWidth="230dp"
                     android:maxLines="1"
-                    android:text="replied message is here"
-                    android:textColor="@color/black"
+                    android:text="Photo"
+                    android:textColor="?colorPrimary"
                     android:textSize="14dp"
                     android:textStyle="normal" />
             </LinearLayout>
@@ -136,7 +145,7 @@
         <ImageButton
             android:id="@+id/chat_downBtn"
             android:layout_width="40dp"
-            android:layout_height="40dp"
+            android:layout_height="50dp"
             android:layout_above="@id/SendButton"
             android:layout_alignParentEnd="true"
             android:layout_marginRight="30dp"
@@ -165,29 +174,19 @@
             android:layout_marginHorizontal="7dp"
             android:layout_toStartOf="@+id/SendButton"
             android:layout_toEndOf="@+id/Attachment"
+            android:textColor="?colorOnSurface"
             android:hint="Enter message"
             android:maxLines="6"
-            android:minHeight="50dp">
+            android:minHeight="60dp">
 
         </EditText>
 
-        <ImageView
-            android:id="@+id/Imageview"
-            android:layout_width="70dp"
-            android:layout_height="120dp"
-            android:layout_alignParentBottom="true"
-            android:layout_marginBottom="50dp"
-            android:adjustViewBounds="true"
-            android:clickable="true"
-            app:layout_collapseMode="parallax"
-            app:layout_collapseParallaxMultiplier="0.7">
 
-        </ImageView>
 
         <ImageButton
             android:id="@+id/SendButton"
             android:layout_width="wrap_content"
-            android:layout_height="40dp"
+            android:layout_height="50dp"
             android:layout_alignParentEnd="true"
             android:layout_alignParentBottom="true"
             android:layout_marginRight="10dp"
@@ -197,13 +196,34 @@
     </RelativeLayout>
 
 
-<!--        <View-->
-<!--            android:layout_width="match_parent"-->
-<!--            android:layout_height="40dp"-->
-<!--            app:layout_constraintBottom_toBottomOf="parent"-->
-<!--            app:layout_constraintStart_toStartOf="parent"-->
-<!--            android:background="?colorPrimaryVariant">-->
+    <!--        <View-->
+    <!--            android:layout_width="match_parent"-->
+    <!--            android:layout_height="40dp"-->
+    <!--            app:layout_constraintBottom_toBottomOf="parent"-->
+    <!--            app:layout_constraintStart_toStartOf="parent"-->
+    <!--            android:background="?colorPrimaryVariant">-->
 
 <!--        </View>-->
+    <ImageView
+        android:id="@+id/Imageview"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_alignParentBottom="true"
+        android:clickable="true"
+        app:layout_collapseMode="parallax"
+        android:background="@color/black"
+        app:layout_collapseParallaxMultiplier="0.7">
+
+    </ImageView>
+    <ImageButton
+        android:id="@+id/SendButtonImage"
+        android:layout_width="wrap_content"
+        android:layout_height="50dp"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginRight="10dp"
+        android:background="@color/black"
+
+        android:src="@drawable/ic_baseline_send_image"></ImageButton>
 
 </RelativeLayout>

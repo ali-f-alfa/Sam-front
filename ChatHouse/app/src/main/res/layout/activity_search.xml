@@ -33,10 +33,11 @@
             app:textToggleLeft="People"
             app:textToggleRight="Rooms"
             app:borderRadius="15dp"
-            app:checkedBorderColor="@color/blue"
-            app:uncheckedBorderColor="@color/gray_border"
+            app:checkedBorderColor="?colorPrimary"
+            app:uncheckedBorderColor="?colorPrimary"
             app:checkedTextColor="@android:color/white"
             app:uncheckedBackgroundColor="?colorPrimaryVariant"
+            app:checkedBackgroundColor="?colorSecondaryVariant"
             app:separatorColor="@color/white"
             />
 
@@ -58,9 +59,9 @@
             android:layout_height="wrap_content"
             android:text="Search in all people"
             android:textColor="?colorSecondary"
-            android:textStyle="bold"
+            android:textStyle="italic"
             android:fontFamily="serif"
-            android:textSize="20dp"
+            android:textSize="18dp"
             android:layout_gravity="center" />
 
         <ProgressBar
