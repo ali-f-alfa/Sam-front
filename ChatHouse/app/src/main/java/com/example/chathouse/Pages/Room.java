@@ -110,6 +110,7 @@ public class Room extends FragmentActivity {
     SharedPreferences settings;
     public int isReplying = -1;
     public LinearLayout replyBar;
+    private ImageButton SendButtonImage;
 
     @RequiresApi(api = Build.VERSION_CODES.R)
     @Override
@@ -135,8 +136,10 @@ public class Room extends FragmentActivity {
         Attachment = (ImageButton) findViewById(R.id.Attachment);
         imageView = (ImageView) findViewById(R.id.Imageview);
         replyBar = (LinearLayout) findViewById(R.id.reply_bar);
+        SendButtonImage = (ImageButton)findViewById(R.id.SendButtonImage);
 
-
+        SendButtonImage.setVisibility(View.GONE);
+        imageView.setVisibility(View.GONE);
         settings = getSharedPreferences("Storage", MODE_PRIVATE);
         Token = settings.getString("Token", "n/a");
         String Username = settings.getString("Username", "n/a");
@@ -293,6 +296,47 @@ public class Room extends FragmentActivity {
             }
         });
 
+        SendButtonImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Call<Void> SendImage = APIS.SendImage(Response.getFirstName(), Response.getLastName(), Response.getUsername(),
+                        Response.getImageLink(), String.valueOf(1), RoomId, MessageText.getText().toString(), true, String.valueOf(-1), hubConnection.getConnectionId(), requestImage);
+                if(attachment){
+                    SendImage.enqueue(new Callback<Void>() {
+                        @Override
+                        public void onResponse(Call<Void> call, retrofit2.Response<Void> response) {
+
+                            if(!response.isSuccessful()){
+                                try {
+                                    System.out.println("1" + response.errorBody().string());
+                                    System.out.println("1" + response.code());
+                                    System.out.println(response.errorBody().string());
+                                } catch (IOException e) {
+                                    System.out.println("2" + response.errorBody().toString());
+                                    e.printStackTrace();
+                                }
+                                return;
+                            }
+                            MessageText.setText("");
+                            System.out.println("Image Is Fine");
+                            SendButtonImage.setVisibility(View.GONE);
+                            imageView.setVisibility(View.GONE);
+
+
+                        }
+
+                        @Override
+                        public void onFailure(Call<Void> call, Throwable t) {
+
+                        }
+                    });
+                }
+                imageView.setVisibility(View.INVISIBLE);
+                attachment = false;
+
+            }
+        });
+
         Send.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -308,36 +352,36 @@ public class Room extends FragmentActivity {
                         MessageText.setText("");
                         SendMessage(Message);
                     }
-                    else{
-                        Call<Void> SendImage = APIS.SendImage(Response.getFirstName(), Response.getLastName(), Response.getUsername(),
-                                Response.getImageLink(), String.valueOf(1), RoomId, MessageText.getText().toString(), true, String.valueOf(-1), hubConnection.getConnectionId(), requestImage);
-                        SendImage.enqueue(new Callback<Void>() {
-                            @Override
-                            public void onResponse(Call<Void> call, retrofit2.Response<Void> response) {
-
-                                if(!response.isSuccessful()){
-                                    try {
-                                        System.out.println("1" + response.errorBody().string());
-                                        System.out.println("1" + response.code());
-                                        System.out.println(response.errorBody().string());
-                                    } catch (IOException e) {
-                                        System.out.println("2" + response.errorBody().toString());
-                                        e.printStackTrace();
-                                    }
-                                    return;
-                                }
-                                MessageText.setText("");
-                                System.out.println("Image Is Fine");
-                            }
-
-                            @Override
-                            public void onFailure(Call<Void> call, Throwable t) {
-
-                            }
-                        });
-                        imageView.setVisibility(View.INVISIBLE);
-                        attachment = false;
-                    }
+//                    else{
+//                        Call<Void> SendImage = APIS.SendImage(Response.getFirstName(), Response.getLastName(), Response.getUsername(),
+//                                Response.getImageLink(), String.valueOf(1), RoomId, MessageText.getText().toString(), true, String.valueOf(-1), hubConnection.getConnectionId(), requestImage);
+//                        SendImage.enqueue(new Callback<Void>() {
+//                            @Override
+//                            public void onResponse(Call<Void> call, retrofit2.Response<Void> response) {
+//
+//                                if(!response.isSuccessful()){
+//                                    try {
+//                                        System.out.println("1" + response.errorBody().string());
+//                                        System.out.println("1" + response.code());
+//                                        System.out.println(response.errorBody().string());
+//                                    } catch (IOException e) {
+//                                        System.out.println("2" + response.errorBody().toString());
+//                                        e.printStackTrace();
+//                                    }
+//                                    return;
+//                                }
+//                                MessageText.setText("");
+//                                System.out.println("Image Is Fine");
+//                            }
+//
+//                            @Override
+//                            public void onFailure(Call<Void> call, Throwable t) {
+//
+//                            }
+//                        });
+//                        imageView.setVisibility(View.INVISIBLE);
+//                        attachment = false;
+//                    }
 
                     if (isReplying != -1)
                         Message.setParentId(isReplying);
@@ -356,6 +400,7 @@ public class Room extends FragmentActivity {
             @Override
             public void onClick(View v) {
                 attachment = false;
+                SendButtonImage.setVisibility(View.GONE);
                 imageView.setVisibility(View.INVISIBLE);
             }
         });
@@ -636,6 +681,9 @@ public class Room extends FragmentActivity {
                                 requestBody = RequestBody.create(MediaType.parse("multipart/form-data"), file);
                                 requestImage = MultipartBody.Part.createFormData("image", file.getName(), requestBody);
                                 attachment = true;
+                                SendButtonImage.setVisibility(View.VISIBLE);
+                                imageView.setVisibility(View.VISIBLE);
+
 
                                 cursor.close();
                             }
