@@ -461,7 +461,7 @@ public class Room extends FragmentActivity {
 
                     Chats.add(x);
                     ChatAdaptor.notifyDataSetChanged();
-                    chatBoxListView.smoothScrollToPosition(Chats.size() - 1);
+                    chatBoxListView.smoothScrollToPosition(Chats.size());
                 }
             });
 
@@ -509,7 +509,7 @@ public class Room extends FragmentActivity {
                 public void run() {
                     Chats.add(x);
                     ChatAdaptor.notifyDataSetChanged();
-                    chatBoxListView.smoothScrollToPosition(Chats.size() - 1);
+                    chatBoxListView.smoothScrollToPosition(Chats.size());
                 }
             });
         }, ReceiveRoomNotification.class);
@@ -559,17 +559,17 @@ public class Room extends FragmentActivity {
                         chat.setMessage(x.getSender().getUsername() + " left this room");
                     }
                 }
-                runOnUiThread(new Runnable() {
-
-                    @Override
-                    public void run() {
-
-                        Chats.add(chat);
-                        ChatAdaptor.notifyDataSetChanged();
-                        chatBoxListView.smoothScrollToPosition(Chats.size() - 1);
-                    }
-                });
+                Chats.add(chat);
             }
+            runOnUiThread(new Runnable() {
+
+                @Override
+                public void run() {
+
+                    ChatAdaptor.notifyDataSetChanged();
+                    chatBoxListView.smoothScrollToPosition(Chats.size() - 1);
+                }
+            });
         }, (Class<List<LoadAllMessagesViewModel>>) (Object) List.class);
     }
 
@@ -728,6 +728,8 @@ class ChatBoxAdaptor extends BaseAdapter {
         TextView time;
         ImageView Image;
 
+        ImageView messageImage;
+
         TextView replied_message;
         TextView replied_name;
 
@@ -774,6 +776,8 @@ class ChatBoxAdaptor extends BaseAdapter {
             if (chat.getImageLink() != null)
                 Glide.with(mContext).load(chat.getImageLink())
                     .apply(options).transform(new CircleCrop()).into(holder.Image);
+            else
+                holder.Image.setImageResource(R.mipmap.default_user_profile);
 
             holder.Image.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -832,6 +836,8 @@ class ChatBoxAdaptor extends BaseAdapter {
             if (chat.getImageLink() != null)
                 Glide.with(mContext).load(chat.getImageLink())
                     .apply(options).transform(new CircleCrop()).into(holder.Image);
+            else
+                holder.Image.setImageResource(R.mipmap.default_user_profile);
 
             holder.Image.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -911,8 +917,65 @@ class ChatBoxAdaptor extends BaseAdapter {
 
             view.setTag(holder);
         }
+        else if (ChatsList.get(position).getMode() == -3)
+        {
+            view = inflater.inflate(R.layout.chat_image_left, null);
+
+            holder.message = (TextView) view.findViewById(R.id.chat_message_left_image);
+            holder.name = (TextView) view.findViewById(R.id.chat_name_left_image);
+            holder.time = (TextView) view.findViewById(R.id.chat_time_left_image);
+            holder.Image = (ImageView) view.findViewById(R.id.chat_image_left_image);
+            holder.messageImage = (ImageView) view.findViewById(R.id.chat_messageImage_left_image);
+            view.setTag(holder);
+
+            holder.message.setText(chat.getMessage());
+            holder.name.setText(chat.getFirstName() + " " + chat.getLastName());
+
+            SimpleDateFormat formatter = new SimpleDateFormat("hh:mm aa");
+            holder.time.setText(formatter.format(chat.getTime()));
+
+            RequestOptions options = new RequestOptions()
+                    .placeholder(R.mipmap.default_user_profile)
+                    .centerCrop();
+            if (chat.getImageLink() != null)
+                Glide.with(mContext).load(chat.getImageLink())
+                        .apply(options).transform(new CircleCrop()).into(holder.Image);
+            else
+                holder.Image.setImageResource(R.mipmap.default_user_profile);
+
+            Glide.with(mContext).load(chat.getMessageImageLink()).transform(new CircleCrop()).into(holder.messageImage);
+
+            holder.Image.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(mContext, ProfilePage.class);
+                    Bundle bundle1 = new Bundle();
+                    bundle1.putString("Username", chat.getUserName());
+                    intent.putExtras(bundle1);
+                    mContext.startActivity(intent);
+                }
+            });
+
+        }
+
+        else if (ChatsList.get(position).getMode() == 3)
+        {
+            view = inflater.inflate(R.layout.chat_image_right, null);
+
+            holder.message = (TextView) view.findViewById(R.id.chat_message_right_image);
+            holder.time = (TextView) view.findViewById(R.id.chat_time_right_image);
+            holder.messageImage = (ImageView) view.findViewById(R.id.chat_messageImage_right_image);
+            view.setTag(holder);
+
+            holder.message.setText(chat.getMessage());
+
+            SimpleDateFormat formatter = new SimpleDateFormat("hh:mm aa");
+            holder.time.setText(formatter.format(chat.getTime()));
+
+            Glide.with(mContext).load(chat.getMessageImageLink()).transform(new CircleCrop()).into(holder.messageImage);
 
 
+        }
         return view;
     }
 }
