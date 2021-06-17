@@ -166,7 +166,7 @@
             android:layout_toEndOf="@+id/Attachment"
             android:hint="Enter message"
             android:maxLines="6"
-            android:minHeight="50dp">
+            android:minHeight="60dp">
 
         </EditText>
 
