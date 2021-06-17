@@ -17,6 +17,8 @@
         android:id="@+id/name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:fontFamily="serif"
+
         android:layout_toRightOf="@+id/nameLabel" />
 
     <LinearLayout
@@ -34,12 +36,16 @@
             android:paddingEnd="16dp"
             android:paddingRight="16dp"
             android:textColor="?colorSecondary"
+            android:fontFamily="serif"
+
             android:textSize="19sp"
             />
         <TextView
             android:id="@+id/itemFirstNameAndLastName"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:fontFamily="serif"
+
             android:paddingStart="8dp"
             android:paddingLeft="8dp"
             android:paddingEnd="16dp"

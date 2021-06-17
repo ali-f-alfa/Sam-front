@@ -302,10 +302,39 @@ public class Room extends FragmentActivity {
                     if(!attachment){
                         Message.setMessageType(0);
                         Message.setMessage(MessageText.getText().toString().trim());
+                        me = new SearchPerson(Response.getUsername(), Response.getImageLink(), Response.getFirstName(), Response.getLastName());
+
+                        Message.setUserModel(me);
+                        MessageText.setText("");
+                        SendMessage(Message);
                     }
                     else{
-                        Message.setMessageType(1);
-                        Message.setMessage(requestImage);
+                        Call<Void> SendImage = APIS.SendImage(Response.getFirstName(), Response.getLastName(), Response.getUsername(),
+                                Response.getImageLink(), String.valueOf(1), RoomId, MessageText.getText().toString(), true, String.valueOf(-1), hubConnection.getConnectionId(), requestImage);
+                        SendImage.enqueue(new Callback<Void>() {
+                            @Override
+                            public void onResponse(Call<Void> call, retrofit2.Response<Void> response) {
+
+                                if(!response.isSuccessful()){
+                                    try {
+                                        System.out.println("1" + response.errorBody().string());
+                                        System.out.println("1" + response.code());
+                                        System.out.println(response.errorBody().string());
+                                    } catch (IOException e) {
+                                        System.out.println("2" + response.errorBody().toString());
+                                        e.printStackTrace();
+                                    }
+                                    return;
+                                }
+                                MessageText.setText("");
+                                System.out.println("Image Is Fine");
+                            }
+
+                            @Override
+                            public void onFailure(Call<Void> call, Throwable t) {
+
+                            }
+                        });
                         imageView.setVisibility(View.INVISIBLE);
                         attachment = false;
                     }
@@ -315,11 +344,7 @@ public class Room extends FragmentActivity {
                     else
                         Message.setParentId(-1);
 
-                    me = new SearchPerson(Response.getUsername(), Response.getImageLink(), Response.getFirstName(), Response.getLastName());
 
-                    Message.setUserModel(me);
-                    MessageText.setText("");
-                    SendMessage(Message);
                     isReplying = -1;
                     replyBar.setVisibility(View.GONE);
                 }
@@ -389,6 +414,7 @@ public class Room extends FragmentActivity {
         catch (Exception ex){
             Log.println(Log.ERROR, "connecting failed:", ex.getMessage());
         }
+
     }
 
     public void Leave() {

@@ -17,6 +17,7 @@
         android:textSize="20dp"
         android:id="@+id/txt"
         android:textStyle="bold"
+        android:fontFamily="serif"
         android:layout_marginLeft="10dp"
         app:layout_constraintBottom_toTopOf="@+id/group"
         android:text="Theme">
@@ -52,8 +53,10 @@
         android:layout_height="wrap_content"
         android:id="@+id/LogoutButton"
         android:layout_marginTop="20dp"
-        android:backgroundTint="@color/white"
+        android:backgroundTint="?colorOnBackground"
+
         android:text="Logout"
+        android:fontFamily="serif"
         android:textColor="?colorSecondaryVariant"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

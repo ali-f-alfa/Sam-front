@@ -22,7 +22,7 @@
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="5dp"
             android:layout_toEndOf="@+id/chat_image_left"
-            android:backgroundTint="?colorOnSecondary"
+            android:backgroundTint="?colorOnPrimarySurface"
             android:minWidth="80dp"
             android:minHeight="60dp"
             app:cardCornerRadius="13dp"
@@ -56,7 +56,7 @@
                     android:layout_gravity="left"
                     android:maxWidth="250dp"
                     android:text="MessageMessageMessageMessageMessageMessageMessageMessageMessageMessageMessageMessageMessageMessageMessageMessage\nhello\nMessageMessageMessageMessage"
-                    android:textColor="@color/black"
+                    android:textColor="?colorOnSurface"
                     android:textSize="14dp"
                     android:textStyle="normal">
 
