@@ -1039,7 +1039,7 @@ class ChatBoxAdaptor extends BaseAdapter {
             else
                 holder.Image.setImageResource(R.mipmap.default_user_profile);
 
-            Glide.with(mContext).load(chat.getMessageImageLink()).into(holder.messageImage);
+            Glide.with(mContext).load(chat.getMessageImageLink()).override(1000).into(holder.messageImage);
 
             holder.Image.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -1063,7 +1063,7 @@ class ChatBoxAdaptor extends BaseAdapter {
             SimpleDateFormat formatter = new SimpleDateFormat("hh:mm aa");
             holder.time.setText(formatter.format(chat.getTime()));
 
-            Glide.with(mContext).load(chat.getMessageImageLink()).into(holder.messageImage);
+            Glide.with(mContext).load(chat.getMessageImageLink()).override(1000).into(holder.messageImage);
 
 
         } else if (ChatsList.get(position).getMode() == -4) {
