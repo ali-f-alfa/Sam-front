@@ -4,7 +4,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_margin="2dp"
     android:background="?colorOnBackground"
     tools:context=".Pages.Room">
 
@@ -173,11 +172,11 @@
 
         <ImageView
             android:id="@+id/Imageview"
-            android:layout_width="70dp"
-            android:layout_height="120dp"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
             android:layout_alignParentBottom="true"
-            android:layout_marginBottom="50dp"
-            android:adjustViewBounds="true"
+            android:layout_marginBottom="49dp"
+            android:adjustViewBounds="false"
             android:clickable="true"
             app:layout_collapseMode="parallax"
             app:layout_collapseParallaxMultiplier="0.7">
