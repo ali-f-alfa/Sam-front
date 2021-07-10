@@ -5,6 +5,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.view.menu.MenuBuilder;
 import androidx.appcompat.view.menu.MenuPopupHelper;
 
+import android.media.Image;
 import android.widget.LinearLayout;
 
 import androidx.fragment.app.FragmentActivity;
@@ -107,7 +108,7 @@ public class Room extends FragmentActivity {
     private Boolean attachment = false;
     private MultipartBody.Part requestImage;
     RequestBody requestBody;
-    private ImageView imageView;
+    public ImageView imageView;
     SharedPreferences settings;
     public int isReplying = -1;
     public LinearLayout replyBar;
@@ -150,7 +151,7 @@ public class Room extends FragmentActivity {
         RoomId = bundle.getInt("RoomId");
 
 
-        ChatAdaptor = new ChatBoxAdaptor(Room.this, Chats, chatBoxListView);
+        ChatAdaptor = new ChatBoxAdaptor(Room.this, Chats, chatBoxListView, imageView);
         chatBoxListView.setAdapter(ChatAdaptor);
         ChatAdaptor.notifyDataSetChanged();
 
@@ -891,13 +892,15 @@ class ChatBoxAdaptor extends BaseAdapter {
     Context mContext;
     LayoutInflater inflater;
     ListView ChatListView;
+    ImageView imageView;
     private List<ChatBoxModel> ChatsList = null;
 
-    public ChatBoxAdaptor(Context context, List<ChatBoxModel> chatsList, ListView chatListView) {
+    public ChatBoxAdaptor(Context context, List<ChatBoxModel> chatsList, ListView chatListView, ImageView imageView) {
         mContext = context;
         this.ChatsList = chatsList;
         inflater = LayoutInflater.from(mContext);
         this.ChatListView = chatListView;
+        this.imageView = imageView;
 
     }
 
@@ -1123,6 +1126,7 @@ class ChatBoxAdaptor extends BaseAdapter {
             holder.time = (TextView) view.findViewById(R.id.chat_time_left_image);
             holder.Image = (ImageView) view.findViewById(R.id.chat_image_left_image);
             holder.messageImage = (ImageView) view.findViewById(R.id.chat_messageImage_left_image);
+
             view.setTag(holder);
 
             holder.name.setText(chat.getFirstName() + " " + chat.getLastName());
@@ -1140,6 +1144,14 @@ class ChatBoxAdaptor extends BaseAdapter {
                 holder.Image.setImageResource(R.mipmap.default_user_profile);
 
             Glide.with(mContext).load(chat.getMessageImageLink()).thumbnail(0.1f).override(600).into(holder.messageImage);
+            holder.messageImage.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    imageView.setVisibility(View.VISIBLE);
+                    Glide.with(mContext).load(chat.getMessageImageLink()).override(1000).into(imageView);
+
+                }
+            });
 
             holder.Image.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -1158,6 +1170,7 @@ class ChatBoxAdaptor extends BaseAdapter {
 
             holder.time = (TextView) view.findViewById(R.id.chat_time_right_image);
             holder.messageImage = (ImageView) view.findViewById(R.id.chat_messageImage_right_image);
+
             view.setTag(holder);
 
 
@@ -1167,8 +1180,14 @@ class ChatBoxAdaptor extends BaseAdapter {
 
 
             Glide.with(mContext).load(chat.getMessageImageLink()).thumbnail(0.1f).override(600).into(holder.messageImage);
+            holder.messageImage.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    imageView.setVisibility(View.VISIBLE);
+                    Glide.with(mContext).load(chat.getMessageImageLink()).override(1000).into(imageView);
 
-
+                }
+            });
         } // normal image right
         else if (ChatsList.get(position).getMode() == -4) {
             view = inflater.inflate(R.layout.chat_reply_image_left, null);
