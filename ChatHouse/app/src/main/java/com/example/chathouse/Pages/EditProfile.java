@@ -138,7 +138,7 @@ public class EditProfile extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         settings  = getSharedPreferences("Theme", Context.MODE_PRIVATE);
-        String themeName = settings.getString("ThemeName", "DarkTheme");
+        String themeName = settings.getString("ThemeName", "Theme");
         if (themeName.equalsIgnoreCase("DarkTheme")) {
             setTheme(R.style.DarkTheme_ChatHouse);
         } else if (themeName.equalsIgnoreCase("Theme")) {
@@ -255,9 +255,11 @@ public class EditProfile extends AppCompatActivity {
                     public void onResponse(Call<ProfileInformation> call, Response<ProfileInformation> response) {
                         if(!response.isSuccessful()){
                             try {
-                                System.out.println(response.code() + response.errorBody().string());
+                                Toast.makeText(EditProfile.this, response.errorBody().string(), Toast.LENGTH_LONG).show();
+
                             } catch (IOException e) {
-                                System.out.println(response.errorBody().toString());
+                                Toast.makeText(EditProfile.this, "Something went wrong, try again!", Toast.LENGTH_LONG).show();
+
                                 e.printStackTrace();
                             }
                             return;
@@ -273,7 +275,8 @@ public class EditProfile extends AppCompatActivity {
 
                     @Override
                     public void onFailure(Call<ProfileInformation> call, Throwable t) {
-                        System.out.println(t.getMessage());
+                        Toast.makeText(EditProfile.this, "Please check your connection", Toast.LENGTH_LONG).show();
+
                     }
                 });
 
@@ -672,9 +675,11 @@ public class EditProfile extends AppCompatActivity {
                                     public void onResponse(Call<ProfileInformation> call, Response<ProfileInformation> response) {
                                         if (!response.isSuccessful()) {
                                             try {
-                                                System.out.println(response.code() + response.errorBody().string());
+                                                Toast.makeText(EditProfile.this, response.errorBody().string(), Toast.LENGTH_LONG).show();
+
                                             } catch (IOException e) {
-                                                System.out.println(response.errorBody().toString());
+                                                Toast.makeText(EditProfile.this, "Something went wrong, try again!", Toast.LENGTH_LONG).show();
+
                                                 e.printStackTrace();
                                             }
                                             return;
@@ -686,7 +691,8 @@ public class EditProfile extends AppCompatActivity {
 
                                     @Override
                                     public void onFailure(Call<ProfileInformation> call, Throwable t) {
-                                        System.out.println("f" + t.getMessage());
+                                        Toast.makeText(EditProfile.this, "Please check your connection", Toast.LENGTH_LONG).show();
+
                                     }
                                 });
 
@@ -738,11 +744,11 @@ public class EditProfile extends AppCompatActivity {
                                         public void onResponse(Call<ProfileInformation> call, Response<ProfileInformation> response) {
                                             if(!response.isSuccessful()){
                                                 try {
-                                                    System.out.println("1" + response.errorBody().string());
-                                                    System.out.println("1" + response.code());
-                                                    System.out.println(response.errorBody().string());
+                                                    Toast.makeText(EditProfile.this, response.errorBody().string(), Toast.LENGTH_LONG).show();
+
                                                 } catch (IOException e) {
-                                                    System.out.println("2" + response.errorBody().toString());
+                                                    Toast.makeText(EditProfile.this, "Something went wrong, try again!", Toast.LENGTH_LONG).show();
+
                                                     e.printStackTrace();
                                                 }
                                                 return;
@@ -759,7 +765,8 @@ public class EditProfile extends AppCompatActivity {
 
                                         @Override
                                         public void onFailure(Call<ProfileInformation> call, Throwable t) {
-                                            Toast.makeText(EditProfile.this, t.getMessage(), Toast.LENGTH_LONG).show();
+                                            Toast.makeText(EditProfile.this, "Please check your connection", Toast.LENGTH_LONG).show();
+
                                         }
                                     });
                                     Toast.makeText(EditProfile.this, "photo deleted", Toast.LENGTH_SHORT).show();

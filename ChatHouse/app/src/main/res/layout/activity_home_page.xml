@@ -145,8 +145,8 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:background="?colorPrimaryVariant"
-        app:itemIconTint="@color/black"
-        app:itemTextColor="@color/black"
+        app:itemIconTint="?colorOnSurface"
+        app:itemTextColor="?colorOnSurface"
 
         app:labelVisibilityMode="labeled"
         app:menu="@menu/bottom_navigation" />

@@ -47,7 +47,7 @@ public class SignUp extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         SharedPreferences settings  = getSharedPreferences("Theme", Context.MODE_PRIVATE);
-        String themeName = settings.getString("ThemeName", "DarkTheme");
+        String themeName = settings.getString("ThemeName", "Theme");
         if (themeName.equalsIgnoreCase("DarkTheme")) {
             setTheme(R.style.DarkTheme_ChatHouse);
         } else if (themeName.equalsIgnoreCase("Theme")) {
@@ -97,14 +97,19 @@ public class SignUp extends AppCompatActivity {
                             if (!response.isSuccessful()) {
                                 Load.setVisibility(View.GONE);
                                 try {
-                                    textViewResult.setTextColor(Color.parseColor("#B00020"));
-                                    textViewResult.setText(response.errorBody().string());
+//                                    textViewResult.setTextColor(Color.parseColor("#B00020"));
+                                    Toast.makeText(SignUp.this, response.errorBody().string(), Toast.LENGTH_LONG).show();
+
+//                                    textViewResult.setText(response.errorBody().string());
                                 } catch (IOException e) {
+                                    Toast.makeText(SignUp.this, "Something went wrong, try again!", Toast.LENGTH_LONG).show();
+
                                     e.printStackTrace();
                                 }
                                 return;
                             }
-                            Toast.makeText(SignUp.this, "Successfully Signed Up", Toast.LENGTH_LONG).show();
+                            Toast.makeText(SignUp.this, "Successfully Signed Up", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(SignUp.this, "You are being redirected to Login page now", Toast.LENGTH_SHORT).show();
                             Load.setVisibility(View.INVISIBLE);
 
                             textViewResult.setTextColor(Color.BLACK);
@@ -116,13 +121,15 @@ public class SignUp extends AppCompatActivity {
                                     startActivity(intent);
                                     finish();
                                 }
-                            }, 3000);
+                            }, 4000);
                         }
 
                         @Override
                         public void onFailure(Call<InputSignupViewModel> call, Throwable t) {
-                            textViewResult.setTextColor(Color.parseColor("#B00020"));
-                            textViewResult.setText("please check your connection");
+                            Toast.makeText(SignUp.this, "Please check your connection", Toast.LENGTH_LONG).show();
+
+//                            textViewResult.setTextColor(Color.parseColor("#B00020"));
+//                            textViewResult.setText("please check your connection");
                             Load.setVisibility(View.GONE);
                         }
                     });

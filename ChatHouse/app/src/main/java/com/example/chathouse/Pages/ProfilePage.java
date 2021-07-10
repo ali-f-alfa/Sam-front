@@ -73,11 +73,11 @@ public class ProfilePage extends AppCompatActivity {
     private TextView Followers;
     private TextView Following;
     private Button Message;
-    private Button Follow;
-    private Button Setting;
+    private CardView Follow;
+    private CardView Setting;
     private ImageView ProfilePicture;
     //    private TextView Memberof;
-    private Button EditProfile;
+    private CardView EditProfile;
     private LinearLayout InterestContainer;
     private TextView UsernameText;
     private TextView EmailText;
@@ -104,7 +104,7 @@ public class ProfilePage extends AppCompatActivity {
 
         super.onCreate(savedInstanceState);
         settings  = getSharedPreferences("Theme", Context.MODE_PRIVATE);
-        String themeName = settings.getString("ThemeName", "DarkTheme");
+        String themeName = settings.getString("ThemeName", "Theme");
         if (themeName.equalsIgnoreCase("DarkTheme")) {
             setTheme(R.style.DarkTheme_ChatHouse);
         } else if (themeName.equalsIgnoreCase("Theme")) {
@@ -122,12 +122,11 @@ public class ProfilePage extends AppCompatActivity {
         FollowingNumber = (TextView) findViewById(R.id.Following);
         Followers = (TextView) findViewById(R.id.FollowersText);
         Following = (TextView) findViewById(R.id.FollowingText);
-        Message = (Button) findViewById(R.id.MessageButton);
-        Follow = (Button) findViewById(R.id.FollowButton);
+        Follow = (CardView) findViewById(R.id.FollowButton);
         UsernameText = (TextView) findViewById(R.id.UsernameText);
         EmailText = (TextView) findViewById(R.id.EmailText);
-        EditProfile = (Button) findViewById(R.id.EditProfileButton);
-        Setting = (Button) findViewById(R.id.Setting);
+        EditProfile = (CardView) findViewById(R.id.EditProfileButton);
+        Setting = (CardView) findViewById(R.id.Setting);
         InterestContainer = (LinearLayout) findViewById(R.id.ContainerButton);
         Interests = (HorizontalScrollView) findViewById(R.id.Interests);
         FollowingFollowersListView = (ListView) findViewById(R.id.FollowingFollowersListView);
@@ -135,7 +134,7 @@ public class ProfilePage extends AppCompatActivity {
         Followsyou = (TextView) findViewById(R.id.FollowsYouText);
         menu = (BottomNavigationView) findViewById(R.id.Profile_menu);
         layout = (ConstraintLayout)findViewById(R.id.ProfileBack);
-
+        TextView flw = (TextView)findViewById(R.id.FollowButtonTxt);
         Bundle bundle = getIntent().getExtras();
         Fake.setVisibility(View.INVISIBLE);
         loading.setVisibility(View.GONE);
@@ -188,12 +187,12 @@ public class ProfilePage extends AppCompatActivity {
                     try {
                         FirstName.setText(response.errorBody().string());
                         loading.setVisibility(View.INVISIBLE);
-                        System.out.println("1" + response.errorBody().string());
-                        System.out.println("1" + response.code());
+                        Toast.makeText(ProfilePage.this, response.errorBody().string(), Toast.LENGTH_LONG).show();
+
                     } catch (IOException e) {
                         FirstName.setText(response.errorBody().toString());
                         loading.setVisibility(View.INVISIBLE);
-                        System.out.println("2" + response.errorBody().toString());
+                        Toast.makeText(ProfilePage.this, "Something went wrong, try again!", Toast.LENGTH_LONG).show();
 
                         e.printStackTrace();
                     }
@@ -206,7 +205,6 @@ public class ProfilePage extends AppCompatActivity {
 
                 if (Response.getMe()) {
 
-                    Message.setVisibility(View.INVISIBLE);
                     Follow.setVisibility(View.INVISIBLE);
                     EditProfile.setVisibility(View.VISIBLE);
                     Setting.setVisibility(View.VISIBLE);
@@ -220,7 +218,7 @@ public class ProfilePage extends AppCompatActivity {
                     for(String X:followingCheck){
                         if(X.equals(Response.getUsername())){
                             followCheck = true;
-                            Follow.setText("Unfollow");
+                            flw.setText("Unfollow");
                         }
                     }
                     String jsonEr = settings.getString("Followers", "");
@@ -232,7 +230,6 @@ public class ProfilePage extends AppCompatActivity {
                         }
                     }
 
-                    Message.setVisibility(View.VISIBLE);
                     Follow.setVisibility(View.VISIBLE);
                     EditProfile.setVisibility(View.INVISIBLE);
                 }
@@ -241,7 +238,10 @@ public class ProfilePage extends AppCompatActivity {
                     SetInformation(Response);
                     Fake.setVisibility(View.VISIBLE);
                     loading.setVisibility(View.INVISIBLE);
+
                 } catch (IOException e) {
+                    Toast.makeText(ProfilePage.this, "Something went wrong, try again!", Toast.LENGTH_LONG).show();
+
                     e.printStackTrace();
                 }
 
@@ -252,7 +252,8 @@ public class ProfilePage extends AppCompatActivity {
             public void onFailure(Call<ProfileInformation> call, Throwable t) {
                 loading.setVisibility(View.INVISIBLE);
                 FirstName.setText(t.getMessage().toString());
-                Toast.makeText(ProfilePage.this, "Hi ali failed" + t.getMessage(), Toast.LENGTH_LONG).show();
+                Toast.makeText(ProfilePage.this, "Please check your connection", Toast.LENGTH_LONG).show();
+
             }
         });
 
@@ -333,9 +334,11 @@ public class ProfilePage extends AppCompatActivity {
                         public void onResponse(Call<ProfileInformation> call, Response<ProfileInformation> response) {
                             if(!response.isSuccessful()){
                                 try {
-                                    FirstName.setText(response.code() + response.errorBody().string());
+                                    Toast.makeText(ProfilePage.this, response.errorBody().string(), Toast.LENGTH_LONG).show();
+
                                 } catch (IOException e) {
-                                    FirstName.setText(response.code() +response.errorBody().toString());
+                                    Toast.makeText(ProfilePage.this, "Something went wrong, try again!", Toast.LENGTH_LONG).show();
+
 
                                     e.printStackTrace();
                                 }
@@ -360,7 +363,8 @@ public class ProfilePage extends AppCompatActivity {
 
                         @Override
                         public void onFailure(Call<ProfileInformation> call, Throwable t) {
-                            FirstName.setText(t.getMessage());
+                            Toast.makeText(ProfilePage.this, "Please check your connection", Toast.LENGTH_LONG).show();
+
                         }
                     });
                 }
@@ -371,9 +375,11 @@ public class ProfilePage extends AppCompatActivity {
                         public void onResponse(Call<ProfileInformation> call, Response<ProfileInformation> response) {
                             if(!response.isSuccessful()){
                                 try {
-                                    FirstName.setText(response.code() + response.errorBody().string());
+                                    Toast.makeText(ProfilePage.this, response.errorBody().string(), Toast.LENGTH_LONG).show();
+
                                 } catch (IOException e) {
-                                    FirstName.setText(response.code() +response.errorBody().toString());
+                                    Toast.makeText(ProfilePage.this, "Something went wrong, try again!", Toast.LENGTH_LONG).show();
+
 
                                     e.printStackTrace();
                                 }
@@ -399,7 +405,8 @@ public class ProfilePage extends AppCompatActivity {
 
                         @Override
                         public void onFailure(Call<ProfileInformation> call, Throwable t) {
-                            FirstName.setText(t.getMessage());
+                            Toast.makeText(ProfilePage.this, "Please check your connection", Toast.LENGTH_LONG).show();
+
                         }
                     });
 

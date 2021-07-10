@@ -120,7 +120,7 @@ public class Room extends FragmentActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         settings = getSharedPreferences("Theme", Context.MODE_PRIVATE);
-        String themeName = settings.getString("ThemeName", "DarkTheme");
+        String themeName = settings.getString("ThemeName", "Theme");
         if (themeName.equalsIgnoreCase("DarkTheme")) {
             setTheme(R.style.DarkTheme_ChatHouse);
         } else if (themeName.equalsIgnoreCase("Theme")) {
@@ -223,10 +223,11 @@ public class Room extends FragmentActivity {
             public void onResponse(Call<ProfileInformation> call, Response<ProfileInformation> response) {
                 if (!response.isSuccessful()) {
                     try {
-                        System.out.println("1" + response.errorBody().string());
-                        System.out.println("1" + response.code());
+                        Toast.makeText(Room.this, response.errorBody().string(), Toast.LENGTH_LONG).show();
+
                     } catch (IOException e) {
-                        System.out.println("2" + response.errorBody().toString());
+                        Toast.makeText(Room.this, "Something went wrong, try again!", Toast.LENGTH_LONG).show();
+
 
                         e.printStackTrace();
                     }
@@ -248,7 +249,8 @@ public class Room extends FragmentActivity {
 
             @Override
             public void onFailure(Call<ProfileInformation> call, Throwable t) {
-                Toast.makeText(Room.this, "Hi ali failed" + t.getMessage(), Toast.LENGTH_LONG).show();
+                Toast.makeText(Room.this, "Please check your connection", Toast.LENGTH_LONG).show();
+
             }
         });
 
@@ -259,11 +261,11 @@ public class Room extends FragmentActivity {
             public void onResponse(Call<GetRoomViewModel> call, retrofit2.Response<GetRoomViewModel> response) {
                 if (!response.isSuccessful()) {
                     try {
-                        System.out.println("1" + response.errorBody().string());
-                        System.out.println("1" + response.code());
-                        System.out.println(response.errorBody().string());
+                        Toast.makeText(Room.this, response.errorBody().string(), Toast.LENGTH_LONG).show();
+
                     } catch (IOException e) {
-                        System.out.println("2" + response.errorBody().toString());
+                        Toast.makeText(Room.this, "Something went wrong, try again!", Toast.LENGTH_LONG).show();
+
                         e.printStackTrace();
                     }
                     return;
@@ -277,7 +279,8 @@ public class Room extends FragmentActivity {
 
             @Override
             public void onFailure(Call<GetRoomViewModel> call, Throwable t) {
-                Toast.makeText(Room.this, t.getMessage(), Toast.LENGTH_LONG).show();
+                Toast.makeText(Room.this, "Please check your connection", Toast.LENGTH_LONG).show();
+
             }
         });
 
@@ -314,11 +317,11 @@ public class Room extends FragmentActivity {
 //
 //                            if(!response.isSuccessful()){
 //                                try {
-//                                    System.out.println("1" + response.errorBody().string());
-//                                    System.out.println("1" + response.code());
-//                                    System.out.println(response.errorBody().string());
+//                                    Toast.makeText(Room.this, response.errorBody().string(), Toast.LENGTH_LONG).show();
+//
 //                                } catch (IOException e) {
-//                                    System.out.println("2" + response.errorBody().toString());
+//                                    Toast.makeText(Room.this, "Something went wrong, try again!", Toast.LENGTH_LONG).show();
+//
 //                                    e.printStackTrace();
 //                                }
 //                                return;
@@ -333,6 +336,7 @@ public class Room extends FragmentActivity {
 //
 //                        @Override
 //                        public void onFailure(Call<Void> call, Throwable t) {
+//                            Toast.makeText(Room.this, "Please check your connection", Toast.LENGTH_LONG).show();
 //
 //                        }
 //                    });
@@ -355,11 +359,11 @@ public class Room extends FragmentActivity {
 
                             if(!response.isSuccessful()){
                                 try {
-                                    System.out.println("1" + response.errorBody().string());
-                                    System.out.println("1" + response.code());
-                                    System.out.println(response.errorBody().string());
+                                    Toast.makeText(Room.this, response.errorBody().string(), Toast.LENGTH_LONG).show();
+
                                 } catch (IOException e) {
-                                    System.out.println("2" + response.errorBody().toString());
+                                    Toast.makeText(Room.this, "Something went wrong, try again!", Toast.LENGTH_LONG).show();
+
                                     e.printStackTrace();
                                 }
                                 return;
@@ -374,6 +378,7 @@ public class Room extends FragmentActivity {
 
                         @Override
                         public void onFailure(Call<Void> call, Throwable t) {
+                            Toast.makeText(Room.this, "Please check your connection", Toast.LENGTH_LONG).show();
 
                         }
                     });
@@ -440,11 +445,11 @@ public class Room extends FragmentActivity {
                     public void onResponse(Call<Void> call, retrofit2.Response<Void> response) {
                         if (!response.isSuccessful()) {
                             try {
-                                System.out.println("1" + response.errorBody().string());
-                                System.out.println("1" + response.code());
-                                System.out.println(response.errorBody().string());
+                                Toast.makeText(Room.this, response.errorBody().string(), Toast.LENGTH_LONG).show();
+
                             } catch (IOException e) {
-                                System.out.println("2" + response.errorBody().toString());
+                                Toast.makeText(Room.this, "Something went wrong, try again!", Toast.LENGTH_LONG).show();
+
                                 e.printStackTrace();
                             }
                             return;
@@ -459,7 +464,8 @@ public class Room extends FragmentActivity {
 
                     @Override
                     public void onFailure(Call<Void> call, Throwable t) {
-                        Toast.makeText(Room.this, "Request failed", Toast.LENGTH_LONG).show();
+                        Toast.makeText(Room.this, "Please check your connection", Toast.LENGTH_LONG).show();
+
                     }
                 });
             }
@@ -1015,6 +1021,14 @@ class ChatBoxAdaptor extends BaseAdapter {
                 holder.message.setText(chat.getMessage());
             else {
                 Glide.with(mContext).load(chat.getMessageImageLink()).override(1000).into(holder.messageImage);
+                holder.messageImage.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        imageView.setVisibility(View.VISIBLE);
+                        Glide.with(mContext).load(chat.getMessageImageLink()).override(1000).into(imageView);
+
+                    }
+                });
                 holder.message.setVisibility(View.GONE);
                 holder.messageImage.setVisibility(View.VISIBLE);
             }
@@ -1085,6 +1099,14 @@ class ChatBoxAdaptor extends BaseAdapter {
                 holder.message.setText(chat.getMessage());
             else {
                 Glide.with(mContext).load(chat.getMessageImageLink()).override(1000).into(holder.messageImage);
+                holder.messageImage.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        imageView.setVisibility(View.VISIBLE);
+                        Glide.with(mContext).load(chat.getMessageImageLink()).override(1000).into(imageView);
+
+                    }
+                });
                 holder.message.setVisibility(View.GONE);
                 holder.messageImage.setVisibility(View.VISIBLE);
             }
@@ -1143,7 +1165,7 @@ class ChatBoxAdaptor extends BaseAdapter {
             else
                 holder.Image.setImageResource(R.mipmap.default_user_profile);
 
-            Glide.with(mContext).load(chat.getMessageImageLink()).thumbnail(0.1f).override(600).into(holder.messageImage);
+            Glide.with(mContext).load(chat.getMessageImageLink()).override(600).into(holder.messageImage);
             holder.messageImage.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -1179,7 +1201,7 @@ class ChatBoxAdaptor extends BaseAdapter {
 
 
 
-            Glide.with(mContext).load(chat.getMessageImageLink()).thumbnail(0.1f).override(600).into(holder.messageImage);
+            Glide.with(mContext).load(chat.getMessageImageLink()).override(600).into(holder.messageImage);
             holder.messageImage.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -1206,6 +1228,14 @@ class ChatBoxAdaptor extends BaseAdapter {
                 holder.message.setText(chat.getMessage());
             else {
                 Glide.with(mContext).load(chat.getMessageImageLink()).override(1000).into(holder.messageImage);
+                holder.messageImage.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        imageView.setVisibility(View.VISIBLE);
+                        Glide.with(mContext).load(chat.getMessageImageLink()).override(1000).into(imageView);
+
+                    }
+                });
                 holder.message.setVisibility(View.GONE);
                 holder.messageImage.setVisibility(View.VISIBLE);
             }
@@ -1276,6 +1306,14 @@ class ChatBoxAdaptor extends BaseAdapter {
                 holder.message.setText(chat.getMessage());
             else {
                 Glide.with(mContext).load(chat.getMessageImageLink()).override(1000).into(holder.messageImage);
+                holder.messageImage.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        imageView.setVisibility(View.VISIBLE);
+                        Glide.with(mContext).load(chat.getMessageImageLink()).override(1000).into(imageView);
+
+                    }
+                });
                 holder.message.setVisibility(View.GONE);
                 holder.messageImage.setVisibility(View.VISIBLE);
             }

@@ -8,12 +8,15 @@
 <item
         android:id="@+id/nav_Search"
         app:showAsAction="never"
-        android:icon="@drawable/ic_baseline_search_2"
+        android:icon="@drawable/ic_baseline_search_24"
+        android:iconTint="?colorOnSurface"
+
         android:title="Search" />
 
     <item
         android:id="@+id/nav_Activity"
         android:icon="@drawable/ic_notifications_black_24dp"
+        android:iconTint="?colorOnSurface"
         android:title="Activities"
         app:showAsAction="never"
         />
@@ -21,6 +24,8 @@
     <item
         android:id="@+id/nav_home"
         android:icon="@drawable/ic_home_black_24dp"
+        android:iconTint="?colorOnSurface"
+
         android:title="Home"
         app:showAsAction="never"
         />
@@ -29,6 +34,8 @@
     <item
         android:id="@+id/nav_Profile"
         android:icon="@drawable/ic_baseline_account_circle_24"
+        android:iconTint="?colorOnSurface"
+
         android:title="Profile"
         app:showAsAction="never"
         />
