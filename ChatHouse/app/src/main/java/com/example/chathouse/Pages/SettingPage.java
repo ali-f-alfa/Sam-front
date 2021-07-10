@@ -1,11 +1,15 @@
 package com.example.chathouse.Pages;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.content.res.AppCompatResources;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.core.graphics.drawable.DrawableCompat;
 
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.View;
@@ -47,11 +51,14 @@ public class SettingPage extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         settings  = getSharedPreferences("Theme", Context.MODE_PRIVATE);
-        String themeName = settings.getString("ThemeName", "DarkTheme");
+        String themeName = settings.getString("ThemeName", "Theme");
+
         if (themeName.equalsIgnoreCase("DarkTheme")) {
             setTheme(R.style.DarkTheme_ChatHouse);
+
         } else if (themeName.equalsIgnoreCase("Theme")) {
             setTheme(R.style.Theme_ChatHouse);
+
         }
         setContentView(R.layout.activity_setting_page);
         LogoutButton =  (Button)findViewById(R.id.LogoutButton);
@@ -59,21 +66,24 @@ public class SettingPage extends AppCompatActivity {
         layout = (ConstraintLayout)findViewById(R.id.settingback);
 
         U = getIntent().getExtras().getString("Username");
-
+        group = (RadioGroup) findViewById(R.id.group);
+        defaultTheme = (RadioButton) findViewById(R.id.light);
+        darkTheme = (RadioButton) findViewById(R.id.dark);
         if (themeName.equalsIgnoreCase("DarkTheme")) {
             layout.setBackgroundResource(R.drawable.b22d);
+
         } else if (themeName.equalsIgnoreCase("Theme")) {
             layout.setBackgroundResource(R.drawable.b22);
         }
 
-        group = (RadioGroup) findViewById(R.id.group);
-        defaultTheme = (RadioButton) findViewById(R.id.light);
-        darkTheme = (RadioButton) findViewById(R.id.dark);
 
-        if (themeName.equalsIgnoreCase("Dark")) {
+
+        if (themeName.equalsIgnoreCase("DarkTheme")) {
             darkTheme.setChecked(true);
-        } else if (themeName.equalsIgnoreCase("Light")) {
+
+        } else if (themeName.equalsIgnoreCase("Theme")) {
             defaultTheme.setChecked(true);
+
         }
 
         // Called when the checked radio button has changed.
@@ -85,13 +95,19 @@ public class SettingPage extends AppCompatActivity {
                 } else if (checkedId == R.id.dark) {
                     setTheme("DarkTheme");
                 }
-                Intent intent = getIntent();
-                finish();
-                Intent i = new Intent(SettingPage.this, ProfilePage.class);
-                Bundle bundle = new Bundle();
-                bundle.putString("Username", U);
-                i.putExtras(bundle);
-                startActivity(i);
+                new Handler().post(new Runnable() {
+                    @Override
+                    public void run() {
+                        Intent intent = getIntent();
+                        finish();
+                        Intent i = new Intent(SettingPage.this, ProfilePage.class);
+                        Bundle bundle = new Bundle();
+                        bundle.putString("Username", U);
+                        i.putExtras(bundle);
+                        startActivity(i);
+                    }
+                });
+
             }
         });
 

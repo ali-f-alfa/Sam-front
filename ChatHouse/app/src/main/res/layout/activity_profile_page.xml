@@ -204,84 +204,100 @@
 
                 </TextView>
             </GridLayout>
-
-            <GridLayout
-                android:id="@+id/Buttons"
-                android:layout_width="match_parent"
-                android:layout_height="45dp"
-                android:layout_marginTop="0dp"
-                android:columnCount="2"
-                android:paddingHorizontal="20dp"
-                android:rowCount="1"
-                android:useDefaultMargins="true"
+            <RelativeLayout
+                android:id="@+id/FollowButtonCnt"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/Statics">
-
-                <Button
-                    android:id="@+id/MessageButton"
-                    android:layout_width="170dp"
-                    android:text="Message"
-                    android:textColor="?colorSecondaryVariant"
-                    android:backgroundTint="?colorOnBackground"
-
-                    android:textSize="12dp">
-
-                </Button>
-
-                <Button
+                <androidx.cardview.widget.CardView
                     android:id="@+id/FollowButton"
-                    android:layout_width="171dp"
-                    android:text="Follow"
-                    android:textColor="?colorSecondaryVariant"
-                    android:backgroundTint="?colorOnBackground"
+                    app:cardBackgroundColor="?colorOnBackground"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="12dp"
+                    app:cardCornerRadius="20dp"
+                    android:clickable="true"
+                    app:cardElevation="6dp">
+                    <TextView
+                        android:id="@+id/FollowButtonTxt"
+                        android:layout_width="fill_parent"
+                        android:layout_height="fill_parent"
+                        android:layout_marginVertical="8dp"
+                        android:gravity="center"
+                        android:textSize="16sp"
+                        android:backgroundTint="?colorOnBackground"
+                        android:text="Follow"
+                        android:textColor="?colorSecondaryVariant"
+                        android:textStyle="normal" />
+                </androidx.cardview.widget.CardView>
+                <GridLayout
+                    android:id="@+id/SeetingEdit"
+                    android:rowCount="1"
+                    android:alignmentMode="alignMargins"
+                    android:columnCount="2"
+                    android:columnOrderPreserved="false"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                   >
+                    <androidx.cardview.widget.CardView
+                        android:id="@+id/EditProfileButton"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_rowWeight="1"
+                        app:cardBackgroundColor="?colorOnBackground"
 
-                    android:textSize="12dp">
+                        android:layout_columnWeight="1"
+                        android:layout_margin="12dp"
+                        app:cardCornerRadius="20dp"
+                        app:cardElevation="6dp">
 
-                </Button>
+                        <TextView
+                            android:layout_width="fill_parent"
+                            android:layout_height="fill_parent"
+                            android:layout_marginVertical="8dp"
+                            android:gravity="center"
+                            android:backgroundTint="?colorOnBackground"
+                            android:text="Edit Profile"
+                            android:textSize="16sp"
+                            android:textColor="?colorSecondaryVariant"
+                            android:textStyle="normal" />
 
-            </GridLayout>
 
-            <GridLayout
-                android:id="@+id/SeetingEdit"
-                android:layout_width="match_parent"
-                android:layout_height="45dp"
-                android:layout_marginTop="0dp"
-                android:columnCount="2"
-                android:paddingHorizontal="20dp"
-                android:rowCount="1"
-                android:useDefaultMargins="true"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/Statics">
+                    </androidx.cardview.widget.CardView>
 
-                <Button
-                    android:id="@+id/EditProfileButton"
-                    android:layout_width="170dp"
-                    android:backgroundTint="?colorOnBackground"
+                    <androidx.cardview.widget.CardView
+                        android:id="@+id/Setting"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_rowWeight="1"
+                        app:cardBackgroundColor="?colorOnBackground"
 
-                    android:fontFamily="serif"
-                    android:text="Edit Profile"
-                    android:textStyle="bold"
-                    android:textColor="?colorOnPrimary"
-                    android:textSize="12dp">
+                        android:layout_columnWeight="1"
+                        android:layout_margin="12dp"
+                        app:cardCornerRadius="20dp"
+                        app:cardElevation="6dp">
 
-                </Button>
+                        <TextView
+                            android:layout_width="fill_parent"
+                            android:layout_height="fill_parent"
+                            android:layout_marginVertical="8dp"
+                            android:gravity="center"
+                            android:backgroundTint="?colorOnBackground"
+                            android:text="Setting"
+                            android:textColor="?colorSecondaryVariant"
+                            android:textSize="16sp"
+                            android:textStyle="normal" />
+                    </androidx.cardview.widget.CardView>
 
-                <Button
-                    android:id="@+id/Setting"
-                    android:layout_width="171dp"
-                    android:backgroundTint="?colorOnBackground"
 
-                    android:text="Setting"
-                    android:textStyle="bold"
-                    android:textColor="?colorOnPrimary"
-                    android:fontFamily="serif"
-                    android:textSize="12dp">
+                </GridLayout>
+            </RelativeLayout>
 
-                </Button>
 
-            </GridLayout>
 
 
             <TextView
@@ -296,7 +312,7 @@
                 android:textSize="15dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/Buttons">
+                app:layout_constraintTop_toBottomOf="@+id/FollowButtonCnt">
 
             </TextView>
 
@@ -370,8 +386,8 @@
         android:id="@+id/Profile_menu"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:itemIconTint="@color/black"
-        app:itemTextColor="@color/black"
+        app:itemIconTint="?colorOnSurface"
+        app:itemTextColor="?colorOnSurface"
         android:layout_alignParentBottom="true"
         app:labelVisibilityMode="labeled"
         android:background="?colorPrimaryVariant"

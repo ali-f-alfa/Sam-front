@@ -14,6 +14,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.chathouse.API.ChatHouseAPI;
 import com.example.chathouse.ViewModels.Acount.OutputLoginViewModel;
@@ -45,7 +46,7 @@ public class Login extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         SharedPreferences settings  = getSharedPreferences("Theme", Context.MODE_PRIVATE);
-        String themeName = settings.getString("ThemeName", "DarkTheme");
+        String themeName = settings.getString("ThemeName", "Theme");
         if (themeName.equalsIgnoreCase("DarkTheme")) {
             setTheme(R.style.DarkTheme_ChatHouse);
         } else if (themeName.equalsIgnoreCase("Theme")) {
@@ -94,9 +95,11 @@ public class Login extends AppCompatActivity {
                         public void onResponse(Call<String> call, Response<String> response){
                             if(!response.isSuccessful()){
                                 try {
-                                    Error.setText(response.errorBody().string());
+//                                    Error.setText(response.errorBody().string());
+                                    Toast.makeText(Login.this, response.errorBody().string(), Toast.LENGTH_LONG).show();
                                     Load.setVisibility(View.INVISIBLE);
                                 } catch (IOException e) {
+                                    Toast.makeText(Login.this, "Something went wrong, try again!", Toast.LENGTH_LONG).show();
                                     Load.setVisibility(View.INVISIBLE);
                                     e.printStackTrace();
                                 }
@@ -133,7 +136,8 @@ public class Login extends AppCompatActivity {
                         }
                         @Override
                         public void onFailure(Call<String> call, Throwable failure){
-                            Error.setText("please check your connection");
+//                            Error.setText("please check your connection");
+                            Toast.makeText(Login.this, "Please check your connection", Toast.LENGTH_LONG).show();
                             Load.setVisibility(View.INVISIBLE);}
                     });
                 }

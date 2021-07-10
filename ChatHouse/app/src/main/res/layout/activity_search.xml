@@ -465,8 +465,8 @@
         android:id="@+id/Search_menu"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:itemIconTint="@color/black"
-        app:itemTextColor="@color/black"
+        app:itemIconTint="?colorOnSurface"
+        app:itemTextColor="?colorOnSurface"
         android:layout_alignParentBottom="true"
         app:labelVisibilityMode="labeled"
 
