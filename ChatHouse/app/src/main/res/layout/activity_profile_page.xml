@@ -202,77 +202,101 @@
                 </TextView>
             </GridLayout>
 
-            <GridLayout
-                android:id="@+id/Buttons"
+
+        <RelativeLayout
+            android:id="@+id/FollowButtonCnt"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/Statics">
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/FollowButton"
                 android:layout_width="match_parent"
-                android:layout_height="45dp"
-                android:layout_marginTop="0dp"
-                android:columnCount="2"
-                android:paddingHorizontal="20dp"
-                android:rowCount="1"
-                android:useDefaultMargins="true"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/Statics">
+                android:layout_height="wrap_content"
+                android:layout_margin="12dp"
+                app:cardCornerRadius="20dp"
+                android:clickable="true"
+                app:cardElevation="6dp">
 
-                <Button
-                    android:id="@+id/MessageButton"
-                    android:layout_width="170dp"
-                    android:backgroundTint="@color/white"
-                    android:text="Message"
-                    android:textColor="?colorSecondaryVariant"
-                    android:textSize="12dp">
-
-                </Button>
-
-                <Button
-                    android:id="@+id/FollowButton"
-                    android:layout_width="171dp"
+                <TextView
+                    android:id="@+id/FollowButtonTxt"
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"
+                    android:layout_marginVertical="8dp"
+                    android:gravity="center"
+                    android:textSize="16sp"
                     android:backgroundTint="@color/white"
                     android:text="Follow"
                     android:textColor="?colorSecondaryVariant"
+                    android:textStyle="normal" />
 
-                    android:textSize="12dp">
-
-                </Button>
-
-            </GridLayout>
-
+            </androidx.cardview.widget.CardView>
             <GridLayout
                 android:id="@+id/SeetingEdit"
-                android:layout_width="match_parent"
-                android:layout_height="45dp"
-                android:layout_marginTop="0dp"
-                android:columnCount="2"
-                android:paddingHorizontal="20dp"
-                android:rowCount="1"
-                android:useDefaultMargins="true"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/Statics">
-
-                <Button
+                android:alignmentMode="alignMargins"
+                android:columnCount="2"
+                android:columnOrderPreserved="false"
+                android:rowCount="1">
+                <androidx.cardview.widget.CardView
                     android:id="@+id/EditProfileButton"
-                    android:layout_width="170dp"
-                    android:backgroundTint="@color/white"
-                    android:text="Edit Profile"
-                    android:textColor="?colorSecondaryVariant"
-                    android:textSize="12dp">
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_rowWeight="1"
+                    android:layout_columnWeight="1"
+                    android:layout_margin="12dp"
+                    app:cardCornerRadius="20dp"
+                    android:clickable="true"
+                    app:cardElevation="6dp">
 
-                </Button>
+                    <TextView
+                        android:layout_width="fill_parent"
+                        android:layout_height="fill_parent"
+                        android:layout_marginVertical="8dp"
+                        android:gravity="center"
+                        android:backgroundTint="@color/white"
+                        android:text="Edit Profile"
+                        android:textSize="16sp"
+                        android:textColor="?colorSecondaryVariant"
+                        android:textStyle="normal" />
 
-                <Button
+                </androidx.cardview.widget.CardView>
+
+                <androidx.cardview.widget.CardView
                     android:id="@+id/Setting"
-                    android:layout_width="171dp"
-                    android:backgroundTint="@color/white"
-                    android:text="Setting"
-                    android:textColor="?colorSecondaryVariant"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_rowWeight="1"
+                    android:layout_columnWeight="1"
+                    android:layout_margin="12dp"
+                    app:cardCornerRadius="20dp"
+                    android:clickable="true"
+                    app:cardElevation="6dp">
 
-                    android:textSize="12dp">
+                    <TextView
+                        android:layout_width="fill_parent"
+                        android:layout_height="fill_parent"
+                        android:layout_marginVertical="8dp"
+                        android:gravity="center"
+                        android:backgroundTint="@color/white"
+                        android:text="Setting"
+                        android:textColor="?colorSecondaryVariant"
+                        android:textSize="16sp"
+                        android:textStyle="normal" />
 
-                </Button>
+                </androidx.cardview.widget.CardView>
+
 
             </GridLayout>
+
+        </RelativeLayout>
+
+
 
 
             <TextView
@@ -287,18 +311,11 @@
                 android:textSize="15dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/Buttons">
+                app:layout_constraintTop_toBottomOf="@+id/FollowButtonCnt">
 
             </TextView>
 
 
-            <!--    <com.google.android.material.card.MaterialCardView-->
-            <!--        android:layout_width="wrap_content"-->
-            <!--        android:layout_height="150dp"-->
-            <!--        android:layout_marginTop="10dp"-->
-            <!--        app:layout_constraintEnd_toEndOf="parent"-->
-            <!--        app:layout_constraintStart_toStartOf="parent"-->
-            <!--        app:layout_constraintTop_toBottomOf="@+id/EmailText">-->
 
             <HorizontalScrollView
                 android:id="@+id/Interests"

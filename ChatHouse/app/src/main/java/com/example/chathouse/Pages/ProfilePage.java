@@ -73,11 +73,11 @@ public class ProfilePage extends AppCompatActivity {
     private TextView Followers;
     private TextView Following;
     private Button Message;
-    private Button Follow;
-    private Button Setting;
+    private CardView Follow;
+    private CardView Setting;
     private ImageView ProfilePicture;
     //    private TextView Memberof;
-    private Button EditProfile;
+    private CardView EditProfile;
     private LinearLayout InterestContainer;
     private TextView UsernameText;
     private TextView EmailText;
@@ -104,7 +104,7 @@ public class ProfilePage extends AppCompatActivity {
 
         super.onCreate(savedInstanceState);
         settings  = getSharedPreferences("Theme", Context.MODE_PRIVATE);
-        String themeName = settings.getString("ThemeName", "DarkTheme");
+        String themeName = settings.getString("ThemeName", "Theme");
         if (themeName.equalsIgnoreCase("DarkTheme")) {
             setTheme(R.style.DarkTheme_ChatHouse);
         } else if (themeName.equalsIgnoreCase("Theme")) {
@@ -122,12 +122,11 @@ public class ProfilePage extends AppCompatActivity {
         FollowingNumber = (TextView) findViewById(R.id.Following);
         Followers = (TextView) findViewById(R.id.FollowersText);
         Following = (TextView) findViewById(R.id.FollowingText);
-        Message = (Button) findViewById(R.id.MessageButton);
-        Follow = (Button) findViewById(R.id.FollowButton);
+        Follow = (CardView) findViewById(R.id.FollowButton);
         UsernameText = (TextView) findViewById(R.id.UsernameText);
         EmailText = (TextView) findViewById(R.id.EmailText);
-        EditProfile = (Button) findViewById(R.id.EditProfileButton);
-        Setting = (Button) findViewById(R.id.Setting);
+        EditProfile = (CardView) findViewById(R.id.EditProfileButton);
+        Setting = (CardView) findViewById(R.id.Setting);
         InterestContainer = (LinearLayout) findViewById(R.id.ContainerButton);
         Interests = (HorizontalScrollView) findViewById(R.id.Interests);
         FollowingFollowersListView = (ListView) findViewById(R.id.FollowingFollowersListView);
@@ -135,6 +134,7 @@ public class ProfilePage extends AppCompatActivity {
         Followsyou = (TextView) findViewById(R.id.FollowsYouText);
         menu = (BottomNavigationView) findViewById(R.id.Profile_menu);
         layout = (ConstraintLayout)findViewById(R.id.ProfileBack);
+        TextView flw = (TextView)findViewById(R.id.FollowButtonTxt);
 
         Bundle bundle = getIntent().getExtras();
         Fake.setVisibility(View.INVISIBLE);
@@ -206,7 +206,6 @@ public class ProfilePage extends AppCompatActivity {
 
                 if (Response.getMe()) {
 
-                    Message.setVisibility(View.INVISIBLE);
                     Follow.setVisibility(View.INVISIBLE);
                     EditProfile.setVisibility(View.VISIBLE);
                     Setting.setVisibility(View.VISIBLE);
@@ -220,7 +219,7 @@ public class ProfilePage extends AppCompatActivity {
                     for(String X:followingCheck){
                         if(X.equals(Response.getUsername())){
                             followCheck = true;
-                            Follow.setText("Unfollow");
+                            flw.setText("Unfollow");
                         }
                     }
                     String jsonEr = settings.getString("Followers", "");

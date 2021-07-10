@@ -116,7 +116,7 @@ public class Room extends FragmentActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         settings  = getSharedPreferences("Theme", Context.MODE_PRIVATE);
-        String themeName = settings.getString("ThemeName", "DarkTheme");
+        String themeName = settings.getString("ThemeName", "Theme");
         if (themeName.equalsIgnoreCase("DarkTheme")) {
             setTheme(R.style.DarkTheme_ChatHouse);
         } else if (themeName.equalsIgnoreCase("Theme")) {
