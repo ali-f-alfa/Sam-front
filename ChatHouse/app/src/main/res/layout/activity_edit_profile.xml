@@ -7,6 +7,7 @@
     android:layout_height="wrap_content"
     android:nestedScrollingEnabled="false"
     android:background="@drawable/b22"
+    android:id="@+id/EditProBack"
     tools:context=".Pages.EditProfile">
     <androidx.constraintlayout.widget.ConstraintLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
@@ -27,9 +28,10 @@
             android:id="@+id/EditImageContainer"
             app:cardElevation="5dp"
             app:layout_constraintBottom_toTopOf="@+id/FirstNameEdit"
-
+            android:backgroundTint="?colorOnBackground"
             >
             <ImageView
+                android:clickable="true"
                 android:layout_width="150dp"
                 android:layout_height="100dp"
                 android:ems="10"
@@ -45,39 +47,43 @@
 
 
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/SetNewPicture"
-            android:layout_marginTop="10dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/EditImageContainer"
-            android:fontFamily="sans-serif-thin"
-            android:textColor="@color/almostblack"
-            android:text="Set new picture"
-            android:textSize="15dp"
-            android:clickable="true">
+<!--        <TextView-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:id="@+id/SetNewPicture"-->
+<!--            android:layout_marginTop="10dp"-->
+<!--            app:layout_constraintEnd_toEndOf="parent"-->
+<!--            app:layout_constraintStart_toStartOf="parent"-->
+<!--            app:layout_constraintTop_toBottomOf="@id/EditImageContainer"-->
+<!--            android:fontFamily="serif"-->
+<!--            android:textColor="?colorPrimary"-->
+<!--            android:text="Set new picture"-->
+<!--            android:textSize="15dp"-->
+<!--            android:clickable="true">-->
 
-        </TextView>
+<!--        </TextView>-->
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="50dp"
             android:id="@+id/FirstNameText"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/SetNewPicture"
+            app:layout_constraintTop_toBottomOf="@id/EditImageContainer"
             app:layout_constraintEnd_toStartOf="@id/FirstNameEdit"
             android:text="First Name: "
+            android:fontFamily="serif"
+            android:textStyle="italic"
             android:textSize="15dp"
+            android:textColor="?colorPrimary"
             android:gravity="center_vertical"
             ></TextView>
         <EditText
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:textColor="?colorPrimary"
             android:id="@+id/FirstNameEdit"
             android:layout_marginTop="0dp"
             app:layout_constraintStart_toEndOf="@id/FirstNameText"
-            app:layout_constraintTop_toBottomOf="@id/SetNewPicture"
+            app:layout_constraintTop_toBottomOf="@id/EditImageContainer"
             android:text="Edit  FirstName"
             >
 
@@ -85,18 +91,22 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="50dp"
+            android:textColor="?colorPrimary"
             android:id="@+id/LastNameText"
             android:layout_marginTop="10dp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/FirstNameEdit"
             app:layout_constraintEnd_toStartOf="@id/LastNameEdit"
             android:text="Last Name: "
+            android:fontFamily="serif"
+            android:textStyle="italic"
             android:textSize="15dp"
             android:gravity="center_vertical"
             ></TextView>
         <EditText
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:textColor="?colorPrimary"
             android:id="@+id/LastNameEdit"
             android:layout_marginTop="10dp"
             app:layout_constraintTop_toBottomOf="@id/FirstNameEdit"
@@ -109,10 +119,13 @@
             android:id="@+id/UsernameText"
             android:layout_marginTop="10dp"
             app:layout_constraintStart_toStartOf="parent"
+            android:textColor="?colorPrimary"
             app:layout_constraintEnd_toStartOf="@id/UsernameEdit"
             app:layout_constraintTop_toBottomOf="@id/LastNameEdit"
             android:text="Username: "
             android:gravity="center_vertical"
+            android:fontFamily="serif"
+            android:textStyle="italic"
             >
 
         </TextView>
@@ -120,6 +133,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/UsernameEdit"
+            android:textColor="?colorPrimary"
             android:layout_marginTop="10dp"
             app:layout_constraintStart_toEndOf="@id/UsernameText"
             app:layout_constraintTop_toBottomOf="@id/LastNameEdit"
@@ -132,6 +146,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="50dp"
+            android:textColor="?colorPrimary"
             android:id="@+id/BioText"
             android:layout_marginTop="10dp"
             app:layout_constraintStart_toStartOf="parent"
@@ -139,6 +154,8 @@
             app:layout_constraintTop_toBottomOf="@id/UsernameEdit"
             android:text="Bio: "
             android:gravity="center_vertical"
+            android:fontFamily="serif"
+            android:textStyle="italic"
             >
         </TextView>
         <EditText
@@ -146,6 +163,7 @@
             android:layout_height="wrap_content"
             android:id="@+id/BioEdit"
             android:layout_marginTop="10dp"
+            android:textColor="?colorPrimary"
             app:layout_constraintStart_toEndOf="@id/BioText"
             app:layout_constraintTop_toBottomOf="@id/UsernameEdit"
             android:text="Edit Bio"
@@ -160,6 +178,8 @@
             app:layout_constraintTop_toBottomOf="@id/InterestsEditText"
             android:id="@+id/InterestEditContainer"
             android:layout_marginTop="20dp"
+            android:backgroundTint="?colorOnBackground"
+
             >
             <HorizontalScrollView
                 android:layout_width="wrap_content"
@@ -182,14 +202,13 @@
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:orientation="vertical"
-
                         >
                         <TextView
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:text="Wellness"
                             android:textSize="20dp"
-                            android:textColor="@color/almostorange"
+                            android:textColor="?colorOnPrimary"
                             android:layout_marginBottom="5dp"
 >
 
@@ -200,6 +219,8 @@
                             android:layout_height="400dp"
                             android:id="@+id/Wellness"
                             android:layout_marginRight="20dp"
+                            android:divider="@null"
+                            android:dividerHeight="0dp"
                             >
 
                         </ListView>
@@ -214,7 +235,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:textSize="20dp"
-                            android:textColor="@color/almostorange"
+                            android:textColor="?colorOnPrimary"
                             android:layout_marginBottom="5dp"
                             android:text="Identity"
                             >
@@ -224,6 +245,8 @@
                         <ListView
                             android:layout_width="170dp"
                             android:layout_height="400dp"
+                            android:divider="@null"
+                            android:dividerHeight="0dp"
                             android:id="@+id/Identity"
                             android:layout_marginRight="20dp">
 
@@ -238,7 +261,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:textSize="20dp"
-                            android:textColor="@color/almostorange"
+                            android:textColor="?colorOnPrimary"
                             android:layout_marginBottom="5dp"
                             android:text="Places"
                             >
@@ -247,6 +270,8 @@
 
                         <ListView
                             android:layout_width="170dp"
+                            android:divider="@null"
+                            android:dividerHeight="0dp"
                             android:layout_height="400dp"
                             android:id="@+id/Places"
                             android:layout_marginRight="20dp">
@@ -265,7 +290,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:textSize="20dp"
-                            android:textColor="@color/almostorange"
+                            android:textColor="?colorOnPrimary"
                             android:text="World Affaris"
                             >
 
@@ -274,6 +299,8 @@
                         <ListView
                             android:layout_width="170dp"
                             android:layout_height="400dp"
+                            android:divider="@null"
+                            android:dividerHeight="0dp"
                             android:id="@+id/WorldAffaris"
                             android:layout_marginRight="20dp">
 
@@ -289,7 +316,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:textSize="20dp"
-                            android:textColor="@color/almostorange"
+                            android:textColor="?colorOnPrimary"
                             android:layout_marginBottom="5dp"
                             android:text="Tech"
                             >
@@ -299,6 +326,8 @@
                         <ListView
                             android:layout_width="170dp"
                             android:layout_height="400dp"
+                            android:divider="@null"
+                            android:dividerHeight="0dp"
                             android:id="@+id/Tech"
                             android:layout_marginRight="20dp">
                         </ListView>
@@ -313,7 +342,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:textSize="20dp"
-                            android:textColor="@color/almostorange"
+                            android:textColor="?colorOnPrimary"
                             android:layout_marginBottom="5dp"
                             android:text="Hanging Out"
                             >
@@ -324,6 +353,8 @@
                             android:layout_width="170dp"
                             android:layout_height="400dp"
                             android:id="@+id/HangingOut"
+                            android:divider="@null"
+                            android:dividerHeight="0dp"
                             android:layout_marginRight="20dp">
 
                         </ListView>
@@ -339,7 +370,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:textSize="20dp"
-                            android:textColor="@color/almostorange"
+                            android:textColor="?colorOnPrimary"
                             android:layout_marginBottom="5dp"
                             android:text="Knowledge"
                             >
@@ -349,6 +380,8 @@
                         <ListView
                             android:layout_width="170dp"
                             android:layout_height="400dp"
+                            android:divider="@null"
+                            android:dividerHeight="0dp"
                             android:id="@+id/Knowledge"
                             android:layout_marginRight="20dp">
 
@@ -364,7 +397,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:textSize="20dp"
-                            android:textColor="@color/almostorange"
+                            android:textColor="?colorOnPrimary"
                             android:layout_marginBottom="5dp"
                             android:text="Hustle"
                             >
@@ -374,6 +407,8 @@
                         <ListView
                             android:layout_width="170dp"
                             android:layout_height="400dp"
+                            android:divider="@null"
+                            android:dividerHeight="0dp"
                             android:id="@+id/Hustle"
                             android:layout_marginRight="20dp">
 
@@ -390,7 +425,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:textSize="20dp"
-                            android:textColor="@color/almostorange"
+                            android:textColor="?colorOnPrimary"
                             android:layout_marginBottom="5dp"
                             android:text="Sports"
                             >
@@ -400,6 +435,8 @@
                         <ListView
                             android:layout_width="170dp"
                             android:layout_height="400dp"
+                            android:divider="@null"
+                            android:dividerHeight="0dp"
                             android:id="@+id/Sports"
                             android:layout_marginRight="20dp"
                             >
@@ -417,7 +454,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:textSize="20dp"
-                            android:textColor="@color/almostorange"
+                            android:textColor="?colorOnPrimary"
                             android:layout_marginBottom="5dp"
                             android:text="Arts"
                             >
@@ -426,6 +463,8 @@
                         <ListView
                             android:layout_width="170dp"
                             android:layout_height="400dp"
+                            android:divider="@null"
+                            android:dividerHeight="0dp"
                             android:id="@+id/Arts"
                             android:layout_marginRight="20dp">
 
@@ -442,7 +481,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:textSize="20dp"
-                            android:textColor="@color/almostorange"
+                            android:textColor="?colorOnPrimary"
                             android:layout_marginBottom="5dp"
                             android:text="Life"
                             >
@@ -451,6 +490,8 @@
                         <ListView
                             android:layout_width="170dp"
                             android:layout_height="400dp"
+                            android:divider="@null"
+                            android:dividerHeight="0dp"
                             android:id="@+id/Life"
                             android:layout_marginRight="20dp">
 
@@ -467,7 +508,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:textSize="20dp"
-                            android:textColor="@color/almostorange"
+                            android:textColor="?colorOnPrimary"
                             android:layout_marginBottom="5dp"
                             android:text="Languages"
                             >
@@ -476,6 +517,8 @@
                         <ListView
                             android:layout_width="170dp"
                             android:layout_height="400dp"
+                            android:divider="@null"
+                            android:dividerHeight="0dp"
                             android:id="@+id/Languages"
                             android:layout_marginRight="20dp"
                             >
@@ -494,7 +537,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:textSize="20dp"
-                            android:textColor="@color/almostorange"
+                            android:textColor="?colorOnPrimary"
                             android:layout_marginBottom="5dp"
                             android:text="Entertainment"
                             >
@@ -505,6 +548,8 @@
                             android:layout_height="500dp"
                             android:id="@+id/Entertainment"
                             android:layout_marginRight="20dp"
+                            android:divider="@null"
+                            android:dividerHeight="0dp"
                             >
 
                         </ListView>
@@ -521,7 +566,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:textSize="20dp"
-                            android:textColor="@color/almostorange"
+                            android:textColor="?colorOnPrimary"
                             android:layout_marginBottom="5dp"
                             android:text="Faith"
                             >
@@ -531,6 +576,8 @@
                         <ListView
                             android:layout_width="170dp"
                             android:layout_height="400dp"
+                            android:divider="@null"
+                            android:dividerHeight="0dp"
                             android:id="@+id/Faith"
                             android:layout_marginRight="20dp">
 
@@ -551,10 +598,11 @@
             android:layout_marginTop="10dp"
             android:id="@+id/InterestsEditText"
             android:fontFamily="serif"
+            android:textStyle="bold"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/BioEdit"
             android:textSize="26dp"
-            android:textColor="@color/Verypink">
+            android:textColor="?colorSecondary">
 
         </TextView>
 
@@ -564,26 +612,18 @@
             android:layout_width="300dp"
             android:layout_height="wrap_content"
             android:id="@+id/SaveButton"
-            android:backgroundTint="@color/white"
+            android:backgroundTint="?colorOnBackground"
             android:layout_marginTop="10dp"
             android:text="Save"
-            android:textColor="@color/almostorange"
+            android:fontFamily="serif"
+            android:textColor="?colorSecondaryVariant"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/InterestEditContainer">
 
         </Button>
 
-        <TextView
-            android:id="@+id/textView"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:padding="20sp"
-            android:textColor="#000"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/SaveButton"/>
+
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

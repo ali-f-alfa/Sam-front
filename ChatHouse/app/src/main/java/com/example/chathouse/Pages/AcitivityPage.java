@@ -14,7 +14,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.os.CountDownTimer;
 import android.os.Handler;
 import android.util.TypedValue;
 import android.view.Gravity;
@@ -33,6 +32,7 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.RadioButton;
+import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.TimePicker;
@@ -44,7 +44,7 @@ import com.example.chathouse.Utility.Constants;
 import com.example.chathouse.ViewModels.Acount.ProfileInformation;
 import com.example.chathouse.ViewModels.Acount.RoomModel;
 import com.example.chathouse.ViewModels.Acount.UpdateRoomViewModel;
-import com.example.chathouse.ViewModels.GetRoomViewModel;
+import com.example.chathouse.ViewModels.Room.GetRoomViewModel;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -98,24 +98,36 @@ public class AcitivityPage extends AppCompatActivity {
     private ArrayList<RoomModel> RoomsModelListArrayIn = new ArrayList<RoomModel>();
 
     private boolean selected;
+    SharedPreferences settings;
+    RelativeLayout relativeLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         Date objDate = new Date();
-
+        settings  = getSharedPreferences("Theme", Context.MODE_PRIVATE);
+        String themeName = settings.getString("ThemeName", "Theme");
+        if (themeName.equalsIgnoreCase("DarkTheme")) {
+            setTheme(R.style.DarkTheme_ChatHouse);
+        } else if (themeName.equalsIgnoreCase("Theme")) {
+            setTheme(R.style.Theme_ChatHouse);
+        }
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_acitivity_page);
-        SharedPreferences settings = getSharedPreferences("Storage", MODE_PRIVATE);
+        settings = getSharedPreferences("Storage", MODE_PRIVATE);
         Username = settings.getString("Username", "n/a");
         menu = (BottomNavigationView) findViewById(R.id.Activity_menu);
         RoomsList = (ListView)findViewById(R.id.RoomsInactivity);
         RoomsListIn = (ListView)findViewById(R.id.RoomsInactivityIn);
         loading = (ProgressBar)findViewById(R.id.progressBar);
-
+        relativeLayout = (RelativeLayout)findViewById(R.id.ActivityBack);
         menu.setOnNavigationItemSelectedListener(navListener);
         int a = menu.getSelectedItemId();
         selected = false;
-
+        if (themeName.equalsIgnoreCase("DarkTheme")) {
+            relativeLayout.setBackgroundResource(R.drawable.b22d);
+        } else if (themeName.equalsIgnoreCase("Theme")) {
+            relativeLayout.setBackgroundResource(R.drawable.b22);
+        }
         String Token = settings.getString("Token", "n/a");
 
 
@@ -155,11 +167,12 @@ public class AcitivityPage extends AppCompatActivity {
                 if (!response.isSuccessful()) {
                     try {
                         loading.setVisibility(View.INVISIBLE);
-                        System.out.println("1" + response.errorBody().string());
-                        System.out.println("1" + response.code());
+                        Toast.makeText(AcitivityPage.this, response.errorBody().string(), Toast.LENGTH_LONG).show();
+
                     } catch (IOException e) {
                         loading.setVisibility(View.INVISIBLE);
-                        System.out.println("2" + response.errorBody().toString());
+                        Toast.makeText(AcitivityPage.this, "Something went wrong, try again!", Toast.LENGTH_LONG).show();
+
 
                         e.printStackTrace();
                     }
@@ -195,7 +208,8 @@ public class AcitivityPage extends AppCompatActivity {
             @Override
             public void onFailure(Call<ProfileInformation> call, Throwable t) {
                 loading.setVisibility(View.INVISIBLE);
-                Toast.makeText(AcitivityPage.this, "Request failed" + t.getMessage(), Toast.LENGTH_LONG).show();
+                Toast.makeText(AcitivityPage.this, "Please check your connection", Toast.LENGTH_LONG).show();
+
             }
         });
 
@@ -261,11 +275,11 @@ public class AcitivityPage extends AppCompatActivity {
                                         public void onResponse(Call<Void> call, retrofit2.Response<Void> response) {
                                             if(!response.isSuccessful()){
                                                 try {
-                                                    System.out.println("1" + response.errorBody().string());
-                                                    System.out.println("1" + response.code());
-                                                    System.out.println(response.errorBody().string());
+                                                    Toast.makeText(AcitivityPage.this, response.errorBody().string(), Toast.LENGTH_LONG).show();
+
                                                 } catch (IOException e) {
-                                                    System.out.println("2" + response.errorBody().toString());
+                                                    Toast.makeText(AcitivityPage.this, "Something went wrong, try again!", Toast.LENGTH_LONG).show();
+
                                                     e.printStackTrace();
                                                 }
                                                 return;
@@ -277,7 +291,8 @@ public class AcitivityPage extends AppCompatActivity {
 
                                         @Override
                                         public void onFailure(Call<Void> call, Throwable t) {
-                                            Toast.makeText(AcitivityPage.this, "Request failed" , Toast.LENGTH_LONG).show();
+                                            Toast.makeText(AcitivityPage.this, "Please check your connection", Toast.LENGTH_LONG).show();
+
                                         }
                                     });
                                 }
@@ -458,11 +473,12 @@ public class AcitivityPage extends AppCompatActivity {
                         if(!response.isSuccessful()){
                             try {
                                 loading.setVisibility(View.INVISIBLE);
-                                System.out.println("1" + response.errorBody().string());
-                                System.out.println(response.errorBody().string());
+                                Toast.makeText(AcitivityPage.this, response.errorBody().string(), Toast.LENGTH_LONG).show();
+
                             } catch (IOException e) {
                                 loading.setVisibility(View.INVISIBLE);
-                                System.out.println("2" + response.errorBody().toString());
+                                Toast.makeText(AcitivityPage.this, "Something went wrong, try again!", Toast.LENGTH_LONG).show();
+
 
                                 e.printStackTrace();
                             }
@@ -505,7 +521,7 @@ public class AcitivityPage extends AppCompatActivity {
                     @Override
                     public void onFailure(Call<GetRoomViewModel> call, Throwable t) {
                         loading.setVisibility(View.INVISIBLE);
-                        Toast.makeText(AcitivityPage.this, "Request failed", Toast.LENGTH_LONG).show();
+                        Toast.makeText(AcitivityPage.this, "Please check your connection", Toast.LENGTH_LONG).show();
                     }
                 });
                 dialog.dismiss();
@@ -515,32 +531,44 @@ public class AcitivityPage extends AppCompatActivity {
             Call<Void> DeleteRoom = APIS.DeleteRoom(p.getRoomId());
             @Override
             public void onClick(View v) {
-                DeleteRoom.enqueue(new Callback<Void>() {
-                    @Override
-                    public void onResponse(Call<Void> call, retrofit2.Response<Void> response) {
-                        if(!response.isSuccessful()){
-                            try {
-                                System.out.println("1" + response.errorBody().string());
-                                System.out.println("1" + response.code());
-                                System.out.println(response.errorBody().string());
-                            } catch (IOException e) {
-                                System.out.println("2" + response.errorBody().toString());
-                                e.printStackTrace();
+                new AlertDialog.Builder(AcitivityPage.this).setIcon(android.R.drawable.ic_dialog_alert)
+                        .setTitle("Deleting room").setMessage("Are you sure you want to delete this room?")
+                        .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                DeleteRoom.enqueue(new Callback<Void>() {
+                                    @Override
+                                    public void onResponse(Call<Void> call, retrofit2.Response<Void> response) {
+                                        if(!response.isSuccessful()){
+                                            try {
+                                                Toast.makeText(AcitivityPage.this, response.errorBody().string(), Toast.LENGTH_LONG).show();
+
+                                            } catch (IOException e) {
+                                                Toast.makeText(AcitivityPage.this, "Something went wrong, try again!", Toast.LENGTH_LONG).show();
+
+
+                                                e.printStackTrace();
+                                            }
+                                            return;
+                                        }
+                                        System.out.println("Deleted");
+                                        finish();
+                                        Intent intent = new Intent(AcitivityPage.this, AcitivityPage.class);
+
+                                        startActivity(intent);
+                                    }
+
+                                    @Override
+                                    public void onFailure(Call<Void> call, Throwable t) {
+                                        Toast.makeText(AcitivityPage.this, "Please check your connection", Toast.LENGTH_LONG).show();
+
+                                    }
+                                });
+                                finish();
+                                Toast.makeText(AcitivityPage.this, "Room deleted",Toast.LENGTH_SHORT).show();
                             }
-                            return;
-                        }
-                        System.out.println("Deleted");
-                        finish();
-                        Intent intent = new Intent(AcitivityPage.this, AcitivityPage.class);
+                        }).setNegativeButton("No", null).show();
 
-                        startActivity(intent);
-                    }
-
-                    @Override
-                    public void onFailure(Call<Void> call, Throwable t) {
-                        Toast.makeText(AcitivityPage.this, "Request failed", Toast.LENGTH_LONG).show();
-                    }
-                });
             }
         });
 

@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="3dp">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center">
+
+
+            <androidx.appcompat.widget.LinearLayoutCompat
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:paddingTop="4dp"
+                android:paddingBottom="2dp"
+                android:paddingHorizontal="9dp">
+
+                <TextView
+                    android:id="@+id/chat_middle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:gravity="center"
+                    android:fontFamily="serif"
+                    android:text="ali joined the room"
+                    android:textColor="?colorPrimary"
+                    android:textSize="16dp"
+                    android:textStyle="italic">
+
+                </TextView>
+
+
+            </androidx.appcompat.widget.LinearLayoutCompat>
+
+    </RelativeLayout>
+
+</LinearLayout>

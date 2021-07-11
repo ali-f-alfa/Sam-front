@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="5dp">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="right"
+        android:paddingVertical="4dp">
+
+
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/chat_card_right_image"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="5dp"
+            android:backgroundTint="?colorPrimaryVariant"
+            android:minWidth="80dp"
+            android:minHeight="30dp"
+            android:maxWidth="35dp"
+            app:cardCornerRadius="13dp"
+            app:cardElevation="0dp">
+
+            <androidx.appcompat.widget.LinearLayoutCompat
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:minHeight="100dp"
+                android:minWidth="100dp"
+                android:paddingTop="6dp"
+                android:paddingBottom="2dp"
+                android:paddingHorizontal="9dp">
+
+
+                <ImageView
+                    android:adjustViewBounds="true"
+                    android:id="@+id/chat_messageImage_right_image"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:maxWidth="250dp"
+                    android:maxHeight="600dp"
+                    android:layout_marginVertical="4dp"
+                    app:srcCompat="@drawable/thumb_15951118880user" />
+
+
+                <TextView
+                    android:id="@+id/chat_time_right_image"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="right"
+                    android:text="2:20 PM"
+                    android:textColor="?colorPrimary"
+                    android:textSize="12dp"
+                    android:textStyle="normal">
+
+                </TextView>
+            </androidx.appcompat.widget.LinearLayoutCompat>
+
+        </com.google.android.material.card.MaterialCardView>
+    </RelativeLayout>
+
+</LinearLayout>

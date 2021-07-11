@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="3dp">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:id="@+id/chat_image_left_reply"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_marginLeft="0dp"
+            app:srcCompat="@mipmap/default_user_profile" />
+
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="5dp"
+            android:layout_toEndOf="@+id/chat_image_left_reply"
+            android:backgroundTint="?colorOnPrimarySurface"
+            android:minWidth="80dp"
+            android:minHeight="60dp"
+            app:cardCornerRadius="13dp"
+            app:cardElevation="0dp">
+
+            <androidx.appcompat.widget.LinearLayoutCompat
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:paddingTop="4dp"
+                android:paddingBottom="2dp"
+                android:paddingHorizontal="9dp">
+
+                <TextView
+                    android:id="@+id/chat_name_left_reply"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="left"
+                    android:gravity="left"
+                    android:text="ali farahat"
+                    android:textColor="?colorPrimary"
+                    android:textSize="15dp"
+                    android:textStyle="bold">
+
+                </TextView>
+                <LinearLayout
+                    android:id="@+id/chat_replied_box_left_reply"
+                    android:layout_width="wrap_content"
+                    android:layout_height="45dp"
+                    android:orientation="horizontal"
+                    android:layout_marginTop="2dp">
+
+                    <View
+                        android:layout_width="2dp"
+                        android:layout_height="match_parent"
+                        android:background="?colorSecondary"
+                        android:layout_marginVertical="3dp"/>
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:orientation="vertical"
+                        android:layout_marginLeft="10dp">
+
+                        <TextView
+                            android:id="@+id/chat_replied_name_left_reply"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="left"
+                            android:gravity="left"
+                            android:text="melika ahmadi"
+                            android:textColor="?colorPrimary"
+                            android:textSize="15dp"
+                            android:textStyle="bold"
+                            android:layout_marginTop="2dp"
+                            android:maxLines="1" />
+
+                        <TextView
+                            android:id="@+id/chat_replied_message_left_reply"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="left"
+                            android:maxWidth="230dp"
+                            android:maxLines="1"
+                            android:text="replied message is herehereherehere"
+                            android:textColor="?colorOnSurface"
+                            android:textSize="14dp"
+                            android:textStyle="normal"/>
+                    </LinearLayout>
+
+
+                </LinearLayout>
+                <TextView
+                    android:id="@+id/chat_message_left_reply"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="left"
+                    android:maxWidth="250dp"
+                    android:layout_marginTop="2dp"
+                    android:text="a\"
+                    android:textColor="?colorOnSurface"
+                    android:textSize="14dp"
+                    android:textStyle="normal">
+
+                </TextView>
+
+                <ImageView
+                    android:id="@+id/chat_message_image_left_reply"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginVertical="4dp"
+                    android:maxWidth="250dp"
+                    android:maxHeight="600dp"
+                    android:layout_gravity="left"
+                    android:adjustViewBounds="true"
+                    app:srcCompat="@drawable/thumb_15951118880user"
+                    android:visibility="gone"/>
+
+                <TextView
+                    android:id="@+id/chat_time_left_reply"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="right"
+                    android:text="2:20 PM"
+                    android:textColor="?colorPrimary"
+                    android:textSize="12dp"
+                    android:textStyle="normal">
+
+                </TextView>
+            </androidx.appcompat.widget.LinearLayoutCompat>
+
+        </com.google.android.material.card.MaterialCardView>
+    </RelativeLayout>
+
+</LinearLayout>

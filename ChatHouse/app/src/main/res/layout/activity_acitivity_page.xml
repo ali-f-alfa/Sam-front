@@ -5,9 +5,9 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".Pages.AcitivityPage"
+    android:id="@+id/ActivityBack"
     android:background="@drawable/b22"
     android:orientation="vertical"
-    android:padding="2dp"
     android:layout_marginTop="5dp">
    <LinearLayout
        android:layout_width="fill_parent"
@@ -19,7 +19,7 @@
            android:layout_height="wrap_content"
            android:text="Activities"
            android:fontFamily="serif"
-           android:textColor="@color/Verypink"
+           android:textColor="?colorSecondary"
            android:textStyle="bold"
            android:textSize="20dp"
            android:layout_gravity="center">
@@ -36,7 +36,7 @@
            android:layout_height="wrap_content"
            android:text="Created Rooms"
            android:fontFamily="serif"
-           android:textColor="@color/gray"
+           android:textColor="?colorPrimary"
            android:textStyle="italic"
            android:textSize="16dp"
            android:layout_gravity="center">
@@ -48,7 +48,7 @@
            android:layout_width="fill_parent"
            android:layout_height="fill_parent"
            android:fadeScrollbars="false"
-           android:layout_weight="6"></ListView>
+           android:layout_weight="4"></ListView>
        <View
            android:layout_width="wrap_content"
            android:layout_height="5dp"
@@ -60,7 +60,7 @@
            android:layout_height="wrap_content"
            android:text="In Rooms"
            android:fontFamily="serif"
-           android:textColor="@color/gray"
+           android:textColor="?colorPrimary"
            android:textStyle="italic"
            android:textSize="16dp"
            android:layout_gravity="center">
@@ -102,10 +102,10 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:labelVisibilityMode="labeled"
-        app:itemIconTint="@color/black"
-        app:itemTextColor="@color/black"
+        app:itemIconTint="?colorOnSurface"
+        app:itemTextColor="?colorOnSurface"
         android:layout_alignParentBottom="true"
-        android:background="@color/light"
+        android:background="?colorPrimaryVariant"
         app:menu="@menu/bottom_navigation"/>
 
 </RelativeLayout>

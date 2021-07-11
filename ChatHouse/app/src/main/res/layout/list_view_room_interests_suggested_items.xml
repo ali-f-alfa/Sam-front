@@ -37,7 +37,7 @@
                     android:paddingLeft="15dp"
                     android:paddingEnd="16dp"
                     android:paddingRight="16dp"
-                    android:textColor="@color/Verypink"
+                    android:textColor="?colorSecondary"
                     android:textSize="21sp"
                     android:textStyle="bold"
                     android:layout_weight="1"/>
@@ -50,7 +50,7 @@
                     android:paddingLeft="15dp"
                     android:paddingEnd="16dp"
                     android:paddingRight="16dp"
-                    android:textColor="@color/Verypink"
+                    android:textColor="?colorSecondary"
                     android:textSize="17sp"
                     android:layout_weight="1"/>
 
@@ -73,7 +73,7 @@
                     android:paddingLeft="8dp"
                     android:paddingEnd="16dp"
                     android:paddingRight="16dp"
-                    android:textColor="@color/Verypink"
+                    android:textColor="?colorSecondary"
                     android:textSize="17sp"
                     android:layout_weight="1"/>
 
@@ -85,7 +85,7 @@
                     android:paddingLeft="8dp"
                     android:paddingEnd="16dp"
                     android:paddingRight="16dp"
-                    android:textColor="@color/Verypink"
+                    android:textColor="?colorSecondary"
                     android:textSize="17sp"
                     android:layout_weight="1"/>
             </LinearLayout>

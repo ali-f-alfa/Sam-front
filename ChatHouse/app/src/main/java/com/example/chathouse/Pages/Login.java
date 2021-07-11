@@ -2,6 +2,7 @@ package com.example.chathouse.Pages;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -13,6 +14,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.chathouse.API.ChatHouseAPI;
 import com.example.chathouse.ViewModels.Acount.OutputLoginViewModel;
@@ -43,6 +45,13 @@ public class Login extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        SharedPreferences settings  = getSharedPreferences("Theme", Context.MODE_PRIVATE);
+        String themeName = settings.getString("ThemeName", "Theme");
+        if (themeName.equalsIgnoreCase("DarkTheme")) {
+            setTheme(R.style.DarkTheme_ChatHouse);
+        } else if (themeName.equalsIgnoreCase("Theme")) {
+            setTheme(R.style.Theme_ChatHouse);
+        }
         setContentView(R.layout.activity_login);
         Username = (EditText)findViewById(R.id.Username);
         Password = (EditText)findViewById(R.id.Password);
@@ -68,12 +77,8 @@ public class Login extends AppCompatActivity {
 
         // Send request for login
         LoginButton.setOnClickListener(new View.OnClickListener(){
-
-
-
             @Override
             public void onClick(View v){
-                Load.setVisibility(View.VISIBLE);
                 if(CheckFields()){
                     // Class for login body
                     OutputLoginViewModel Body = new OutputLoginViewModel(Username.getText().toString(),
@@ -81,17 +86,29 @@ public class Login extends AppCompatActivity {
                     Call<String> Login = LoginAPI.PostLogin(Body);
 
                     Error.setText("");
+                    Load.setVisibility(View.VISIBLE);
                     Login.enqueue(new Callback<String>() {
                         @Override
                         public void onResponse(Call<String> call, Response<String> response){
                             if(!response.isSuccessful()){
-                                try {
-                                    Error.setText(response.errorBody().string());
-                                    Load.setVisibility(View.INVISIBLE);
-                                } catch (IOException e) {
-                                    Load.setVisibility(View.INVISIBLE);
-                                    e.printStackTrace();
-                                }
+                                if (response.code() == 401)
+                                    Error.setText("Email is not confirmed");
+//                                    Toast.makeText(Login.this, "Email is not confirmed", Toast.LENGTH_LONG).show();
+
+                                else if (response.code() == 423)
+                                    Error.setText("Too many Failed attempts! please try later.");
+//                                    Toast.makeText(Login.this, "Too many Failed attempts! please try later.", Toast.LENGTH_LONG).show();
+
+                                else if (response.code() == 400)
+//                                    Toast.makeText(Login.this, "Inavlid login attempt", Toast.LENGTH_LONG).show();
+                                    Error.setText("Invalid login attempt");
+
+                                else if (response.code() == 404)
+//                                    Toast.makeText(Login.this, "Email or Username is Not Valid", Toast.LENGTH_LONG).show();
+                                    Error.setText("Email or Username is Not Valid");
+
+                                Load.setVisibility(View.INVISIBLE);
+
                                 return;
                             }
                             // Get Profile
@@ -125,7 +142,8 @@ public class Login extends AppCompatActivity {
                         }
                         @Override
                         public void onFailure(Call<String> call, Throwable failure){
-                            Error.setText("please check your connection");
+//                            Error.setText("please check your connection");
+                            Toast.makeText(Login.this, "Please check your connection", Toast.LENGTH_LONG).show();
                             Load.setVisibility(View.INVISIBLE);}
                     });
                 }
@@ -189,7 +207,7 @@ public class Login extends AppCompatActivity {
         Boolean pass = true;
         // It should be more than 3 characters
         if(password.length() < 3){
-            Password.setError("Should be al least 3 characters");
+            Password.setError("Should be at least 3 characters");
             return false;
         }
         char[] passwordChars = password.toCharArray();

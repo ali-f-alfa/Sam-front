@@ -10,15 +10,14 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.os.CountDownTimer;
 import android.os.Handler;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.MenuItem;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
-import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.SearchView;
 import android.widget.ListView;
 import android.widget.GridLayout;
@@ -35,7 +34,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.IOException;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -50,7 +48,6 @@ import com.example.chathouse.Utility.Constants;
 import com.example.chathouse.ViewModels.Acount.ProfileInformation;
 import com.example.chathouse.ViewModels.Acount.RoomModel;
 import com.example.chathouse.ViewModels.Acount.SearchPerson;
-import com.example.chathouse.ViewModels.GetRoomViewModel;
 import com.example.chathouse.ViewModels.Search.InputRoomSearchViewModel;
 import com.example.chathouse.ViewModels.Search.InputSearchViewModel;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -101,10 +98,17 @@ public class Search extends AppCompatActivity implements SearchView.OnQueryTextL
     ToggleSwitch toggleSwitch;
     int isRoom;
     ProfileInformation Response;
-
+    RelativeLayout layout;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        settings  = getSharedPreferences("Theme", Context.MODE_PRIVATE);
+        String themeName = settings.getString("ThemeName", "Theme");
+        if (themeName.equalsIgnoreCase("DarkTheme")) {
+            setTheme(R.style.DarkTheme_ChatHouse);
+        } else if (themeName.equalsIgnoreCase("Theme")) {
+            setTheme(R.style.Theme_ChatHouse);
+        }
         setContentView(R.layout.activity_search);
 
         mode = 0; // 0 => suggest  ,  1 => category  , 2 => item
@@ -128,6 +132,12 @@ public class Search extends AppCompatActivity implements SearchView.OnQueryTextL
         loading = (ProgressBar) findViewById(R.id.search_progressbar);
         toggleSwitch = (ToggleSwitch) findViewById(R.id.search_switch);
         isRoom = 0;
+        layout = (RelativeLayout)findViewById(R.id.searchback);
+        if (themeName.equalsIgnoreCase("DarkTheme")) {
+            layout.setBackgroundResource(R.drawable.b22d);
+        } else if (themeName.equalsIgnoreCase("Theme")) {
+            layout.setBackgroundResource(R.drawable.b22);
+        }
 
 
 

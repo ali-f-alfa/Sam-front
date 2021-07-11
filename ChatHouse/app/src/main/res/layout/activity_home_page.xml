@@ -12,6 +12,7 @@
         android:layout_height="match_parent"
         android:layout_above="@+id/Home_menu"
         android:background="@drawable/b22"
+        android:id="@+id/Homeback"
         android:orientation="vertical">
 
         <TextView
@@ -21,9 +22,15 @@
             android:layout_marginTop="10dp"
             android:fontFamily="serif"
             android:text="Home"
-            android:textColor="@color/Verypink"
+            android:textColor="?colorSecondary"
             android:textSize="21dp"
             android:textStyle="bold" />
+        <View
+            android:layout_width="wrap_content"
+            android:layout_height="5dp"
+            android:layout_marginTop="5dp"
+            android:background="@color/white"
+            android:tooltipText="Interests" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -35,11 +42,12 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:fontFamily="serif"
                 android:gravity="center"
                 android:layout_marginBottom="5dp"
-                android:text="You may interested in this Rooms"
-                android:textColor="@color/Verypink"
+                android:text="You may be interested in this Rooms"
+                android:fontFamily="serif"
+                android:textColor="?colorPrimary"
+                android:textStyle="italic"
                 android:textSize="16dp" />
 
             <ListView
@@ -54,7 +62,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginVertical="10dp"
                 android:gravity="center"
-                android:text="No Results Found"
+                android:text=""
                 android:fontFamily="serif"
                 android:textColor="@color/black"
                 android:textSize="20dp"
@@ -81,7 +89,8 @@
                 android:gravity="center"
                 android:fontFamily="serif"
                 android:text="Your friends Rooms"
-                android:textColor="@color/Verypink"
+                android:textColor="?colorPrimary"
+                android:textStyle="italic"
                 android:textSize="16dp" />
             <ListView
                 android:id="@+id/SuggestRoomsFollowings"
@@ -95,7 +104,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginVertical="10dp"
                 android:gravity="center"
-                android:text="No Results Found"
+                android:text=""
                 android:fontFamily="serif"
                 android:textColor="@color/black"
                 android:textSize="20dp"
@@ -110,11 +119,12 @@
             android:layout_marginTop="10dp"
             android:layout_alignParentBottom="true"
             android:layout_gravity="center"
-            android:backgroundTint="@color/white"
+            android:backgroundTint="?colorOnBackground"
             android:drawableLeft="@drawable/plus"
-            android:fontFamily="sans-serif-medium"
+            android:fontFamily="serif"
+            android:textStyle="bold"
             android:text="Start Room"
-            android:textColor="@color/almostorange"
+            android:textColor="?colorSecondaryVariant"
             android:textSize="16dp"></Button>
 
     </LinearLayout>
@@ -134,9 +144,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:background="@color/light"
-        app:itemIconTint="@color/black"
-        app:itemTextColor="@color/black"
+        android:background="?colorPrimaryVariant"
+        app:itemIconTint="?colorOnSurface"
+        app:itemTextColor="?colorOnSurface"
 
         app:labelVisibilityMode="labeled"
         app:menu="@menu/bottom_navigation" />

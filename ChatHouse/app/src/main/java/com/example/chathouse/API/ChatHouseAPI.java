@@ -4,11 +4,10 @@ import com.example.chathouse.ViewModels.Acount.InputSignupViewModel;
 import com.example.chathouse.ViewModels.Acount.OutputLoginViewModel;
 import com.example.chathouse.ViewModels.Acount.OutputSignupViewModel;
 import com.example.chathouse.ViewModels.Acount.ProfileInformation;
-import com.example.chathouse.ViewModels.Acount.RoomModel;
 import com.example.chathouse.ViewModels.Acount.UpdateProfileViewModel;
 import com.example.chathouse.ViewModels.Acount.UpdateRoomViewModel;
-import com.example.chathouse.ViewModels.CreateRoomViewModel;
-import com.example.chathouse.ViewModels.GetRoomViewModel;
+import com.example.chathouse.ViewModels.Room.CreateRoomViewModel;
+import com.example.chathouse.ViewModels.Room.GetRoomViewModel;
 import com.example.chathouse.ViewModels.Search.InputRoomSearchViewModel;
 import com.example.chathouse.ViewModels.Search.InputRoomSuggestSearchViewModel;
 import com.example.chathouse.ViewModels.Search.InputSearchViewModel;
@@ -16,12 +15,10 @@ import com.example.chathouse.ViewModels.Search.InputSearchViewModel;
 import java.util.List;
 
 import okhttp3.MultipartBody;
-import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.DELETE;
 import retrofit2.http.GET;
-import retrofit2.http.Header;
 import retrofit2.http.Multipart;
 import retrofit2.http.POST;
 import retrofit2.http.Part;
@@ -95,5 +92,14 @@ public interface ChatHouseAPI {
 
     @POST("Room/UpdateRoom")
     Call<GetRoomViewModel> UpdateRoom(@Body UpdateRoomViewModel updateRoom);
+
+    @DELETE("Account/RemoveImage")
+    Call<ProfileInformation> DeleteImage();
+
+    @Multipart
+    @POST("Room/SendMessage")
+    Call<Void> SendImage(@Query("UserModel.FirstName") String firstName, @Query("UserModel.LastName") String lastName, @Query("UserModel.Username") String username,
+                         @Query("UserModel.ImageLink") String imageLink, @Query("MessageType") String messageType, @Query("RoomId") int roomId, @Query("Message") String message,
+                         @Query("IsMe") Boolean isMe, @Query("ParentId") String parentId, @Query("ConnectionId") String connectionId, @Part MultipartBody.Part formFile);
 
 }

@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="5dp">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="right"
+        android:paddingVertical="4dp">
+
+
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/chat_card_right"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="5dp"
+            android:backgroundTint="?colorPrimaryVariant"
+            android:minWidth="80dp"
+            android:minHeight="30dp"
+            android:maxWidth="35dp"
+            app:cardCornerRadius="13dp"
+            app:cardElevation="0dp">
+
+            <androidx.appcompat.widget.LinearLayoutCompat
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:paddingTop="6dp"
+                android:paddingBottom="2dp"
+                android:paddingHorizontal="9dp">
+
+
+
+                <TextView
+                    android:id="@+id/chat_message_right"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="left"
+                    android:maxWidth="250dp"
+                    android:text="MessageMessageMessageMessageMessageMessageMessageMessage\nhello\nMessageMessageMessageMessage"
+                    android:textColor="?colorOnSurface"
+                    android:textSize="14dp"
+                    android:textStyle="normal">
+
+                </TextView>
+
+                <TextView
+                    android:id="@+id/chat_time_right"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="right"
+                    android:text="2:20 PM"
+                    android:textColor="?colorPrimary"
+                    android:textSize="12dp"
+                    android:textStyle="normal">
+
+                </TextView>
+            </androidx.appcompat.widget.LinearLayoutCompat>
+
+        </com.google.android.material.card.MaterialCardView>
+    </RelativeLayout>
+
+</LinearLayout>

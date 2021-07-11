@@ -9,6 +9,16 @@ public class FollowingFollowers implements Serializable {
     private String lastName;
     private String imageLink;
 
+    public FollowingFollowers(String userName, String ImageLink, String firstName, String lastName) {
+        this.username = userName;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.imageLink = ImageLink;
+    }
+    public FollowingFollowers(){
+
+    }
+
     public String getUsername() {
         return username;
     }

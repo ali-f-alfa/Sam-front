@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:paddingVertical="8dp"
     android:paddingHorizontal="35dp"
-    android:background="@color/light"
+    android:background="?colorPrimaryVariant"
     tools:context=".Pages.MainActivity">
 
     <TextView
@@ -18,7 +18,7 @@
         android:fontFamily="serif"
         android:gravity="center"
         android:text="GoNuts"
-        android:textColor="@color/Verypink"
+        android:textColor="?colorSecondary"
         android:textSize="50dp"
         app:layout_constraintBottom_toTopOf="@+id/resultText"
         app:layout_constraintEnd_toEndOf="parent"
@@ -36,7 +36,39 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/Logo"
         />
+    <EditText
+        android:id="@+id/FirstNameInput"
+        android:layout_width="0dp"
+        android:layout_height="60dp"
+        android:layout_marginTop="20dp"
+        android:ems="10"
+        android:fontFamily="sans-serif-condensed-light"
+        android:hint="First Name"
+        android:inputType="text"
+        android:textColorHint="?colorOnSurface"
+        android:textColor="?colorOnSurface"
+        app:layout_constraintBottom_toTopOf="@+id/LastNameInput"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.491"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/resultText" />
 
+    <EditText
+        android:id="@+id/LastNameInput"
+        android:layout_width="0dp"
+        android:layout_height="60dp"
+        android:ems="10"
+        android:fontFamily="sans-serif-condensed-light"
+        android:hint="Last Name"
+        android:textColorHint="?colorOnSurface"
+
+        android:inputType="text"
+        android:textColor="?colorOnSurface"
+        app:layout_constraintBottom_toTopOf="@+id/EmailInput"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.491"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/FirstNameInput" />
 
     <EditText
         android:id="@+id/EmailInput"
@@ -45,21 +77,27 @@
         android:ems="10"
         android:fontFamily="sans-serif-condensed-light"
         android:hint="Email"
+        android:textColorHint="?colorOnSurface"
+
         android:inputType="textEmailAddress"
-        android:textColor="@color/black"
+        android:textColor="?colorOnSurface"
         app:layout_constraintBottom_toTopOf="@+id/usernameInput"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.491"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/resultText" />
+        app:layout_constraintTop_toBottomOf="@+id/LastNameInput" />
+
+
 
     <EditText
         android:id="@+id/usernameInput"
         android:layout_width="0dp"
         android:layout_height="60dp"
         android:fontFamily="sans-serif-condensed-light"
-        android:textColor="@color/black"
+        android:textColor="?colorOnSurface"
         android:hint="Username"
+        android:textColorHint="?colorOnSurface"
+
         app:layout_constraintBottom_toTopOf="@+id/passwordInput"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.508"
@@ -73,8 +111,10 @@
         android:layout_height="60dp"
         android:ems="10"
         android:fontFamily="sans-serif-condensed-light"
-        android:textColor="@color/black"
+        android:textColor="?colorOnSurface"
         android:hint="Password"
+        android:textColorHint="?colorOnSurface"
+
         android:inputType="textPassword"
         app:layout_constraintBottom_toTopOf="@+id/confirmPasswordInput"
         app:layout_constraintEnd_toEndOf="parent"
@@ -88,9 +128,11 @@
         android:layout_height="60dp"
         android:ems="10"
         android:fontFamily="sans-serif-condensed-light"
-        android:textColor="@color/black"
+        android:textColor="?colorOnSurface"
         android:hint="Confirm Password"
         android:inputType="textPassword"
+        android:textColorHint="?colorOnSurface"
+
         app:layout_constraintBottom_toTopOf="@+id/LoginBtn"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.508"
@@ -106,7 +148,7 @@
         android:text=""
         android:textColor="#F50000"
         android:textSize="15dp"
-        app:layout_constraintBottom_toTopOf="@+id/EmailInput"
+        app:layout_constraintBottom_toTopOf="@+id/FirstNameInput"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/Logo" />
@@ -118,9 +160,10 @@
         android:layout_marginTop="32dp"
         android:layout_marginBottom="10dp"
         android:clickable="true"
-        android:fontFamily="sans-serif-condensed-light"
+        android:fontFamily="serif"
         android:text="Do you have an account? Login"
-        android:textColorLink="@color/black"
+        android:textColorLink="?colorOnSurface"
+        android:textColor="?colorOnSurface"
         app:layout_constraintBottom_toTopOf="@+id/submitBtn"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -131,8 +174,8 @@
         android:layout_width="0dp"
         android:layout_height="50dp"
         android:layout_marginBottom="85dp"
-        android:backgroundTint="@color/Verypink"
-        android:fontFamily="sans-serif-condensed-light"
+        android:backgroundTint="?colorSecondary"
+        android:fontFamily="serif"
         android:text="sign up"
         android:textColor="@color/white"
         app:layout_constraintBottom_toBottomOf="parent"

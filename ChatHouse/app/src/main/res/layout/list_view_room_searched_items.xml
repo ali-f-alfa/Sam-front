@@ -37,10 +37,11 @@
                     android:paddingLeft="15dp"
                     android:paddingEnd="16dp"
                     android:paddingRight="16dp"
-                    android:textColor="@color/Verypink"
+                    android:textColor="?colorSecondary"
                     android:textSize="21sp"
                     android:textStyle="bold"
                     android:layout_weight="1"
+                    android:fontFamily="serif"
                     android:text="Name"/>
 
                 <TextView
@@ -51,7 +52,9 @@
                     android:paddingLeft="15dp"
                     android:paddingEnd="16dp"
                     android:paddingRight="16dp"
-                    android:textColor="@color/Verypink"
+                    android:textColor="?colorSecondary"
+                    android:fontFamily="serif"
+
                     android:textSize="17sp"
                     android:layout_weight="1"/>
 
@@ -74,7 +77,9 @@
                     android:paddingLeft="8dp"
                     android:paddingEnd="16dp"
                     android:paddingRight="16dp"
-                    android:textColor="@color/Verypink"
+                    android:textColor="?colorSecondary"
+                    android:fontFamily="serif"
+
                     android:textSize="17sp"
                     android:layout_weight="1"/>
 
@@ -82,11 +87,13 @@
                     android:id="@+id/room_startTime"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
+                    android:fontFamily="serif"
+
                     android:paddingStart="8dp"
                     android:paddingLeft="8dp"
                     android:paddingEnd="16dp"
                     android:paddingRight="16dp"
-                    android:textColor="@color/Verypink"
+                    android:textColor="?colorSecondary"
                     android:textSize="17sp"
                     android:layout_weight="1"/>
             </LinearLayout>
