@@ -75,7 +75,7 @@
             android:background="?colorOnPrimarySurface"
             android:orientation="horizontal"
             android:src="@drawable/ic_baseline_keyboard_arrow_down_24"
-            android:visibility="visible">
+            android:visibility="gone">
 
             <ImageView
                 android:layout_width="30dp"
