@@ -287,7 +287,7 @@
                             android:layout_marginVertical="8dp"
                             android:gravity="center"
                             android:backgroundTint="?colorOnBackground"
-                            android:text="Setting"
+                            android:text="Settings"
                             android:textColor="?colorSecondaryVariant"
                             android:textSize="16sp"
                             android:textStyle="normal" />
