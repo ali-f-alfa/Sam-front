@@ -19,6 +19,7 @@
         android:textStyle="bold"
         android:fontFamily="serif"
         android:layout_marginLeft="10dp"
+        android:textColor="?colorOnSurface"
         app:layout_constraintBottom_toTopOf="@+id/group"
         android:text="Theme">
 
