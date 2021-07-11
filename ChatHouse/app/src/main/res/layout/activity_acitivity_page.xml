@@ -102,8 +102,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:labelVisibilityMode="labeled"
-        app:itemIconTint="@color/black"
-        app:itemTextColor="@color/black"
+        app:itemIconTint="?colorOnSurface"
+        app:itemTextColor="?colorOnSurface"
         android:layout_alignParentBottom="true"
         android:background="?colorPrimaryVariant"
         app:menu="@menu/bottom_navigation"/>

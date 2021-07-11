@@ -18,7 +18,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         memory  = getSharedPreferences("Theme", Context.MODE_PRIVATE);
-        String themeName = memory.getString("ThemeName", "DarkTheme");
+        String themeName = memory.getString("ThemeName", "Theme");
         if (themeName.equalsIgnoreCase("DarkTheme")) {
             setTheme(R.style.DarkTheme_ChatHouse);
         } else if (themeName.equalsIgnoreCase("Theme")) {

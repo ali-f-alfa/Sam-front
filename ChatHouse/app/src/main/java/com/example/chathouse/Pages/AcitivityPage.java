@@ -105,7 +105,7 @@ public class AcitivityPage extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         Date objDate = new Date();
         settings  = getSharedPreferences("Theme", Context.MODE_PRIVATE);
-        String themeName = settings.getString("ThemeName", "DarkTheme");
+        String themeName = settings.getString("ThemeName", "Theme");
         if (themeName.equalsIgnoreCase("DarkTheme")) {
             setTheme(R.style.DarkTheme_ChatHouse);
         } else if (themeName.equalsIgnoreCase("Theme")) {
@@ -167,11 +167,12 @@ public class AcitivityPage extends AppCompatActivity {
                 if (!response.isSuccessful()) {
                     try {
                         loading.setVisibility(View.INVISIBLE);
-                        System.out.println("1" + response.errorBody().string());
-                        System.out.println("1" + response.code());
+                        Toast.makeText(AcitivityPage.this, response.errorBody().string(), Toast.LENGTH_LONG).show();
+
                     } catch (IOException e) {
                         loading.setVisibility(View.INVISIBLE);
-                        System.out.println("2" + response.errorBody().toString());
+                        Toast.makeText(AcitivityPage.this, "Something went wrong, try again!", Toast.LENGTH_LONG).show();
+
 
                         e.printStackTrace();
                     }
@@ -207,7 +208,8 @@ public class AcitivityPage extends AppCompatActivity {
             @Override
             public void onFailure(Call<ProfileInformation> call, Throwable t) {
                 loading.setVisibility(View.INVISIBLE);
-                Toast.makeText(AcitivityPage.this, "Request failed" + t.getMessage(), Toast.LENGTH_LONG).show();
+                Toast.makeText(AcitivityPage.this, "Please check your connection", Toast.LENGTH_LONG).show();
+
             }
         });
 
@@ -273,11 +275,11 @@ public class AcitivityPage extends AppCompatActivity {
                                         public void onResponse(Call<Void> call, retrofit2.Response<Void> response) {
                                             if(!response.isSuccessful()){
                                                 try {
-                                                    System.out.println("1" + response.errorBody().string());
-                                                    System.out.println("1" + response.code());
-                                                    System.out.println(response.errorBody().string());
+                                                    Toast.makeText(AcitivityPage.this, response.errorBody().string(), Toast.LENGTH_LONG).show();
+
                                                 } catch (IOException e) {
-                                                    System.out.println("2" + response.errorBody().toString());
+                                                    Toast.makeText(AcitivityPage.this, "Something went wrong, try again!", Toast.LENGTH_LONG).show();
+
                                                     e.printStackTrace();
                                                 }
                                                 return;
@@ -289,7 +291,8 @@ public class AcitivityPage extends AppCompatActivity {
 
                                         @Override
                                         public void onFailure(Call<Void> call, Throwable t) {
-                                            Toast.makeText(AcitivityPage.this, "Request failed" , Toast.LENGTH_LONG).show();
+                                            Toast.makeText(AcitivityPage.this, "Please check your connection", Toast.LENGTH_LONG).show();
+
                                         }
                                     });
                                 }
@@ -470,11 +473,12 @@ public class AcitivityPage extends AppCompatActivity {
                         if(!response.isSuccessful()){
                             try {
                                 loading.setVisibility(View.INVISIBLE);
-                                System.out.println("1" + response.errorBody().string());
-                                System.out.println(response.errorBody().string());
+                                Toast.makeText(AcitivityPage.this, response.errorBody().string(), Toast.LENGTH_LONG).show();
+
                             } catch (IOException e) {
                                 loading.setVisibility(View.INVISIBLE);
-                                System.out.println("2" + response.errorBody().toString());
+                                Toast.makeText(AcitivityPage.this, "Something went wrong, try again!", Toast.LENGTH_LONG).show();
+
 
                                 e.printStackTrace();
                             }
@@ -517,7 +521,7 @@ public class AcitivityPage extends AppCompatActivity {
                     @Override
                     public void onFailure(Call<GetRoomViewModel> call, Throwable t) {
                         loading.setVisibility(View.INVISIBLE);
-                        Toast.makeText(AcitivityPage.this, "Request failed", Toast.LENGTH_LONG).show();
+                        Toast.makeText(AcitivityPage.this, "Please check your connection", Toast.LENGTH_LONG).show();
                     }
                 });
                 dialog.dismiss();
@@ -537,11 +541,12 @@ public class AcitivityPage extends AppCompatActivity {
                                     public void onResponse(Call<Void> call, retrofit2.Response<Void> response) {
                                         if(!response.isSuccessful()){
                                             try {
-                                                System.out.println("1" + response.errorBody().string());
-                                                System.out.println("1" + response.code());
-                                                System.out.println(response.errorBody().string());
+                                                Toast.makeText(AcitivityPage.this, response.errorBody().string(), Toast.LENGTH_LONG).show();
+
                                             } catch (IOException e) {
-                                                System.out.println("2" + response.errorBody().toString());
+                                                Toast.makeText(AcitivityPage.this, "Something went wrong, try again!", Toast.LENGTH_LONG).show();
+
+
                                                 e.printStackTrace();
                                             }
                                             return;
@@ -555,7 +560,8 @@ public class AcitivityPage extends AppCompatActivity {
 
                                     @Override
                                     public void onFailure(Call<Void> call, Throwable t) {
-                                        Toast.makeText(AcitivityPage.this, "Request failed", Toast.LENGTH_LONG).show();
+                                        Toast.makeText(AcitivityPage.this, "Please check your connection", Toast.LENGTH_LONG).show();
+
                                     }
                                 });
                                 finish();

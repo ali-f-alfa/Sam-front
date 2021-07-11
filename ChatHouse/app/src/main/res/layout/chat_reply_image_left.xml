@@ -119,6 +119,18 @@
 
                 </TextView>
 
+                <ImageView
+                    android:id="@+id/chat_message_image_left_reply_image"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginVertical="4dp"
+                    android:maxWidth="250dp"
+                    android:maxHeight="600dp"
+                    android:layout_gravity="left"
+                    android:adjustViewBounds="true"
+                    app:srcCompat="@drawable/thumb_15951118880user"
+                    android:visibility="gone"/>
+
                 <TextView
                     android:id="@+id/chat_time_left_reply_image"
                     android:layout_width="wrap_content"
