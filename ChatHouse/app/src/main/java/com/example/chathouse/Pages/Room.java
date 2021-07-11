@@ -5,6 +5,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.view.menu.MenuBuilder;
 import androidx.appcompat.view.menu.MenuPopupHelper;
 
+import android.media.Image;
 import android.widget.LinearLayout;
 
 import androidx.fragment.app.FragmentActivity;
@@ -107,7 +108,7 @@ public class Room extends FragmentActivity {
     private Boolean attachment = false;
     private MultipartBody.Part requestImage;
     RequestBody requestBody;
-    private ImageView imageView;
+    public ImageView imageView;
     SharedPreferences settings;
     public int isReplying = -1;
     public LinearLayout replyBar;
@@ -150,7 +151,7 @@ public class Room extends FragmentActivity {
         RoomId = bundle.getInt("RoomId");
 
 
-        ChatAdaptor = new ChatBoxAdaptor(Room.this, Chats, chatBoxListView);
+        ChatAdaptor = new ChatBoxAdaptor(Room.this, Chats, chatBoxListView, imageView);
         chatBoxListView.setAdapter(ChatAdaptor);
         ChatAdaptor.notifyDataSetChanged();
 
@@ -304,47 +305,47 @@ public class Room extends FragmentActivity {
             }
         });
 
-        SendButtonImage.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Call<Void> SendImage = APIS.SendImage(Response.getFirstName(), Response.getLastName(), Response.getUsername(),
-                        Response.getImageLink(), String.valueOf(1), RoomId, MessageText.getText().toString(), true, String.valueOf(-1), hubConnection.getConnectionId(), requestImage);
-                if(attachment){
-                    SendImage.enqueue(new Callback<Void>() {
-                        @Override
-                        public void onResponse(Call<Void> call, retrofit2.Response<Void> response) {
-
-                            if(!response.isSuccessful()){
-                                try {
-                                    Toast.makeText(Room.this, response.errorBody().string(), Toast.LENGTH_LONG).show();
-
-                                } catch (IOException e) {
-                                    Toast.makeText(Room.this, "Something went wrong, try again!", Toast.LENGTH_LONG).show();
-
-                                    e.printStackTrace();
-                                }
-                                return;
-                            }
-                            MessageText.setText("");
-                            System.out.println("Image Is Fine");
-                            SendButtonImage.setVisibility(View.GONE);
-                            imageView.setVisibility(View.GONE);
-
-
-                        }
-
-                        @Override
-                        public void onFailure(Call<Void> call, Throwable t) {
-                            Toast.makeText(Room.this, "Please check your connection", Toast.LENGTH_LONG).show();
-
-                        }
-                    });
-                }
-                imageView.setVisibility(View.INVISIBLE);
-                attachment = false;
-
-            }
-        });
+//        SendButtonImage.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                Call<Void> SendImage = APIS.SendImage(Response.getFirstName(), Response.getLastName(), Response.getUsername(),
+//                        Response.getImageLink(), String.valueOf(1), RoomId, MessageText.getText().toString(), true, String.valueOf(-1), hubConnection.getConnectionId(), requestImage);
+//                if(attachment){
+//                    SendImage.enqueue(new Callback<Void>() {
+//                        @Override
+//                        public void onResponse(Call<Void> call, retrofit2.Response<Void> response) {
+//
+//                            if(!response.isSuccessful()){
+//                                try {
+//                                    Toast.makeText(Room.this, response.errorBody().string(), Toast.LENGTH_LONG).show();
+//
+//                                } catch (IOException e) {
+//                                    Toast.makeText(Room.this, "Something went wrong, try again!", Toast.LENGTH_LONG).show();
+//
+//                                    e.printStackTrace();
+//                                }
+//                                return;
+//                            }
+//                            MessageText.setText("");
+//                            System.out.println("Image Is Fine");
+//                            SendButtonImage.setVisibility(View.GONE);
+//                            imageView.setVisibility(View.GONE);
+//
+//
+//                        }
+//
+//                        @Override
+//                        public void onFailure(Call<Void> call, Throwable t) {
+//                            Toast.makeText(Room.this, "Please check your connection", Toast.LENGTH_LONG).show();
+//
+//                        }
+//                    });
+//                }
+//                imageView.setVisibility(View.INVISIBLE);
+//                attachment = false;
+//
+//            }
+//        });
 
         SendButtonImage.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -384,6 +385,8 @@ public class Room extends FragmentActivity {
                 }
                 imageView.setVisibility(View.INVISIBLE);
                 attachment = false;
+                isReplying = -1;
+                replyBar.setVisibility(View.GONE);
 
             }
         });
@@ -400,16 +403,15 @@ public class Room extends FragmentActivity {
                         me = new SearchPerson(Response.getUsername(), Response.getImageLink(), Response.getFirstName(), Response.getLastName());
 
                         Message.setUserModel(me);
-                        MessageText.setText("");
+
                         Message.setParentId(isReplying);
 
                         SendMessage(Message);
+                        MessageText.setText("");
+
                     }
 
-                    if (isReplying != -1)
-                        Message.setParentId(isReplying);
-                    else
-                        Message.setParentId(-1);
+
 
 
                     isReplying = -1;
@@ -545,7 +547,9 @@ public class Room extends FragmentActivity {
                         x.setMode(1);
                     else {
                         ChatBoxModel parent = FindChat(messageModel.getParentId());
-                        if (parent.getMode() == 3 || parent.getMode() == -3)
+                        Log.println(Log.ERROR, "!!!!!!!!!)(((((((((", "image linke is : " + String.valueOf(parent.getMessageImageLink()));
+
+                        if (parent.getMessageImageLink() != null)
                             x.setMode(4);
                         else
                             x.setMode(2);
@@ -556,7 +560,7 @@ public class Room extends FragmentActivity {
                         x.setMode(-1);
                     else {
                         ChatBoxModel parent = FindChat(messageModel.getParentId());
-                        if (parent.getMode() == 3 || parent.getMode() == -3)
+                        if (parent.getMessageImageLink() != null)
                             x.setMode(-4);
                         else
                             x.setMode(-2);
@@ -647,12 +651,12 @@ public class Room extends FragmentActivity {
                     chat.setImageLink(x.getSender().getImageLink());
                     chat.setUserName(x.getSender().getUsername());
                     chat.setTime(x.sentDate);
-                    if (x.getMe() == true) {
-                        if (x.getParentId() == -1)
+                    if (x.getMe() == true) { // must be right
+                        if (x.getParentId() == -1) // NOT reply
                             chat.setMode(1);
                         else {
                             ChatBoxModel parent = FindChat(x.getParentId());
-                            if (parent.getMode() == 3 || parent.getMode() == -3)
+                            if (parent.getMessageImageLink() != null) // parent has an image
                                 chat.setMode(4);
                             else
                                 chat.setMode(2);
@@ -662,7 +666,7 @@ public class Room extends FragmentActivity {
                             chat.setMode(-1);
                         else {
                             ChatBoxModel parent = FindChat(x.getParentId());
-                            if (parent.getMode() == 3 || parent.getMode() == -3)
+                            if (parent.getMessageImageLink() != null)
                                 chat.setMode(-4);
                             else
                                 chat.setMode(-2);
@@ -683,13 +687,24 @@ public class Room extends FragmentActivity {
                     if (x.getMe() == true) {
                         if (x.getParentId() == -1)
                             chat.setMode(3);
-                        else
-                            chat.setMode(4);
+                        else {
+                            ChatBoxModel parent = FindChat(x.getParentId());
+                            if (parent.getMessageImageLink() != null) // parent has an image
+                                chat.setMode(4);
+                            else
+                                chat.setMode(2);
+                        }
                     } else if (x.getMe() == false) {
                         if (x.getParentId() == -1)
                             chat.setMode(-3);
                         else
-                            chat.setMode(-4);
+                        {
+                            ChatBoxModel parent = FindChat(x.getParentId());
+                            if (parent.getMessageImageLink() != null) // parent has an image
+                                chat.setMode(-4);
+                            else
+                                chat.setMode(-2);
+                        }
                     }
                     chat.setMessage(x.getContent());
                 } else if (contentType == 2) {
@@ -717,7 +732,7 @@ public class Room extends FragmentActivity {
                 public void run() {
 
                     ChatAdaptor.notifyDataSetChanged();
-                    chatBoxListView.smoothScrollToPosition(Chats.size() - 1);
+                    chatBoxListView.setSelection(Chats.size());
                 }
             });
         }, (Class<List<LoadAllMessagesViewModel>>) (Object) List.class);
@@ -861,7 +876,7 @@ public class Room extends FragmentActivity {
         replyBar.setVisibility(View.VISIBLE);
         TextView namee = findViewById(R.id.reply_bar_name);
         TextView mesagee = findViewById(R.id.reply_bar_message);
-        if (replyingTo.getMode() == 3 || replyingTo.getMode() == -3 || replyingTo.getMode() == -4 || replyingTo.getMode() == -4) {
+        if (replyingTo.getMessageImageLink() != null) {
             repliedImage.setVisibility(View.VISIBLE);
             Glide.with(this).load(replyingTo.getMessageImageLink()).into(repliedImage);
             namee.setText(replyingTo.getFirstName() + " " + replyingTo.getLastName());
@@ -883,13 +898,15 @@ class ChatBoxAdaptor extends BaseAdapter {
     Context mContext;
     LayoutInflater inflater;
     ListView ChatListView;
+    ImageView imageView;
     private List<ChatBoxModel> ChatsList = null;
 
-    public ChatBoxAdaptor(Context context, List<ChatBoxModel> chatsList, ListView chatListView) {
+    public ChatBoxAdaptor(Context context, List<ChatBoxModel> chatsList, ListView chatListView, ImageView imageView) {
         mContext = context;
         this.ChatsList = chatsList;
         inflater = LayoutInflater.from(mContext);
         this.ChatListView = chatListView;
+        this.imageView = imageView;
 
     }
 
@@ -963,7 +980,8 @@ class ChatBoxAdaptor extends BaseAdapter {
             });
 
 
-        } else if (ChatsList.get(position).getMode() == 1) {
+        } //normal chat left
+        else if (ChatsList.get(position).getMode() == 1) {
             view = inflater.inflate(R.layout.chat_right, null);
 
             holder.message = (TextView) view.findViewById(R.id.chat_message_right);
@@ -976,7 +994,8 @@ class ChatBoxAdaptor extends BaseAdapter {
             holder.time.setText(formatter.format(chat.getTime()));
 
 
-        } else if (ChatsList.get(position).getMode() == 0) {
+        } // normal chat right
+        else if (ChatsList.get(position).getMode() == 0) {
             view = inflater.inflate(R.layout.chat_middle, null);
 
             holder.message = (TextView) view.findViewById(R.id.chat_middle);
@@ -984,10 +1003,12 @@ class ChatBoxAdaptor extends BaseAdapter {
 
             holder.message.setText(chat.getMessage());
 
-        } else if (ChatsList.get(position).getMode() == -2) {
+        } // middle notification
+        else if (ChatsList.get(position).getMode() == -2) {
             view = inflater.inflate(R.layout.chat_reply_left, null);
 
             holder.message = (TextView) view.findViewById(R.id.chat_message_left_reply);
+            holder.messageImage = (ImageView) view.findViewById(R.id.chat_message_image_left_reply);
             holder.name = (TextView) view.findViewById(R.id.chat_name_left_reply);
             holder.time = (TextView) view.findViewById(R.id.chat_time_left_reply);
             holder.replied_message = (TextView) view.findViewById(R.id.chat_replied_message_left_reply);
@@ -996,7 +1017,22 @@ class ChatBoxAdaptor extends BaseAdapter {
             holder.repliedPart = (LinearLayout) view.findViewById(R.id.chat_replied_box_left_reply);
 
 
-            holder.message.setText(chat.getMessage());
+            if (chat.getMessageImageLink()  == null)
+                holder.message.setText(chat.getMessage());
+            else {
+                Glide.with(mContext).load(chat.getMessageImageLink()).override(1000).into(holder.messageImage);
+                holder.messageImage.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        imageView.setVisibility(View.VISIBLE);
+                        Glide.with(mContext).load(chat.getMessageImageLink()).override(1000).into(imageView);
+
+                    }
+                });
+                holder.message.setVisibility(View.GONE);
+                holder.messageImage.setVisibility(View.VISIBLE);
+            }
+
             holder.name.setText(chat.getFirstName() + " " + chat.getLastName());
 
             SimpleDateFormat formatter = new SimpleDateFormat("hh:mm aa");
@@ -1048,16 +1084,32 @@ class ChatBoxAdaptor extends BaseAdapter {
 
 
             view.setTag(holder);
-        } else if (ChatsList.get(position).getMode() == 2) {
+        } // reply on text left *
+        else if (ChatsList.get(position).getMode() == 2) {
             view = inflater.inflate(R.layout.chat_reply_right, null);
 
             holder.message = (TextView) view.findViewById(R.id.chat_message_right_reply);
+            holder.messageImage = (ImageView) view.findViewById(R.id.chat_message_image_right_reply);
             holder.time = (TextView) view.findViewById(R.id.chat_time_right_reply);
             holder.replied_message = (TextView) view.findViewById(R.id.chat_replied_message_right_reply);
             holder.replied_name = (TextView) view.findViewById(R.id.chat_replied_name_right_reply);
             holder.repliedPart = (LinearLayout) view.findViewById(R.id.chat_replied_box_right_reply);
 
-            holder.message.setText(chat.getMessage());
+            if (chat.getMessageImageLink()  == null)
+                holder.message.setText(chat.getMessage());
+            else {
+                Glide.with(mContext).load(chat.getMessageImageLink()).override(1000).into(holder.messageImage);
+                holder.messageImage.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        imageView.setVisibility(View.VISIBLE);
+                        Glide.with(mContext).load(chat.getMessageImageLink()).override(1000).into(imageView);
+
+                    }
+                });
+                holder.message.setVisibility(View.GONE);
+                holder.messageImage.setVisibility(View.VISIBLE);
+            }
 
             SimpleDateFormat formatter = new SimpleDateFormat("hh:mm aa");
             holder.time.setText(formatter.format(chat.getTime()));
@@ -1088,13 +1140,15 @@ class ChatBoxAdaptor extends BaseAdapter {
                 holder.replied_message.setText("no message found!");
 
             view.setTag(holder);
-        } else if (ChatsList.get(position).getMode() == -3) {
+        } // reply on text right *
+        else if (ChatsList.get(position).getMode() == -3) {
             view = inflater.inflate(R.layout.chat_image_left, null);
 
             holder.name = (TextView) view.findViewById(R.id.chat_name_left_image);
             holder.time = (TextView) view.findViewById(R.id.chat_time_left_image);
             holder.Image = (ImageView) view.findViewById(R.id.chat_image_left_image);
             holder.messageImage = (ImageView) view.findViewById(R.id.chat_messageImage_left_image);
+
             view.setTag(holder);
 
             holder.name.setText(chat.getFirstName() + " " + chat.getLastName());
@@ -1111,7 +1165,15 @@ class ChatBoxAdaptor extends BaseAdapter {
             else
                 holder.Image.setImageResource(R.mipmap.default_user_profile);
 
-            Glide.with(mContext).load(chat.getMessageImageLink()).override(1000).into(holder.messageImage);
+            Glide.with(mContext).load(chat.getMessageImageLink()).override(600).into(holder.messageImage);
+            holder.messageImage.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    imageView.setVisibility(View.VISIBLE);
+                    Glide.with(mContext).load(chat.getMessageImageLink()).override(1000).into(imageView);
+
+                }
+            });
 
             holder.Image.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -1124,24 +1186,36 @@ class ChatBoxAdaptor extends BaseAdapter {
                 }
             });
 
-        } else if (ChatsList.get(position).getMode() == 3) {
+        } // normal image left
+        else if (ChatsList.get(position).getMode() == 3) {
             view = inflater.inflate(R.layout.chat_image_right, null);
 
             holder.time = (TextView) view.findViewById(R.id.chat_time_right_image);
             holder.messageImage = (ImageView) view.findViewById(R.id.chat_messageImage_right_image);
+
             view.setTag(holder);
 
 
             SimpleDateFormat formatter = new SimpleDateFormat("hh:mm aa");
             holder.time.setText(formatter.format(chat.getTime()));
 
-            Glide.with(mContext).load(chat.getMessageImageLink()).override(1000).into(holder.messageImage);
 
 
-        } else if (ChatsList.get(position).getMode() == -4) {
+            Glide.with(mContext).load(chat.getMessageImageLink()).override(600).into(holder.messageImage);
+            holder.messageImage.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    imageView.setVisibility(View.VISIBLE);
+                    Glide.with(mContext).load(chat.getMessageImageLink()).override(1000).into(imageView);
+
+                }
+            });
+        } // normal image right
+        else if (ChatsList.get(position).getMode() == -4) {
             view = inflater.inflate(R.layout.chat_reply_image_left, null);
 
             holder.message = (TextView) view.findViewById(R.id.chat_message_left_reply_image);
+            holder.messageImage = (ImageView) view.findViewById(R.id.chat_message_image_left_reply_image);
             holder.name = (TextView) view.findViewById(R.id.chat_name_left_reply_image);
             holder.time = (TextView) view.findViewById(R.id.chat_time_left_reply_image);
             holder.replied_image = (ImageView) view.findViewById(R.id.chat_repliedImage_left_image);
@@ -1150,7 +1224,22 @@ class ChatBoxAdaptor extends BaseAdapter {
             holder.repliedPart = (LinearLayout) view.findViewById(R.id.chat_replied_box_left_reply_image);
 
 
-            holder.message.setText(chat.getMessage());
+            if (chat.getMessageImageLink()  == null)
+                holder.message.setText(chat.getMessage());
+            else {
+                Glide.with(mContext).load(chat.getMessageImageLink()).override(1000).into(holder.messageImage);
+                holder.messageImage.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        imageView.setVisibility(View.VISIBLE);
+                        Glide.with(mContext).load(chat.getMessageImageLink()).override(1000).into(imageView);
+
+                    }
+                });
+                holder.message.setVisibility(View.GONE);
+                holder.messageImage.setVisibility(View.VISIBLE);
+            }
+
             holder.name.setText(chat.getFirstName() + " " + chat.getLastName());
 
             SimpleDateFormat formatter = new SimpleDateFormat("hh:mm aa");
@@ -1202,16 +1291,32 @@ class ChatBoxAdaptor extends BaseAdapter {
 
 
             view.setTag(holder);
-        } else if (ChatsList.get(position).getMode() == 4) {
+        } // reply on image left *
+        else if (ChatsList.get(position).getMode() == 4) {
             view = inflater.inflate(R.layout.chat_reply_image_right, null);
 
             holder.message = (TextView) view.findViewById(R.id.chat_message_right_reply_image);
+            holder.messageImage = (ImageView) view.findViewById(R.id.chat_message_image_right_reply_image);
             holder.time = (TextView) view.findViewById(R.id.chat_time_right_reply_image);
             holder.replied_image = (ImageView) view.findViewById(R.id.chat_repliedImage_right_image);
             holder.replied_name = (TextView) view.findViewById(R.id.chat_replied_name_right_reply_image);
             holder.repliedPart = (LinearLayout) view.findViewById(R.id.chat_replied_box_right_reply_image);
 
-            holder.message.setText(chat.getMessage());
+            if (chat.getMessageImageLink()  == null)
+                holder.message.setText(chat.getMessage());
+            else {
+                Glide.with(mContext).load(chat.getMessageImageLink()).override(1000).into(holder.messageImage);
+                holder.messageImage.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        imageView.setVisibility(View.VISIBLE);
+                        Glide.with(mContext).load(chat.getMessageImageLink()).override(1000).into(imageView);
+
+                    }
+                });
+                holder.message.setVisibility(View.GONE);
+                holder.messageImage.setVisibility(View.VISIBLE);
+            }
 
             SimpleDateFormat formatter = new SimpleDateFormat("hh:mm aa");
             holder.time.setText(formatter.format(chat.getTime()));
@@ -1242,7 +1347,7 @@ class ChatBoxAdaptor extends BaseAdapter {
                 holder.replied_name.setText("no photo found!");
 
             view.setTag(holder);
-        }
+        } // reply on image right *
         return view;
     }
 }

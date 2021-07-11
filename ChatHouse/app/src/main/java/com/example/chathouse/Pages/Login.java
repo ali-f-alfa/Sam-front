@@ -77,12 +77,8 @@ public class Login extends AppCompatActivity {
 
         // Send request for login
         LoginButton.setOnClickListener(new View.OnClickListener(){
-
-
-
             @Override
             public void onClick(View v){
-                Load.setVisibility(View.VISIBLE);
                 if(CheckFields()){
                     // Class for login body
                     OutputLoginViewModel Body = new OutputLoginViewModel(Username.getText().toString(),
@@ -90,19 +86,29 @@ public class Login extends AppCompatActivity {
                     Call<String> Login = LoginAPI.PostLogin(Body);
 
                     Error.setText("");
+                    Load.setVisibility(View.VISIBLE);
                     Login.enqueue(new Callback<String>() {
                         @Override
                         public void onResponse(Call<String> call, Response<String> response){
                             if(!response.isSuccessful()){
-                                try {
-//                                    Error.setText(response.errorBody().string());
-                                    Toast.makeText(Login.this, response.errorBody().string(), Toast.LENGTH_LONG).show();
-                                    Load.setVisibility(View.INVISIBLE);
-                                } catch (IOException e) {
-                                    Toast.makeText(Login.this, "Something went wrong, try again!", Toast.LENGTH_LONG).show();
-                                    Load.setVisibility(View.INVISIBLE);
-                                    e.printStackTrace();
-                                }
+                                if (response.code() == 401)
+                                    Error.setText("Email is not confirmed");
+//                                    Toast.makeText(Login.this, "Email is not confirmed", Toast.LENGTH_LONG).show();
+
+                                else if (response.code() == 423)
+                                    Error.setText("Too many Failed attempts! please try later.");
+//                                    Toast.makeText(Login.this, "Too many Failed attempts! please try later.", Toast.LENGTH_LONG).show();
+
+                                else if (response.code() == 400)
+//                                    Toast.makeText(Login.this, "Inavlid login attempt", Toast.LENGTH_LONG).show();
+                                    Error.setText("Invalid login attempt");
+
+                                else if (response.code() == 404)
+//                                    Toast.makeText(Login.this, "Email or Username is Not Valid", Toast.LENGTH_LONG).show();
+                                    Error.setText("Email or Username is Not Valid");
+
+                                Load.setVisibility(View.INVISIBLE);
+
                                 return;
                             }
                             // Get Profile
@@ -201,7 +207,7 @@ public class Login extends AppCompatActivity {
         Boolean pass = true;
         // It should be more than 3 characters
         if(password.length() < 3){
-            Password.setError("Should be al least 3 characters");
+            Password.setError("Should be at least 3 characters");
             return false;
         }
         char[] passwordChars = password.toCharArray();

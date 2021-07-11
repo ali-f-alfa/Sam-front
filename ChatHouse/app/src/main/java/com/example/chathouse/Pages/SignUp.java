@@ -108,7 +108,8 @@ public class SignUp extends AppCompatActivity {
                                 }
                                 return;
                             }
-                            Toast.makeText(SignUp.this, "Successfully Signed Up", Toast.LENGTH_LONG).show();
+                            Toast.makeText(SignUp.this, "Successfully Signed Up", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(SignUp.this, "You are being redirected to Login page now", Toast.LENGTH_SHORT).show();
                             Load.setVisibility(View.INVISIBLE);
 
                             textViewResult.setTextColor(Color.BLACK);
@@ -120,7 +121,7 @@ public class SignUp extends AppCompatActivity {
                                     startActivity(intent);
                                     finish();
                                 }
-                            }, 3000);
+                            }, 4000);
                         }
 
                         @Override

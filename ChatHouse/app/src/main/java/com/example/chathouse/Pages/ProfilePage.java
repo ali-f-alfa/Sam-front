@@ -238,7 +238,6 @@ public class ProfilePage extends AppCompatActivity {
                     SetInformation(Response);
                     Fake.setVisibility(View.VISIBLE);
                     loading.setVisibility(View.INVISIBLE);
-                    Toast.makeText(ProfilePage.this, "Something went wrong, try again!", Toast.LENGTH_LONG).show();
 
                 } catch (IOException e) {
                     Toast.makeText(ProfilePage.this, "Something went wrong, try again!", Toast.LENGTH_LONG).show();
