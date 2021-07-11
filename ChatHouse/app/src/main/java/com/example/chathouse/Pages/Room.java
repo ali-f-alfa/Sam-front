@@ -473,6 +473,21 @@ public class Room extends FragmentActivity {
 
     }
 
+    @Override
+    public void onBackPressed() {
+        if (imageView.getVisibility() == View.VISIBLE)
+            imageView.setVisibility(View.GONE);
+        else {
+            super.onBackPressed();
+            System.gc();
+            finish();
+
+        }
+
+
+
+    }
+
     private void Connect() {
 
         hubConnection = HubConnectionBuilder.create(Constants.serverUrl).withAccessTokenProvider(Single.defer(() -> {

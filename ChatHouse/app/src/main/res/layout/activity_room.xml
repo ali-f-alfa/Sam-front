@@ -70,12 +70,12 @@
             android:id="@+id/reply_bar"
             android:layout_width="match_parent"
             android:layout_height="45dp"
-            android:layout_above="@id/SendButton"
+            android:layout_above="@id/Message"
             android:layout_alignParentEnd="true"
             android:background="?colorOnPrimarySurface"
             android:orientation="horizontal"
             android:src="@drawable/ic_baseline_keyboard_arrow_down_24"
-            android:visibility="gone">
+            android:visibility="visible">
 
             <ImageView
                 android:layout_width="30dp"
